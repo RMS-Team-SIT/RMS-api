@@ -9,13 +9,10 @@ import {
   Delete,
   HttpStatus,
 } from '@nestjs/common';
-import { UserService } from './resident.service';
-import { CreateUserDto } from './dto/create-resident.dto';
+import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schemas';
-import { UpdateUserDto } from './dto/update-resident.dto';
+@Controller('api/resident')
+export class ResidentController {
+  constructor(private readonly residentService: ResidentService) { }
 
-@Controller('api/users')
-export class UserController {
-  constructor(private readonly userService: UserService) { }
-  
 }

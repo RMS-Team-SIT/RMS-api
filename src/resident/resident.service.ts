@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CreateUserDto } from './dto/create-resident.dto';
 import { Resident } from './schemas/resident.schemas';
 import * as bcrypt from 'bcrypt';
-import { UpdateUserDto } from './dto/update-resident.dto';
+import { CreateResidentDto } from './dtos/create-resident.dto';
 
 @Injectable()
-export class UserService {
+export class ResidentService {
   constructor(
     @InjectModel(Resident.name)
     private residentModel: Model<Resident>,
@@ -15,5 +14,7 @@ export class UserService {
     console.log('userModel', residentModel);
   }
 
-
+  async create(createResidentDto: CreateResidentDto): Promise<Resident> {
+    return await this.residentModel.create(createResidentDto);
+  }
 }

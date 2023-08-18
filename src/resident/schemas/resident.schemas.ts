@@ -23,7 +23,7 @@ export class Resident extends Document {
   rooms: Room[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
-  owner: User[];
+  owner: User;
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;
