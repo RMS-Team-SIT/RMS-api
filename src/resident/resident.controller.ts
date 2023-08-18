@@ -1,18 +1,26 @@
 import {
   Controller,
   Get,
-  Req,
   Post,
   HttpCode,
   Body,
-  Put,
-  Delete,
   HttpStatus,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schemas';
+import { CreateResidentDto } from './dtos/create-resident.dto';
 @Controller('api/resident')
 export class ResidentController {
-  constructor(private readonly residentService: ResidentService) { }
+  constructor(private readonly residentService: ResidentService) {}
 
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createResidentDto: CreateResidentDto) {
+    return await this.residentService.create(createResidentDto);
+  }
+
+  @Get()
+  async findAll(): Promise<Resident[]> {
+    return await this.residentService.findAll();
+  }
 }

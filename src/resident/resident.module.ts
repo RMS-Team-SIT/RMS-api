@@ -6,10 +6,12 @@ import { Resident, ResidentSchema } from './schemas/resident.schemas';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Resident.name, schema: ResidentSchema }]),
+    MongooseModule.forFeature([
+      { name: Resident.name, schema: ResidentSchema },
+    ]),
   ],
   controllers: [ResidentController],
   providers: [ResidentService],
   exports: [ResidentService],
 })
-export class UserModule { }
+export class ResidentModule {}
