@@ -15,12 +15,17 @@ export class UserService {
         console.log('userModel', userModel);
     }
 
+
     async findAll(): Promise<User[]> {
         return this.userModel.find().select({ password: 0, __v: 0 }).exec();
     }
 
     async findOne(id: string): Promise<User> {
         return this.userModel.findById(id).select({ password: 0, __v: 0 }).exec();
+    }
+
+    async findByEmail(email: string): Promise<User> {
+        return this.userModel.findOne({ email }).exec();
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
