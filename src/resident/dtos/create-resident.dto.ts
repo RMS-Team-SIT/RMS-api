@@ -1,5 +1,6 @@
-import { Room } from '../schemas/room.schemas';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { CreateRoomDto } from './create-room.dto';
+import { Type } from 'class-transformer';
 
 export class CreateResidentDto {
   @IsNotEmpty()
@@ -19,7 +20,9 @@ export class CreateResidentDto {
   defaultLightPriceRate: number;
 
   @IsOptional()
-  rooms: Room[];
+  @Type(() => CreateRoomDto)
+  @ValidateNested()
+  rooms: CreateRoomDto[];
 
   @IsNotEmpty()
   @IsString()

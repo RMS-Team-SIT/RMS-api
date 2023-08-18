@@ -9,7 +9,7 @@ export class Room {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, default: '' })
   description: string;
 
   @Prop({ required: true, default: 0 })
