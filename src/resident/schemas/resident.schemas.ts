@@ -1,12 +1,26 @@
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-
-export type UserDocument = HydratedDocument<User>;
-
+import { User } from 'src/user/schemas/user.schemas';
+import { Room, RoomSchema } from './room.schemas';
 @Schema()
-export class User {
+export class Resident extends Document {
+
+  _id: string;
+
   @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true })
+  description: string;
+
+  @Prop({ required: true })
+  defaultWaterPriceRate: number;
+
+  @Prop({ required: true })
+  defaultLightPriceRate: number;
+
+  @Prop({ type: [RoomSchema], default: [] })
+  rooms: Room[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
   owner: User[];
@@ -18,4 +32,4 @@ export class User {
   updated_at: Date;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const ResidentSchema = SchemaFactory.createForClass(Resident);
