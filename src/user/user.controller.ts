@@ -47,7 +47,7 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  async delete(@Req() request): Promise<Object> {
+  async delete(@Req() request): Promise<object> {
     const deletedUser = await this.userService.delete(request.params.id);
 
     if (!deletedUser) {
