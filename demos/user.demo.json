@@ -4,7 +4,6 @@
     "lastname": "Doe",
     "email": "test@gmail.com",
     "role": "admin",
-    "age": 25,
     "password": "123456"
   }
 ]

@@ -27,8 +27,4 @@ export class UpdateUserDto {
   })
   role: UserRole;
 
-  @ApiProperty()
-  @IsOptional()
-  @IsNumber()
-  age: number;
 }

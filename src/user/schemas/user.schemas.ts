@@ -15,7 +15,16 @@ export class User {
   lastname: string;
 
   @Prop({ required: true })
-  age: number;
+  phone: string;
+
+  @Prop({ default: '' })
+  profilePicture: string;
+
+  @Prop()
+  resetPasswordToken: string;
+
+  @Prop()
+  resetPasswordExpires: Date;
 
   @Prop({ required: true, unique: true, index: true })
   email: string;

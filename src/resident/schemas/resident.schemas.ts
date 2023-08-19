@@ -2,6 +2,7 @@ import mongoose, { Document } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
 import { Room, RoomSchema } from './room.schemas';
+import { ResidentContact, ResidentContactSchema } from './resident-contact.schema';
 @Schema()
 export class Resident extends Document {
   _id: string;
@@ -14,6 +15,9 @@ export class Resident extends Document {
 
   @Prop({ required: true })
   description: string;
+
+  @Prop({ type: ResidentContactSchema, required: true })
+  contact: ResidentContact;
 
   @Prop({ required: true })
   defaultWaterPriceRate: number;
