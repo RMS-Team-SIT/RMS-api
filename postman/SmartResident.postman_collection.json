@@ -1,0 +1,304 @@
+{
+	"info": {
+		"_postman_id": "cb4928e6-f33c-474b-b1db-1a894d2f740e",
+		"name": "SmartResident",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12379800"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n            \"firstname\": \"Johnxx\",\n            \"lastname\": \"Doe\",\n            \"email\": \"test@gmail.com\",\n            \"age\": 25,\n            \"password\": \"123456\",\n            \"role\": \"landloard\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n            \"firstname\": \"Admin\",\n            \"lastname\": \"Makub\",\n            \"email\": \"admin@gmail.com\",\n            \"role\" : \"admin\",\n            \"age\": 25,\n            \"password\": \"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/64dfa17cdb02d5c2ce2363c4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64dfa17cdb02d5c2ce2363c4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n            \"firstname\": \"Johnxx\",\n            \"lastname\": \"Doe\",\n            \"email\": \"test@gmail.com\",\n            \"age\": 25,\n            \"password\": \"123456\",\n            \"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/users/64dfa17cdb02d5c2ce2363c4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64dfa17cdb02d5c2ce2363c4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NGUwNTRiMzI5MWU0MzZkZjc0OWNmZjAiLCJ1c2VyIjp7Il9pZCI6IjY0ZTA1NGIzMjkxZTQzNmRmNzQ5Y2ZmMCIsImZpcnN0bmFtZSI6IkFkbWluIiwibGFzdG5hbWUiOiJNYWt1YiIsImFnZSI6MjUsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwicGFzc3dvcmQiOiIkMmIkMDUkWU01TWZCSno2bVZETE5aNnMvMDNqT1lLcGFwNjA2RHFOckJhOXd3T3dQVFFVOWtrU2pOZGkiLCJyb2xlIjoibGFuZGxvcmQiLCJjcmVhdGVkX2F0IjoiMjAyMy0wOC0xOVQwNTozNDozMS43NDhaIiwidXBkYXRlZF9hdCI6IjIwMjMtMDgtMTlUMDU6MzQ6MzEuNzQ4WiIsIl9fdiI6MH0sImlhdCI6MTY5MjQyMzM2MiwiZXhwIjoxNjkzMDI4MTYyfQ.LhNYDtwIipPwJxM5rc2tjQ6MaAoUxt4yDXEU4sf1R6E",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/users/64dfaffb1e8447bd9026fb15",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"64dfaffb1e8447bd9026fb15"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "SignIn Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"admin@gmail.com\",\n    \"password\" :\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/auth/signin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NGRmYmJhNDU4MjRkN2I4N2I0MzNjNmEiLCJ1c2VyIjp7Il9pZCI6IjY0ZGZiYmE0NTgyNGQ3Yjg3YjQzM2M2YSIsImZpcnN0bmFtZSI6IkpvaG54eCIsImxhc3RuYW1lIjoiRG9lIiwiYWdlIjoyNSwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsInBhc3N3b3JkIjoiJDJiJDA1JGFtNEpqbVFTelZMb2ZZVlZhVDFRQk9Cbmh0NlNUNExsenRNbVlKRWNPeE0vbWxIR0NzM0E2Iiwicm9sZSI6ImxhbmRsb3JkIiwiY3JlYXRlZF9hdCI6IjIwMjMtMDgtMThUMTg6NDI6MzkuODUzWiIsInVwZGF0ZWRfYXQiOiIyMDIzLTA4LTE4VDE4OjQyOjM5Ljg1M1oiLCJfX3YiOjB9LCJpYXQiOjE2OTIzODQ1MTMsImV4cCI6MTY5Mjk4OTMxM30.VvN5_DiXjDJpjwVlRNjaMdu52-HTuPGzYSTn6OjFi_g",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\" : \"test@gmail.com\",\n    \"password\" :\"123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/auth/signin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resident",
+			"item": [
+				{
+					"name": "Create Reident",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"owner\": \"64dfbba45824d7b87b433c6a\",\n  \"name\": \"the living\",\n  \"description\": \"Everything is here\",\n  \"defaultWaterPriceRate\": 10.0,\n  \"lightPriceRate\": 8.0,\n  \"defaultLightPriceRate\": 12,\n  \"currentLightGauge\": 50,\n  \"rooms\": [\n    {\n        \"ssd\":\"512tn\",\n      \"name\": \"room 101\",\n      \"descriptionx\": \"room 101\",\n      \"waterPriceRate\": 10.0,\n      \"lightPriceRate\": 8.0,\n      \"currentWaterGauge\": 20.0,\n      \"currentLightGauge\": 50.43,\n      \"roomUsers\": [\n        {\n          \"username\": \"aom\",\n          \"password\": \"1234\",\n          \"firstname\": \"siriwat\",\n          \"lastname\": \"jai\",\n          \"email\": \"siriwat@gmail.com\",\n          \"phone\": \"0851234567\",\n          \"profileImage\": \"http://www.listercarterhomes.com/wp-content/uploads/2013/11/dummy-image-square.jpg\",\n          \"isActive\": true,\n          \"created_at\": \"2023-08-18T17:53:20.435Z\",\n          \"updated_at\": \"2023-08-18T17:53:20.435Z\"\n        }\n      ],\n      \"billHistories\": [\n        {\n          \"date\": \"2023-08-18T17:53:20.435Z\",\n          \"waterPriceRate\": 10.0,\n          \"lightPriceRate\": 8.0,\n          \"waterGauge\": 12,\n          \"lightGauge\": 50,\n          \"waterTotalPrice\": 240,\n          \"lightTotalPrice\": 400,\n          \"totalPrice\": 520,\n          \"paidEvidenceImage\": \"http://www.listercarterhomes.com/wp-content/uploads/2013/11/dummy-image-square.jpg\",\n          \"isPaid\": true,\n          \"paidDate\": \"2023-08-18T17:53:20.435Z\",\n          \"created_at\": \"2023-08-18T17:53:20.435Z\",\n          \"updated_at\": \"2023-08-18T17:53:20.435Z\"\n        }\n      ],\n      \"created_at\": \"2023-08-18T17:53:20.435Z\",\n      \"updated_at\": \"2023-08-18T17:53:20.435Z\"\n    }\n  ],\n\n  \"created_at\": \"2023-08-18T17:53:20.435Z\",\n  \"updated_at\": \"2023-08-18T17:53:20.435Z\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/resident",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"resident"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All resident",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/resident",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"resident"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
