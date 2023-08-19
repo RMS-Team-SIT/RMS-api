@@ -1,7 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema()
-export class RoomUser {
+export class RoomUser extends Document {
   _id: string;
 
   @Prop({ required: true })

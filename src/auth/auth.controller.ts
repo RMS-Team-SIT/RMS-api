@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signin.dto';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { SignInRoomUserDto } from './dto/signin-room-user.dto';
 
 @ApiTags('auth')
 @Controller('api/auth')
@@ -24,9 +25,9 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Req() req) {
-    return req.user;
+  @HttpCode(HttpStatus.OK)
+  @Post('signin')
+  signInWithRoomUser(@Body() signInRoomUserDto: SignInRoomUserDto) {
+    return this.authService.signIn(null);
   }
 }

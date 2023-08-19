@@ -1,7 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 @Schema()
-export class BillHistory {
+export class BillHistory extends Document {
   _id: string;
 
   @Prop({ required: true, default: Date.now() })

@@ -1,9 +1,10 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { RoomUser, RoomUserSchema } from './room-user.schemas';
 import { BillHistory, BillHistorySchema } from './bill.schemas';
+import { Document } from 'mongoose';
 
 @Schema()
-export class Room {
+export class Room extends Document {
   _id: string;
 
   @Prop({ required: true })
