@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { ResidentModule } from './resident/resident.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthGuard } from './auth/guard/auth.guard';
     UserModule,
     AuthModule,
     ResidentModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [
