@@ -8,11 +8,13 @@ import {
   Put,
   Delete,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schemas';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Public } from 'src/auth/decorator/public.decorator';
 
 @Controller('api/users')
 export class UserController {
@@ -25,6 +27,7 @@ export class UserController {
   }
 
   @Get()
+  @Public()
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
