@@ -10,6 +10,6 @@ export function logger(req: Request, res: Response, next: NextFunction) {
     query: req.query,
   });
   console.log(`----------------------------------------`);
-  
+
   next();
 }

@@ -8,14 +8,15 @@ import {
   Put,
   Delete,
   HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schemas';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller('api/users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

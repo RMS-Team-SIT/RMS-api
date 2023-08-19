@@ -9,6 +9,9 @@ import {
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schemas';
 import { CreateResidentDto } from './dtos/create-resident.dto';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('resident')
 @Controller('api/resident')
 export class ResidentController {
   constructor(private readonly residentService: ResidentService) {}

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { CreateRoomDto } from './create-room.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
