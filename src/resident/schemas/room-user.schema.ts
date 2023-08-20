@@ -23,7 +23,7 @@ export class RoomUser extends Document {
   @Prop({ required: true })
   phone: string;
 
-  @Prop({ required: true, default: '' })
+  @Prop({ default: null })
   profileImage: string;
 
   @Prop({ required: true, default: true })

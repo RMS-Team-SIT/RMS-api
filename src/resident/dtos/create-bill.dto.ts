@@ -11,7 +11,6 @@ import {
 export class CreateBillDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsDate()
   date: Date;
 
   @ApiProperty()

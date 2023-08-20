@@ -29,13 +29,13 @@ export class BillHistory extends Document {
   @Prop({ required: true })
   totalPrice: number;
 
-  @Prop({ required: true, default: '' })
+  @Prop({ default: null })
   paidEvidenceImage: string;
 
-  @Prop({ required: true, default: false })
+  @Prop({ default: false })
   isPaid: boolean;
 
-  @Prop({ required: true, default: undefined })
+  @Prop({ default: undefined })
   paidDate: Date;
 
   @Prop({ required: true, default: Date.now() })

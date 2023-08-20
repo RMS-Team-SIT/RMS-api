@@ -14,7 +14,7 @@ export class Announcement extends Document {
     @Prop({ required: true })
     description: string;
 
-    @Prop({ default: [process.env.DUMMY_IMG_URL] })
+    @Prop({ default: [null] })
     images: string[];
 
     @Prop({ required: true, default: Date.now() })

@@ -8,6 +8,7 @@ import {
 import { CreateRoomDto } from './create-room.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateResidentContactDto } from './create-resident-contact.dto';
 
 export class CreateResidentDto {
   @ApiProperty()
@@ -40,4 +41,8 @@ export class CreateResidentDto {
   @IsNotEmpty()
   @IsString()
   owner: string;
+
+  @ApiProperty()
+  @IsOptional()
+  contact: CreateResidentContactDto;
 }

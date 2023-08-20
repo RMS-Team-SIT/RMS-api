@@ -10,7 +10,7 @@ export class Room extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true, default: '' })
+  @Prop({ default: '' })
   description: string;
 
   @Prop({ required: true, default: 0 })

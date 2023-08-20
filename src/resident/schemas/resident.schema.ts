@@ -17,13 +17,13 @@ export class Resident extends Document {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ default: [process.env.DUMMY_IMG_URL] })
+  @Prop({ default: [null] })
   images: string[];
 
   @Prop({ type: [AnnouncementSchema], default: [] })
   announcements: Announcement[];
 
-  @Prop({ type: ResidentContactSchema, required: true})
+  @Prop({ type: ResidentContactSchema, default: undefined })
   contact: ResidentContact;
 
   @Prop({ required: true })

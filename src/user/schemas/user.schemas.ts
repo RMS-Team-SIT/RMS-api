@@ -17,13 +17,13 @@ export class User {
   @Prop({ required: true })
   phone: string;
 
-  @Prop({ default: process.env.DUMMY_IMG_URL })
+  @Prop({ default: null })
   profileImage: string;
 
-  @Prop()
+  @Prop({ default: null })
   resetPasswordToken: string;
 
-  @Prop()
+  @Prop({ default: null })
   resetPasswordExpires: Date;
 
   @Prop({ required: true, unique: true, index: true })
