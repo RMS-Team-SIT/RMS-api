@@ -25,10 +25,10 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   currentLightGauge: number;
 
-  @Prop({ type: [RoomUserSchema], default: undefined })
+  @Prop({ type: [RoomUserSchema], default: [] })
   roomUsers: RoomUser[];
 
-  @Prop({ type: [BillHistorySchema], default: undefined })
+  @Prop({ type: [BillHistorySchema], default: [] })
   billHistories: BillHistory[];
 
   @Prop({ required: true, default: Date.now() })

@@ -35,7 +35,7 @@ export class BillHistory extends Document {
   @Prop({ default: false })
   isPaid: boolean;
 
-  @Prop({ default: undefined })
+  @Prop({ default: null })
   paidDate: Date;
 
   @Prop({ required: true, default: Date.now() })

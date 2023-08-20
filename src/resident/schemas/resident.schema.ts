@@ -32,7 +32,7 @@ export class Resident extends Document {
   @Prop({ required: true })
   defaultLightPriceRate: number;
 
-  @Prop({ type: [RoomSchema], default: undefined })
+  @Prop({ type: [RoomSchema], default: [] })
   rooms: Room[];
 
   @Prop({ required: true, default: Date.now() })
