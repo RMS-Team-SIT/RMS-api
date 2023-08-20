@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Resident } from './schemas/resident.schemas';
+import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 
 @Injectable()

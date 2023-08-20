@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { RoomUser, RoomUserSchema } from './room-user.schemas';
-import { BillHistory, BillHistorySchema } from './bill.schemas';
+import { RoomUser, RoomUserSchema } from './room-user.schema';
+import { BillHistory, BillHistorySchema } from './bill.schema';
 import { Document } from 'mongoose';
 
 @Schema()

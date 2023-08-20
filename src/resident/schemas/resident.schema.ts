@@ -1,8 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
-import { Room, RoomSchema } from './room.schemas';
+import { Room, RoomSchema } from './room.schema';
 import { ResidentContact, ResidentContactSchema } from './resident-contact.schema';
+import { Announcement, AnnouncementSchema } from './anouncement.schema';
 @Schema()
 export class Resident extends Document {
   _id: string;
@@ -16,7 +17,13 @@ export class Resident extends Document {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ type: ResidentContactSchema, required: true })
+  @Prop({ default: [process.env.DUMMY_IMG_URL] })
+  images: string[];
+
+  @Prop({ type: [AnnouncementSchema], default: [] })
+  announcements: Announcement[];
+
+  @Prop({ type: ResidentContactSchema, required: true})
   contact: ResidentContact;
 
   @Prop({ required: true })

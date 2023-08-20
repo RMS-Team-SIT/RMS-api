@@ -17,8 +17,8 @@ export class User {
   @Prop({ required: true })
   phone: string;
 
-  @Prop({ default: '' })
-  profilePicture: string;
+  @Prop({ default: process.env.DUMMY_IMG_URL })
+  profileImage: string;
 
   @Prop()
   resetPasswordToken: string;

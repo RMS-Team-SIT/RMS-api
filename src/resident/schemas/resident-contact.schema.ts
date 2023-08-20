@@ -4,19 +4,19 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 export class ResidentContact extends Document {
     _id: string;
 
-    @Prop({ required: true, default: '' })
+    @Prop({ default: '' })
     facebook: string;
 
-    @Prop({ required: true, default: '' })
+    @Prop({ default: '' })
     line: string;
 
-    @Prop({ required: true, default: '' })
+    @Prop({ default: '' })
     phone: string;
 
-    @Prop({ required: true, default: '' })
+    @Prop({ default: '' })
     email: string;
 
-    @Prop({ required: true, default: '' })
+    @Prop({ default: '' })
     address: string;
 
     @Prop({ required: true, default: Date.now() })

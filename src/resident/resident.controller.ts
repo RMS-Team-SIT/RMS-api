@@ -7,7 +7,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
-import { Resident } from './schemas/resident.schemas';
+import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 
