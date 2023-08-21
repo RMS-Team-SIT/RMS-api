@@ -23,4 +23,5 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber('TH')
   phone: string;
+
 }

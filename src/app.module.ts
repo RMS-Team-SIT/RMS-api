@@ -7,6 +7,8 @@ import { ResidentModule } from './resident/resident.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { HealthModule } from './health/health.module';
+import { MailModule } from './mail/mail.module';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -19,6 +21,7 @@ import { HealthModule } from './health/health.module';
     AuthModule,
     ResidentModule,
     HealthModule,
+    MailModule,
   ],
   controllers: [],
   providers: [
@@ -28,4 +31,4 @@ import { HealthModule } from './health/health.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
