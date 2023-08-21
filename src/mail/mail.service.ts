@@ -18,11 +18,13 @@ export class MailService {
         await this.mailerService
             .sendMail({
                 to, // list of receivers
-                from: process.env.SENDER_EMAIL, // sender address
-                subject: 'Testing Nest MailerModule ✔', // Subject line
-                text: `welcome ${resetToken}`, // plaintext body
+                from: process.env.SENDER_EMAIL,
+                subject: 'Password reset for SmartResident account', // Subject line
+                text: `Please use the following link to reset your password: ${process.env.CLIENT_URL}/reset-password?token=${resetToken}\n\nPlease ignore this email if you did not request a password reset.\n\n\nSmartResident Team`, // plaintext body
             })
-            .then(() => { })
+            .then(() => {
+                console.log('Email sent successfully');
+            })
             .catch((err) => {
                 console.log(err);
             });
