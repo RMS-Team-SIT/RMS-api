@@ -18,7 +18,7 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
 
     if (!(await isPasswordMatch(signInDto.password, user.password))) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException({ message: 'Invalid credentials'});
     }
     const payload = { sub: user._id, user: user };
     return {

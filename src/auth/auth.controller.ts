@@ -13,8 +13,10 @@ import { SignInDto } from './dto/signin.dto';
 import { AuthGuard } from './guard/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { SignInRoomUserDto } from './dto/signin-room-user.dto';
+import { Public } from './decorator/public.decorator';
 
 @ApiTags('auth')
+@Public()
 @Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

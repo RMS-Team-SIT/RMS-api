@@ -8,6 +8,7 @@ import {
   Put,
   Delete,
   HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,11 +16,13 @@ import { User } from './schemas/user.schemas';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgetPasswordDto } from './dto/forget-password.dto';
 
 @ApiTags('users')
 @Controller('api/users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @Public()
@@ -35,13 +38,14 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':id')
+  @Get('/:id')
+  @Public()
   @HttpCode(HttpStatus.OK)
   findOne(@Req() request): Promise<User> {
     return this.userService.findOne(request.params.id);
   }
 
-  @Put(':id')
+  @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async update(
     @Req() request,
@@ -50,7 +54,7 @@ export class UserController {
     return this.userService.update(request.params.id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async delete(@Req() request): Promise<object> {
     const deletedUser = await this.userService.delete(request.params.id);
@@ -61,5 +65,17 @@ export class UserController {
     return {
       message: 'User deleted successfully',
     };
+  }
+
+  @Public()
+  @Post('forgot-password')
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto): Promise<object> {
+    return this.userService.forgetPassword(forgetPasswordDto);
+  }
+
+  @Public()
+  @Post('reset-password/:resetToken')
+  async resetPassword(@Req() req, @Body() resetPasswordDto: ResetPasswordDto): Promise<object> {
+    return this.userService.resetPassword(resetPasswordDto);
   }
 }
