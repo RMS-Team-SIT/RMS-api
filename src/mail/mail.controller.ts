@@ -5,7 +5,7 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { randomResetPasswordToken } from 'src/utils/random.utils';
 
 @Controller('mail')
-@ApiTags('mail')
+// @ApiTags('mail')
 export class MailController {
     constructor(private readonly mailService: MailService) { }
 

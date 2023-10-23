@@ -1,0 +1,39 @@
+Resident:
+  _id: string
+  owner:
+    type: ObjectId
+    ref: user
+  name:
+    required: true
+    type: string
+  description:
+    required: true
+    type: string
+  images:
+    default:
+      - null
+    type: string[]
+  announcements:
+    type: Announcement
+    default: []
+  contact:
+    type: ResidentContact
+    default: null
+  defaultWaterPriceRate:
+    required: true
+    type: number
+  defaultLightPriceRate:
+    required: true
+    type: number
+  rooms:
+    type: Room
+    default: []
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date
+

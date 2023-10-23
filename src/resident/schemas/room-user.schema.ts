@@ -29,6 +29,9 @@ export class RoomUser extends Document {
   @Prop({ required: true, default: true })
   isActive: boolean;
 
+  @Prop({ required: false, default: '' })
+  lineNotifyToken: string;
+
   @Prop({ required: true, default: Date.now() })
   created_at: Date;
 

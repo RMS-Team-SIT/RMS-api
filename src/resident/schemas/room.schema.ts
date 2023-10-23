@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { RoomUser, RoomUserSchema } from './room-user.schema';
-import { BillHistory, BillHistorySchema } from './bill.schema';
+import { BillHistory, BillHistorySchema } from './bill-history.schema';
 import { Document } from 'mongoose';
 
 @Schema()
@@ -12,6 +12,12 @@ export class Room extends Document {
 
   @Prop({ default: '' })
   description: string;
+
+  @Prop({ required: true, default: false })
+  isUseDefaultWaterPriceRate: boolean;
+
+  @Prop({ required: true, default: false })
+  isUseDefaultLightPriceRate: boolean;
 
   @Prop({ required: true, default: 0 })
   waterPriceRate: number;

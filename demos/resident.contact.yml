@@ -1,0 +1,26 @@
+ResidentContact:
+  _id: string
+  facebook:
+    default: ""
+    type: string
+  line:
+    default: ""
+    type: string
+  phone:
+    default: ""
+    type: string
+  email:
+    default: ""
+    type: string
+  address:
+    default: ""
+    type: string
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date
+

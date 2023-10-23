@@ -9,6 +9,9 @@ import { AuthGuard } from './auth/guard/auth.guard';
 import { HealthModule } from './health/health.module';
 import { MailModule } from './mail/mail.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { LineController } from './line/line.controller';
+import { LineService } from './line/line.service';
+import { LineModule } from './line/line.module';
 
 @Module({
   imports: [
@@ -16,19 +19,21 @@ import { MailerModule } from '@nestjs-modules/mailer';
       isGlobal: true,
       // envFilePath: '.dev.env',
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     UserModule,
     AuthModule,
     ResidentModule,
     HealthModule,
     MailModule,
+    LineModule,
   ],
-  controllers: [],
+  controllers: [LineController],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    LineService,
   ],
 })
 export class AppModule { }
