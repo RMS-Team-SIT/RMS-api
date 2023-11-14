@@ -28,7 +28,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('signin')
+  @Post('/signinwithroomuser')
   signInWithRoomUser(@Body() signInRoomUserDto: SignInRoomUserDto) {
     return this.authService.signIn(null);
   }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsNumber, IsPhoneNumber } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsPhoneNumber, IsStrongPassword, minLength } from 'class-validator';
+import { PASSWORD_RULE } from './password.rule';
 
 export class CreateUserDto {
   @ApiProperty()
@@ -17,6 +18,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsStrongPassword(PASSWORD_RULE)
   password: string;
 
   @ApiProperty()
