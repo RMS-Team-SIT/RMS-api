@@ -24,7 +24,7 @@ import { ForgetPasswordDto } from './dto/forget-password.dto';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Post()
+  @Post('/signup')
   @Public()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto) {

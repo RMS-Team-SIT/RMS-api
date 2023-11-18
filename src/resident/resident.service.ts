@@ -19,12 +19,27 @@ export class ResidentService {
     });
     return createdResident.save();
   }
-
+ 
   async findAll(): Promise<Resident[]> {
-    return this.residentModel.find().exec();
+    return this.residentModel
+      .find()
+      .select({
+        __v: 0, created_at: 0, updated_at: 0,
+        "contact._id": 0,
+        "contact.created_at": 0,
+        "contact.updated_at": 0,
+      })
+      .exec();
   }
 
   async findOne(id: string): Promise<Resident> {
-    return this.residentModel.findById(id).exec();
+    return this.residentModel
+      .findById(id)
+      .select({
+        __v: 0, created_at: 0, updated_at: 0,
+        "contact._id": 0,
+        "contact.created_at": 0,
+        "contact.updated_at": 0,
+      }).exec();
   }
 }

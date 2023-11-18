@@ -3,5 +3,4 @@ export const PASSWORD_RULE = {
     minLowercase: 1,
     minUppercase: 1,
     minNumbers: 1,
-    minSymbols: 1,
 }

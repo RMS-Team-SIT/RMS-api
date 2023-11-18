@@ -6,10 +6,15 @@ import {
   Body,
   HttpStatus,
   Req,
+  Put,
+  Delete,
+  Param,
+  Res,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
+import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 
@@ -23,7 +28,7 @@ export class ResidentController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createResidentDto: CreateResidentDto) {
     console.log('createResidentDto', createResidentDto);
-    
+
     return await this.residentService.create(createResidentDto);
   }
 
@@ -33,7 +38,22 @@ export class ResidentController {
   }
 
   @Get(':id')
-  async findOne(@Req() req): Promise<Resident> {
-    return await this.residentService.findOne(req.params.id);
+  async findOne(@Param('id') id: string): Promise<Resident> {
+    return await this.residentService.findOne(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateResidentDto: UpdateResidentDto,
+  ): Promise<Resident> {
+    return new Resident();
+    // return await this.residentService.update(id, updateResidentDto);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string): Promise<Resident> {
+    return new Resident();
+    // return await this.residentService.delete(id);
   }
 }
