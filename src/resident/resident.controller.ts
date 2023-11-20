@@ -26,13 +26,13 @@ export class ResidentController {
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createResidentDto: CreateResidentDto, @Req() req) {
-    const userId = req.user._id;
+    const userId = req.user.id;
     return await this.residentService.create(userId, createResidentDto);
   }
 
   @Get('/my')
   async findMyResident(@Req() req): Promise<Resident[]> {
-    const userId = req.user._id;
+    const userId = req.user.id;
     console.log('userId', userId);
     
     return await this.residentService.findMyResident(userId);

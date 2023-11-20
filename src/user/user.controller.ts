@@ -40,33 +40,31 @@ export class UserController {
 
   @Get('/me')
   @HttpCode(HttpStatus.OK)
-  async findMe(@Req() request): Promise<User> {
-    const userId = request.user._id;
-    console.log('req', request);
+  async findMe(@Req() req): Promise<User> {
+    const userId = req.user.id;
     let user = await this.userService.findOne(userId);
-    console.log('user', user);
     return user;
   }
 
   @Get('/:id')
   @HttpCode(HttpStatus.OK)
-  findOne(@Req() request): Promise<User> {
-    return this.userService.findOne(request.params.id);
+  findOne(@Req() req): Promise<User> {
+    return this.userService.findOne(req.params.id);
   }
 
   @Put('/:id')
   @HttpCode(HttpStatus.OK)
   async update(
-    @Req() request,
+    @Req() req,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.update(request.params.id, updateUserDto);
+    return this.userService.update(req.params.id, updateUserDto);
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async delete(@Req() request): Promise<object> {
-    const deletedUser = await this.userService.delete(request.params.id);
+  async delete(@Req() req): Promise<object> {
+    const deletedUser = await this.userService.delete(req.params.id);
 
     if (!deletedUser) {
       return { message: 'User not found' };
