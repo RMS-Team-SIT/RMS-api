@@ -14,7 +14,7 @@ export class Announcement extends Document {
     @Prop({ required: true })
     description: string;
 
-    @Prop({ default: [null] })
+    @Prop({ default: [] })
     images: string[];
 
     @Prop({ required: true, default: Date.now() })

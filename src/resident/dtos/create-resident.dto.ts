@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -23,6 +24,16 @@ export class CreateResidentDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
+  address: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  images: string[];
+
+  @ApiProperty()
+  @IsNotEmpty()
   @IsNumber()
   defaultWaterPriceRate: number;
 
@@ -36,11 +47,6 @@ export class CreateResidentDto {
   @Type(() => CreateRoomDto)
   @ValidateNested()
   rooms: CreateRoomDto[];
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  owner: string;
 
   @ApiProperty()
   @IsOptional()

@@ -19,17 +19,23 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 
 @ApiTags('resident')
-@Controller('api/resident')
-@Public()
+@Controller('resident')
 export class ResidentController {
   constructor(private readonly residentService: ResidentService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createResidentDto: CreateResidentDto) {
-    console.log('createResidentDto', createResidentDto);
+  async create(@Body() createResidentDto: CreateResidentDto, @Req() req) {
+    const userId = req.user._id;
+    return await this.residentService.create(userId, createResidentDto);
+  }
 
-    return await this.residentService.create(createResidentDto);
+  @Get('/my')
+  async findMyResident(@Req() req): Promise<Resident[]> {
+    const userId = req.user._id;
+    console.log('userId', userId);
+    
+    return await this.residentService.findMyResident(userId);
   }
 
   @Get()

@@ -3,7 +3,7 @@ import { ApiProperty, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { LineService } from './line.service';
 
-@Controller('api/line')
+@Controller('line')
 @ApiTags('line')
 export class LineController {
     constructor(

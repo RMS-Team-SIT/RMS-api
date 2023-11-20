@@ -25,9 +25,4 @@ export class CreateResidentContactDto {
   @IsOptional()
   @IsString()
   email: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  address: string;
 }

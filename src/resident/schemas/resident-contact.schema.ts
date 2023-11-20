@@ -16,9 +16,6 @@ export class ResidentContact extends Document {
     @Prop({ default: '' })
     email: string;
 
-    @Prop({ default: '' })
-    address: string;
-
     @Prop({ required: true, default: Date.now() })
     created_at: Date;
 

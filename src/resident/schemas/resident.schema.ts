@@ -17,7 +17,7 @@ export class Resident extends Document {
   @Prop({ required: true })
   description: string;
 
-  @Prop({ default: [null] })
+  @Prop({ default: [] })
   images: string[];
 
   @Prop({ type: [AnnouncementSchema], default: [] })
@@ -25,6 +25,9 @@ export class Resident extends Document {
 
   @Prop({ type: ResidentContactSchema, default: undefined })
   contact: ResidentContact;
+
+  @Prop({ default: '' })
+  address: string;
 
   @Prop({ required: true })
   defaultWaterPriceRate: number;
