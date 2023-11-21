@@ -12,6 +12,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { LineController } from './line/line.controller';
 import { LineService } from './line/line.service';
 import { LineModule } from './line/line.module';
+import { RentalModule } from './rental/rental.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { LineModule } from './line/line.module';
     HealthModule,
     MailModule,
     LineModule,
+    RentalModule,
   ],
   controllers: [LineController],
   providers: [
