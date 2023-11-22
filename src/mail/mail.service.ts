@@ -24,11 +24,11 @@ export class MailService {
             })
             .then(() => {
                 console.info('Email sent successfully');
-                return { result: true, message: 'Email sent successfully', errorMsg: null };
+                return { result: true, message: 'Email sent successfully', errorMessage: null };
             })
             .catch((err) => {
                 console.warn(err);
-                return { result: true, message: 'Error Occured', errorMsg: err };
+                return { result: true, message: 'Error Occured', errorMessage: err };
             });
     }
 

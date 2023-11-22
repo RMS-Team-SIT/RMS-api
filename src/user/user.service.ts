@@ -19,7 +19,6 @@ export class UserService {
     private userModel: Model<User>,
     private readonly mailService: MailService,
   ) {
-    console.log('userModel', userModel);
   }
 
   async findAll(): Promise<User[]> {

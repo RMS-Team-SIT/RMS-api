@@ -10,7 +10,6 @@ export class ResidentService {
     @InjectModel(Resident.name)
     private residentModel: Model<Resident>,
   ) {
-    console.log('userModel', residentModel);
   }
 
   async create(userId: string, createResidentDto: CreateResidentDto): Promise<Resident> {
