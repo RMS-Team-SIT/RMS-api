@@ -91,13 +91,11 @@ export class UserService {
     }).exec();
 
     // send email
-    this.mailService.sendResetPassword({
+    let sendMailResult = await this.mailService.sendResetPassword({
       to: updatedUser.email,
       resetToken: resetPasswordToken,
     });
-    return {
-      message: 'Email sent successfully',
-    };
+    return sendMailResult;
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<object> {

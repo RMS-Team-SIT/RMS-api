@@ -63,9 +63,8 @@ export class UserController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
-  async delete(@Req() req): Promise<object> {
+  async delete(@Req() req): Promise<{ message: string }> {
     const deletedUser = await this.userService.delete(req.params.id);
-
     if (!deletedUser) {
       return { message: 'User not found' };
     }
@@ -86,5 +85,5 @@ export class UserController {
     return this.userService.resetPassword(resetPasswordDto);
   }
 
-  
+
 }
