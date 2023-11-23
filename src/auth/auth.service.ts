@@ -20,11 +20,11 @@ export class AuthService {
     if (!(await isPasswordMatch(signInDto.password, user.password))) {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
-    
-    const payload = { sub: user._id, id: user._id, user: { id: user._id, email: user.email, firstname: user.firstname, lastname: user.lastname } };
+
+    const payload = { sub: user._id, id: user._id };
     return {
       access_token: await this.jwtService.signAsync(payload),
-      user: { id: user._id, email: user.email, firstname: user.firstname, lastname: user.lastname }
+      payload,
     };
   }
 

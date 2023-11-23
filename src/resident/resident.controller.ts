@@ -11,6 +11,7 @@ import {
   Param,
   Res,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schema';
@@ -34,7 +35,12 @@ export class ResidentController {
   @Get('/my')
   async findMyResident(@Req() req): Promise<Resident[]> {
     const userId = req.user.id;
-    return await this.residentService.findMyResident(userId);
+    try {
+      return await this.residentService.findMyResident(userId);
+    } catch (err) {
+      console.log(err);
+      throw new NotFoundException('Resident not found');
+    }
   }
 
   @Get()
@@ -44,7 +50,12 @@ export class ResidentController {
 
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Resident> {
-    return await this.residentService.findOne(id);
+    try {
+      return await this.residentService.findOne(id);
+    } catch (error) {
+      console.log(error);
+      throw new NotFoundException('Resident not found');
+    }
   }
 
   @Put(':id')
@@ -55,6 +66,9 @@ export class ResidentController {
   ): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
     if (resident.owner._id !== userId) {
       throw new ForbiddenException();
     }
@@ -65,6 +79,9 @@ export class ResidentController {
   async delete(@Req() req, @Param('id') id: string): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
     if (resident.owner._id !== userId) {
       throw new ForbiddenException();
     }
