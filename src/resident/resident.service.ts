@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 
@@ -8,7 +8,7 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 export class ResidentService {
   constructor(
     @InjectModel(Resident.name)
-    private residentModel: Model<Resident>,
+    private readonly residentModel: Model<Resident>,
   ) {
   }
 
@@ -53,5 +53,23 @@ export class ResidentService {
         "contact.created_at": 0,
         "contact.updated_at": 0,
       }).exec();
+  }
+
+  async update(id: string, createResidentDto: CreateResidentDto): Promise<Resident> {
+    return this.residentModel
+      .findByIdAndUpdate(id,
+        {
+          ...createResidentDto,
+          updated_at: Date.now()
+        }, { new: true })
+      .exec();
+  }
+
+  async delete(id: string): Promise<Resident> {
+    return this.residentModel.findByIdAndDelete(id).exec();
+  }
+
+  private hideFields(fields: string[]): object {
+    return fields.map(field => ({ [field]: 0 }));
   }
 }

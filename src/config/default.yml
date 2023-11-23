@@ -1,0 +1,10 @@
+# database:
+#   host: ${MONGO_HOST}
+#   port: ${MONGO_PORT}
+#   username: ${MONGO_USERNAME}
+#   password: ${MONGO_PASSWORD}
+#   database: ${MONGO_DB}
+#   uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}?authSource=admin
+
+database:
+  uri: mongodb://root:9B8uDj67@localhost:27017/RMS?authSource=admin
