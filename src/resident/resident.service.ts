@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
+import { UpdateResidentDto } from './dtos/update-resident.dto';
 
 @Injectable()
 export class ResidentService {
@@ -55,11 +56,11 @@ export class ResidentService {
       }).exec();
   }
 
-  async update(id: string, createResidentDto: CreateResidentDto): Promise<Resident> {
+  async update(id: string, dto: UpdateResidentDto): Promise<Resident> {
     return this.residentModel
       .findByIdAndUpdate(id,
         {
-          ...createResidentDto,
+          ...dto,
           updated_at: Date.now()
         }, { new: true })
       .exec();
@@ -69,7 +70,7 @@ export class ResidentService {
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
-  private hideFields(fields: string[]): object {
-    return fields.map(field => ({ [field]: 0 }));
-  }
+  // private hideFields(fields: string[]): object {
+  //   return fields.map(field => ({ [field]: 0 }));
+  // }
 }

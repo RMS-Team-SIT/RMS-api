@@ -10,6 +10,7 @@ import {
   Delete,
   Param,
   Res,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schema';
@@ -33,8 +34,6 @@ export class ResidentController {
   @Get('/my')
   async findMyResident(@Req() req): Promise<Resident[]> {
     const userId = req.user.id;
-    console.log('userId', userId);
-    
     return await this.residentService.findMyResident(userId);
   }
 
@@ -50,16 +49,25 @@ export class ResidentController {
 
   @Put(':id')
   async update(
+    @Req() req,
     @Param('id') id: string,
     @Body() updateResidentDto: UpdateResidentDto,
   ): Promise<Resident> {
-    return new Resident();
-    // return await this.residentService.update(id, updateResidentDto);
+    const userId = req.user.id;
+    const resident = await this.residentService.findOne(id);
+    if (resident.owner._id !== userId) {
+      throw new ForbiddenException();
+    }
+    return await this.residentService.update(id, updateResidentDto);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string): Promise<Resident> {
-    return new Resident();
-    // return await this.residentService.delete(id);
+  async delete(@Req() req, @Param('id') id: string): Promise<Resident> {
+    const userId = req.user.id;
+    const resident = await this.residentService.findOne(id);
+    if (resident.owner._id !== userId) {
+      throw new ForbiddenException();
+    }
+    return await this.residentService.delete(id);
   }
 }
