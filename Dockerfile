@@ -1,10 +1,19 @@
-# Set nginx base image
-FROM node:18
-LABEL maintainer="Siraom15"
-WORKDIR  /app
-COPY  ./dist ./dist
-COPY package.json .
-COPY package-lock.json .
-RUN  npm ci --only=production --ignore-scripts
+# Stage 1: Build the application
+FROM node:lts-alpine as build-stage
+
+WORKDIR /app
+
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application files
+COPY . .
+
+# Build the application
+RUN npm run build
+
 EXPOSE 3000
-CMD ["node", "dist/main"]
+
+CMD ["node", "dist/main.js"]
