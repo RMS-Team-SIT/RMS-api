@@ -9,6 +9,7 @@ import {
   Delete,
   HttpStatus,
   HttpException,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -58,12 +59,28 @@ export class UserController {
     @Req() req,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
-    return this.userService.update(req.params.id, updateUserDto);
+    const isForbidden = req.user.id !== req.params.id;
+    if (isForbidden) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
+    if (updateUserDto.oldPassword && updateUserDto.newPassword) {
+      return this.userService.updatePassword(req.params.id, updateUserDto);
+    } else {
+      delete updateUserDto.oldPassword;
+      delete updateUserDto.newPassword;
+      return this.userService.update(req.params.id, updateUserDto);
+    }
   }
 
   @Delete('/:id')
   @HttpCode(HttpStatus.OK)
   async delete(@Req() req): Promise<{ message: string }> {
+    const isForbidden = req.user.id !== req.params.id;
+    if (isForbidden) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
     const deletedUser = await this.userService.delete(req.params.id);
     if (!deletedUser) {
       return { message: 'User not found' };
@@ -74,16 +91,20 @@ export class UserController {
   }
 
   @Public()
-  @Post('forgot-password')
+  @Post('forget-password')
+  @HttpCode(HttpStatus.OK)
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto): Promise<object> {
     return this.userService.forgetPassword(forgetPasswordDto);
   }
 
   @Public()
   @Post('reset-password/:resetToken')
-  async resetPassword(@Req() req, @Body() resetPasswordDto: ResetPasswordDto): Promise<object> {
-    return this.userService.resetPassword(resetPasswordDto);
+  @HttpCode(HttpStatus.OK)
+  async resetPassword(
+    @Req() req,
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Param('resetToken') resetToken: string): Promise<object> {
+
+    return this.userService.resetPassword(resetToken, resetPasswordDto);
   }
-
-
 }

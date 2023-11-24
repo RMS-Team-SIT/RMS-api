@@ -1,13 +1,11 @@
 import { IsNotEmpty, IsString, IsStrongPassword } from "class-validator";
 import { PASSWORD_RULE } from "./password.rule";
+import { ApiProperty } from "@nestjs/swagger";
 
 export class ResetPasswordDto {
-    @IsNotEmpty()
-    @IsString()
-    resetPasswordToken: string;
-
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     @IsStrongPassword(PASSWORD_RULE)
-    newPassword: string;
+    password: string;
 }

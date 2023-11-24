@@ -16,13 +16,14 @@ import { authorizeUser } from 'src/middleware/auth.middleware';
   providers: [UserService],
   exports: [UserService],
 })
-export class UserModule implements NestModule{
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(authorizeUser)
-      .forRoutes(
-        { path: 'users/:id', method: RequestMethod.PUT },
-        { path: 'users/:id', method: RequestMethod.DELETE },
-      );
-  }
- }
+export class UserModule {}
+// export class UserModule implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply(authorizeUser)
+//       .forRoutes(
+//         { path: 'users/:id', method: RequestMethod.PUT },
+//         { path: 'users/:id', method: RequestMethod.DELETE },
+//       );
+//   }
+// }

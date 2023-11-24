@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schemas';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { hashPassword } from 'src/utils/password.utils';
+import { hashPassword, isPasswordMatch } from 'src/utils/password.utils';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import { ResetPasswordDto } from './dto/reset-password.dto';
@@ -64,11 +64,43 @@ export class UserService {
       .findByIdAndUpdate(
         id,
         { ...updateUserDto, updated_at: Date.now() },
-        { new: false },
+        { new: true },
       )
+      .select({
+        password: 0,
+        __v: 0,
+        resetPasswordToken: 0,
+        resetPasswordExpires: 0,
+      })
       .exec();
     return updateUser;
   }
+
+  async updatePassword(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    const isMatch = await isPasswordMatch(updateUserDto.oldPassword, user.password);
+    if (!isMatch) {
+      throw new HttpException('Old password is not correct', HttpStatus.BAD_REQUEST);
+    }
+    const password = await hashPassword(updateUserDto.newPassword);
+    const updateUser = await this.userModel
+      .findByIdAndUpdate(id, {
+        password,
+        updated_at: Date.now(),
+      }, { new: true })
+      .select({
+        password: 0,
+        __v: 0,
+        resetPasswordToken: 0,
+        resetPasswordExpires: 0,
+      })
+      .exec();
+    return updateUser;
+  }
+
 
   async delete(id: string): Promise<User> {
     const deleteUser = this.userModel.findByIdAndDelete(id).exec();
@@ -97,12 +129,17 @@ export class UserService {
     return sendMailResult;
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<object> {
-    const user = await this.userModel.findOne({ resetPasswordToken: resetPasswordDto.resetPasswordToken, resetPasswordExpires: { $gt: Date.now() } }).exec();
+  async resetPassword(token: string, resetPasswordDto: ResetPasswordDto): Promise<object> {
+    const user = await this.userModel
+      .findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() }
+      })
+      .exec();
     if (!user) {
       throw new HttpException('Reset token is invalid', HttpStatus.BAD_REQUEST);
     }
-    const password = await hashPassword(resetPasswordDto.newPassword);
+    const password = await hashPassword(resetPasswordDto.password);
     await this.userModel.findByIdAndUpdate(user._id, {
       password,
       resetPasswordToken: null,
