@@ -19,6 +19,7 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
+import { log } from 'console';
 
 @ApiTags('resident')
 @Controller('resident')
@@ -66,10 +67,10 @@ export class ResidentController {
   ): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
-    if (!resident) {
-      throw new NotFoundException('Resident not found');
-    }
-    if (resident.owner._id !== userId) {
+    
+    await this.checkResidentOwnership(userId, resident);
+    
+    if (resident.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException();
     }
     return await this.residentService.update(id, updateResidentDto);
@@ -79,12 +80,15 @@ export class ResidentController {
   async delete(@Req() req, @Param('id') id: string): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
-    if (!resident) {
-      throw new NotFoundException('Resident not found');
-    }
-    if (resident.owner._id !== userId) {
+
+    await this.checkResidentOwnership(userId, resident);
+
+    return await this.residentService.delete(id);
+  }
+
+  private async checkResidentOwnership(userId: string, resident: Resident) {
+    if (!resident || resident.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException();
     }
-    return await this.residentService.delete(id);
   }
 }
