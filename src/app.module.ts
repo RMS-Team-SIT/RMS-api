@@ -8,17 +8,19 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { HealthModule } from './health/health.module';
 import { MailModule } from './mail/mail.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { LineController } from './line/line.controller';
 import { LineService } from './line/line.service';
 import { LineModule } from './line/line.module';
 import { RentalModule } from './rental/rental.module';
 
+const ENV = process.env.NODE_ENV;
+console.log(`ENV: ${ENV}`);
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      // envFilePath: '.dev.env',
+      envFilePath: `./env/.env.${ENV || 'dev'}`,
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     AuthModule,
