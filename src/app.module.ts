@@ -14,13 +14,12 @@ import { LineModule } from './line/line.module';
 import { RentalModule } from './rental/rental.module';
 
 const ENV = process.env.NODE_ENV;
-console.log(`ENV: ${ENV}`);
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `./env/.env.${ENV || 'dev'}`,
+      envFilePath: `./env/.env.${ENV || 'development'}`,
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     AuthModule,

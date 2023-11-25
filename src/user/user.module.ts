@@ -3,9 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schemas';
-import { MailService } from 'src/mail/mail.service';
 import { MailModule } from 'src/mail/mail.module';
-import { authorizeUser } from 'src/middleware/auth.middleware';
 
 @Module({
   imports: [
@@ -17,13 +15,3 @@ import { authorizeUser } from 'src/middleware/auth.middleware';
   exports: [UserService],
 })
 export class UserModule {}
-// export class UserModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(authorizeUser)
-//       .forRoutes(
-//         { path: 'users/:id', method: RequestMethod.PUT },
-//         { path: 'users/:id', method: RequestMethod.DELETE },
-//       );
-//   }
-// }

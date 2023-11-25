@@ -20,6 +20,8 @@ export class Rental extends Document {
     @Prop({ required: true })
     phone: string;
 
+    
+
     @Prop({ default: true })
     isActive: boolean;
 

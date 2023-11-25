@@ -22,6 +22,7 @@ export class CreateRentalDto{
     @IsString()
     @ApiProperty()
     phone: string;
+    
 
     @IsString()
     @ApiProperty()

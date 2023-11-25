@@ -31,10 +31,12 @@ async function bootstrap() {
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     app.use(helmet());
-
     const port = process.env.PORT || 3000;
     await app.listen(port);
+    console.log(`Environment : ${process.env.NODE_ENV}`);
+    console.log(`Environment : ${process.env.TEST_ENV}`);
     console.log(`Application is running on port : ${port}`);
+    console.log(`Swagger is running on : /${process.env.OPENAPI_PATH}`);
   } catch (error) {
     console.error('Error during application startup:', error);
     process.exit(1);
