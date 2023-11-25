@@ -1,8 +1,7 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
 
 export class RentailFile extends Document {
+  _id: string;
 
-    _id: string;
-
-    fileName: string;
+  fileName: string;
 }

@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsNumber, IsPhoneNumber, IsStrongPassword, minLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsPhoneNumber,
+  IsStrongPassword,
+  minLength,
+} from 'class-validator';
 import { PASSWORD_RULE } from './password.rule';
 
 export class CreateUserDto {
@@ -25,5 +32,4 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber('TH')
   phone: string;
-
 }

@@ -7,15 +7,14 @@ import { randomResetPasswordToken } from 'src/utils/random.utils';
 @Controller('mail')
 // @ApiTags('mail')
 export class MailController {
-    constructor(private readonly mailService: MailService) { }
+  constructor(private readonly mailService: MailService) {}
 
-    @Public()
-    @Post('send-reset-password')
-    public sendResetPassword(): void {
-        this.mailService.sendResetPassword({
-            to: 'siriwatjaiyungyuen@gmail.com',
-            resetToken: randomResetPasswordToken(),
-        }
-        )
-    }
+  @Public()
+  @Post('send-reset-password')
+  public sendResetPassword(): void {
+    this.mailService.sendResetPassword({
+      to: 'siriwatjaiyungyuen@gmail.com',
+      resetToken: randomResetPasswordToken(),
+    });
+  }
 }

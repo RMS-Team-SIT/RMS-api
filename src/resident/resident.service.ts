@@ -10,10 +10,12 @@ export class ResidentService {
   constructor(
     @InjectModel(Resident.name)
     private readonly residentModel: Model<Resident>,
-  ) {
-  }
+  ) {}
 
-  async create(userId: string, createResidentDto: CreateResidentDto): Promise<Resident> {
+  async create(
+    userId: string,
+    createResidentDto: CreateResidentDto,
+  ): Promise<Resident> {
     const createdResident = new this.residentModel({
       ...createResidentDto,
       owner: userId,
@@ -25,10 +27,12 @@ export class ResidentService {
     return this.residentModel
       .find({ owner: userId })
       .select({
-        __v: 0, created_at: 0, updated_at: 0,
-        "contact._id": 0,
-        "contact.created_at": 0,
-        "contact.updated_at": 0,
+        __v: 0,
+        created_at: 0,
+        updated_at: 0,
+        'contact._id': 0,
+        'contact.created_at': 0,
+        'contact.updated_at': 0,
       })
       .exec();
   }
@@ -37,10 +41,12 @@ export class ResidentService {
     return this.residentModel
       .find()
       .select({
-        __v: 0, created_at: 0, updated_at: 0,
-        "contact._id": 0,
-        "contact.created_at": 0,
-        "contact.updated_at": 0,
+        __v: 0,
+        created_at: 0,
+        updated_at: 0,
+        'contact._id': 0,
+        'contact.created_at': 0,
+        'contact.updated_at': 0,
       })
       .exec();
   }
@@ -49,20 +55,26 @@ export class ResidentService {
     return this.residentModel
       .findById(id)
       .select({
-        __v: 0, created_at: 0, updated_at: 0,
-        "contact._id": 0,
-        "contact.created_at": 0,
-        "contact.updated_at": 0,
-      }).exec();
+        __v: 0,
+        created_at: 0,
+        updated_at: 0,
+        'contact._id': 0,
+        'contact.created_at': 0,
+        'contact.updated_at': 0,
+      })
+      .exec();
   }
 
   async update(id: string, dto: UpdateResidentDto): Promise<Resident> {
     return this.residentModel
-      .findByIdAndUpdate(id,
+      .findByIdAndUpdate(
+        id,
         {
           ...dto,
-          updated_at: Date.now()
-        }, { new: true })
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
       .exec();
   }
 

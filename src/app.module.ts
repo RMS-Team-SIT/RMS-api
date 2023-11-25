@@ -39,4 +39,4 @@ const ENV = process.env.NODE_ENV;
     LineService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

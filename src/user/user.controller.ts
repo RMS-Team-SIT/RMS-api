@@ -23,7 +23,7 @@ import { ForgetPasswordDto } from './dto/forget-password.dto';
 @ApiTags('users')
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/signup')
   @Public()
@@ -43,7 +43,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async findMe(@Req() req): Promise<User> {
     const userId = req.user.id;
-    let user = await this.userService.findOne(userId);
+    const user = await this.userService.findOne(userId);
     return user;
   }
 
@@ -93,7 +93,9 @@ export class UserController {
   @Public()
   @Post('forget-password')
   @HttpCode(HttpStatus.OK)
-  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto): Promise<object> {
+  async forgetPassword(
+    @Body() forgetPasswordDto: ForgetPasswordDto,
+  ): Promise<object> {
     return this.userService.forgetPassword(forgetPasswordDto);
   }
 
@@ -103,8 +105,8 @@ export class UserController {
   async resetPassword(
     @Req() req,
     @Body() resetPasswordDto: ResetPasswordDto,
-    @Param('resetToken') resetToken: string): Promise<object> {
-
+    @Param('resetToken') resetToken: string,
+  ): Promise<object> {
     return this.userService.resetPassword(resetToken, resetPasswordDto);
   }
 }

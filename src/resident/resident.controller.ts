@@ -24,7 +24,7 @@ import { log } from 'console';
 @ApiTags('resident')
 @Controller('resident')
 export class ResidentController {
-  constructor(private readonly residentService: ResidentService) { }
+  constructor(private readonly residentService: ResidentService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -67,9 +67,9 @@ export class ResidentController {
   ): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
-    
+
     await this.checkResidentOwnership(userId, resident);
-    
+
     if (resident.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException();
     }

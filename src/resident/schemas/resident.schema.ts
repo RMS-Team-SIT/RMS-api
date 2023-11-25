@@ -2,7 +2,10 @@ import mongoose, { Document } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
 import { Room, RoomSchema } from './room.schema';
-import { ResidentContact, ResidentContactSchema } from './resident-contact.schema';
+import {
+  ResidentContact,
+  ResidentContactSchema,
+} from './resident-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 @Schema()
 export class Resident extends Document {

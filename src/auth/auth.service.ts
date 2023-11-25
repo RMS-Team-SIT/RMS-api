@@ -10,12 +10,11 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signIn(signInDto: SignInDto): Promise<any> {
     const user = await this.usersService.findByEmail(signInDto.email);
-    if (!user)
-      throw new UnauthorizedException({ message: 'Email Not Found' });
+    if (!user) throw new UnauthorizedException({ message: 'Email Not Found' });
 
     if (!(await isPasswordMatch(signInDto.password, user.password))) {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
@@ -27,6 +26,4 @@ export class AuthService {
       payload,
     };
   }
-
-
 }

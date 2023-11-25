@@ -18,7 +18,9 @@ async function bootstrap() {
     app.use(logger);
 
     // Global pipe validation (whitelist = , transform = )
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+    app.useGlobalPipes(
+      new ValidationPipe({ whitelist: true, transform: true }),
+    );
 
     // swagger
     configureSwagger(app);
@@ -41,7 +43,6 @@ async function bootstrap() {
     console.error('Error during application startup:', error);
     process.exit(1);
   }
-
 }
 
 function configureSwagger(app: NestExpressApplication) {

@@ -18,25 +18,30 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailService: MailService,
-  ) {
-  }
+  ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().select({
-      password: 0,
-      __v: 0,
-      resetPasswordToken: 0,
-      resetPasswordExpires: 0,
-    }).exec();
+    return this.userModel
+      .find()
+      .select({
+        password: 0,
+        __v: 0,
+        resetPasswordToken: 0,
+        resetPasswordExpires: 0,
+      })
+      .exec();
   }
 
   async findOne(id: string): Promise<User> {
-    return this.userModel.findById(id).select({
-      password: 0,
-      __v: 0,
-      resetPasswordToken: 0,
-      resetPasswordExpires: 0,
-    }).exec();
+    return this.userModel
+      .findById(id)
+      .select({
+        password: 0,
+        __v: 0,
+        resetPasswordToken: 0,
+        resetPasswordExpires: 0,
+      })
+      .exec();
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -49,7 +54,10 @@ export class UserService {
     });
     if (isDuplicateEmail) {
       const errors = { username: 'Email must be unique.' };
-      throw new HttpException({ message: 'Input data validation failed', errors }, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const createdUser = new this.userModel({
@@ -76,21 +84,34 @@ export class UserService {
     return updateUser;
   }
 
-  async updatePassword(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async updatePassword(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    const isMatch = await isPasswordMatch(updateUserDto.oldPassword, user.password);
+    const isMatch = await isPasswordMatch(
+      updateUserDto.oldPassword,
+      user.password,
+    );
     if (!isMatch) {
-      throw new HttpException('Old password is not correct', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Old password is not correct',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const password = await hashPassword(updateUserDto.newPassword);
     const updateUser = await this.userModel
-      .findByIdAndUpdate(id, {
-        password,
-        updated_at: Date.now(),
-      }, { new: true })
+      .findByIdAndUpdate(
+        id,
+        {
+          password,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
       .select({
         password: 0,
         __v: 0,
@@ -101,14 +122,15 @@ export class UserService {
     return updateUser;
   }
 
-
   async delete(id: string): Promise<User> {
     const deleteUser = this.userModel.findByIdAndDelete(id).exec();
     return deleteUser;
   }
 
   async forgetPassword(forgetPasswordDto: ForgetPasswordDto): Promise<object> {
-    const user = await this.userModel.findOne({ email: forgetPasswordDto.email }).exec();
+    const user = await this.userModel
+      .findOne({ email: forgetPasswordDto.email })
+      .exec();
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
@@ -116,38 +138,46 @@ export class UserService {
     const resetPasswordToken = randomResetPasswordToken();
 
     // set reset password token and expires
-    const updatedUser = await this.userModel.findByIdAndUpdate(user._id, {
-      resetPasswordToken,
-      resetPasswordExpires: Date.now() + (parseInt(process.env.RESET_PASSWORD_EXPIRES) || 3600000),
-    }).exec();
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(user._id, {
+        resetPasswordToken,
+        resetPasswordExpires:
+          Date.now() +
+          (parseInt(process.env.RESET_PASSWORD_EXPIRES) || 3600000),
+      })
+      .exec();
 
     // send email
-    let sendMailResult = await this.mailService.sendResetPassword({
+    const sendMailResult = await this.mailService.sendResetPassword({
       to: updatedUser.email,
       resetToken: resetPasswordToken,
     });
     return sendMailResult;
   }
 
-  async resetPassword(token: string, resetPasswordDto: ResetPasswordDto): Promise<object> {
+  async resetPassword(
+    token: string,
+    resetPasswordDto: ResetPasswordDto,
+  ): Promise<object> {
     const user = await this.userModel
       .findOne({
         resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() }
+        resetPasswordExpires: { $gt: Date.now() },
       })
       .exec();
     if (!user) {
       throw new HttpException('Reset token is invalid', HttpStatus.BAD_REQUEST);
     }
     const password = await hashPassword(resetPasswordDto.password);
-    await this.userModel.findByIdAndUpdate(user._id, {
-      password,
-      resetPasswordToken: null,
-      resetPasswordExpires: null,
-    }).exec();
+    await this.userModel
+      .findByIdAndUpdate(user._id, {
+        password,
+        resetPasswordToken: null,
+        resetPasswordExpires: null,
+      })
+      .exec();
     return {
       message: 'Password reset successfully',
     };
-
   }
 }

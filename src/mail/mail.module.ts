@@ -21,12 +21,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             // pass: config.get('MAIL_PASSWORD'),
             pass: 'yokxkyqwikhjlvma',
           },
-        }
+        },
       }),
       inject: [ConfigService],
-    })],
+    }),
+  ],
   exports: [MailService],
   providers: [MailService],
-  controllers: [MailController]
+  controllers: [MailController],
 })
-export class MailModule { }
+export class MailModule {}
