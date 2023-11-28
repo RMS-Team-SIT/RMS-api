@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class CreateRentalDto {
   @IsString()
@@ -10,7 +10,7 @@ export class CreateRentalDto {
   @ApiProperty()
   lastname: string;
 
-  @IsString()
+  @IsOptional()
   @ApiProperty()
   image: string;
 

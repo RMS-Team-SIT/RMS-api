@@ -4,8 +4,8 @@ import { Model } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
-import { CreateRentalDto } from 'src/rental/dtos/create-rental.dto';
 import { Rental } from './schemas/rental.schema';
+import { CreateRentalDto } from './dtos/create-rental.dto';
 
 @Injectable()
 export class ResidentService {
@@ -14,6 +14,7 @@ export class ResidentService {
     private readonly residentModel: Model<Resident>,
   ) { }
 
+  // Resident
   async create(
     userId: string,
     createResidentDto: CreateResidentDto,
@@ -84,6 +85,7 @@ export class ResidentService {
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
+  // Rental
   async createRental(id: string, createRentalDto: CreateRentalDto): Promise<Resident> {
 
     const resident = await this.residentModel.findOneAndUpdate(
@@ -98,6 +100,21 @@ export class ResidentService {
   async findAllRentalInResident(residentId: string): Promise<Rental[]> {
     const resident = await this.residentModel.findById(residentId).exec();
     return resident.rentals;
+  }
+
+  async findOneRentalInResident(residentId: string, rentalId: string): Promise<Rental> {
+    const resident = await this.residentModel.findOne({
+      _id: residentId,
+      'rentals._id': rentalId,
+    })
+    .select('rentals.$')
+    .exec();
+
+    if (!resident) {
+      throw new NotFoundException('Rental not found');
+    }
+    
+    return resident.rentals[0];
   }
 
 

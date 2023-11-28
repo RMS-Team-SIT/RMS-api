@@ -20,8 +20,8 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
-import { CreateRentalDto } from 'src/rental/dtos/create-rental.dto';
 import { Rental } from './schemas/rental.schema';
+import { CreateRentalDto } from './dtos/create-rental.dto';
 
 @ApiTags('resident')
 @Controller('resident')
