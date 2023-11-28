@@ -24,7 +24,7 @@ export function ApiFile(
         type: 'object',
         required: required ? [fieldName] : [],
         properties: {
-          file: {
+          [fieldName]: {
             type: 'string',
             format: 'binary',
           },
