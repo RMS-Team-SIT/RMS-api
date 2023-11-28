@@ -11,8 +11,9 @@ import { MailModule } from './mail/mail.module';
 import { LineController } from './line/line.controller';
 import { LineService } from './line/line.service';
 import { LineModule } from './line/line.module';
-// import { RentalModule } from './rental/rental.module';
 import { FilesModule } from './files/files.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 const ENV = process.env.NODE_ENV;
 
@@ -29,7 +30,6 @@ const ENV = process.env.NODE_ENV;
     HealthModule,
     MailModule,
     LineModule,
-    // RentalModule,
     FilesModule,
   ],
   controllers: [LineController],
@@ -41,4 +41,4 @@ const ENV = process.env.NODE_ENV;
     LineService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

@@ -1,11 +1,44 @@
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import {
+    ArgumentMetadata,
+    Injectable,
+    PipeTransform,
+    BadRequestException,
+} from '@nestjs/common';
 
 @Injectable()
-export class FileSizeValidationPipe implements PipeTransform {
-    transform(value: any, metadata: ArgumentMetadata) {
-        // "value" is an object containing the file's attributes and metadata
-        const oneKb = 1000;
-        const oneMb = oneKb * 1000;
-        return value.size < 100 * oneMb;
+export class ParseFile implements PipeTransform {
+    transform(
+        files: Express.Multer.File | Express.Multer.File[],
+        metadata: ArgumentMetadata,
+    ): Express.Multer.File | Express.Multer.File[] {
+        console.log('Pipe');
+        
+        if (files === undefined || files === null) {
+            throw new BadRequestException('Validation failed (file expected)');
+        }
+
+        if (Array.isArray(files) && files.length === 0) {
+            throw new BadRequestException('Validation failed (files expected)');
+        }
+
+        // validate size
+        const maxSize = 1024 * 1024 * 100 ; // 100MB
+        if (Array.isArray(files)) {
+            for (const file of files) {
+                if (file.size > maxSize) {
+                    throw new BadRequestException(
+                        'Validation failed (file too large)',
+                    );
+                }
+            }
+        } else {
+            if (files.size > maxSize) {
+                throw new BadRequestException(
+                    'Validation failed (file too large)',
+                );
+            }
+        }
+
+        return files;
     }
 }

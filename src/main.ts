@@ -6,11 +6,15 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
 import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+    // static route for public folder
+    app.useStaticAssets(join(__dirname, '..', 'public'));
+    
     // enable cors
     app.enableCors();
 
@@ -33,12 +37,15 @@ async function bootstrap() {
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
     app.use(helmet());
+
     const port = process.env.PORT || 3000;
     await app.listen(port);
+
     console.log(`Environment : ${process.env.NODE_ENV}`);
     console.log(`Environment : ${process.env.TEST_ENV}`);
     console.log(`Application is running on port : ${port}`);
     console.log(`Swagger is running on : /${process.env.OPENAPI_PATH}`);
+
   } catch (error) {
     console.error('Error during application startup:', error);
     process.exit(1);
