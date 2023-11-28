@@ -9,7 +9,12 @@ export class RentalService {
   constructor(
     @InjectModel(Rental.name)
     private rentalModel: Model<Rental>,
-  ) {}
+  ) { }
+
+  async create(residentId: string, dto: CreateRentalDto): Promise<Rental> {
+    const createdRental = new this.rentalModel({ ...dto });
+    return createdRental.save();
+  }
 
   async findAll(): Promise<Rental[]> {
     return this.rentalModel.find().exec();
@@ -19,8 +24,4 @@ export class RentalService {
     return this.rentalModel.findById(id).exec();
   }
 
-  async create(dto: CreateRentalDto): Promise<Rental> {
-    const createdRental = new this.rentalModel({ ...dto });
-    return createdRental.save();
-  }
 }

@@ -19,16 +19,18 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
-import { log } from 'console';
 
 @ApiTags('resident')
 @Controller('resident')
 export class ResidentController {
-  constructor(private readonly residentService: ResidentService) {}
+  constructor(private readonly residentService: ResidentService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createResidentDto: CreateResidentDto, @Req() req) {
+  async create(
+    @Body() createResidentDto: CreateResidentDto,
+    @Req() req,
+  ): Promise<Resident> {
     const userId = req.user.id;
     return await this.residentService.create(userId, createResidentDto);
   }
