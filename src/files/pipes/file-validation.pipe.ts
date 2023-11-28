@@ -38,7 +38,6 @@ export class ParseFile implements PipeTransform {
                 );
             }
         }
-
         return files;
     }
 }

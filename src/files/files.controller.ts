@@ -17,28 +17,42 @@ export class FilesController {
 
     @Post('upload-image')
     @ApiImageFile('image', true)
-    uploadFile(
-        @UploadedFile() file: Express.Multer.File
+    uploadImage(
+        @UploadedFile(ParseFile) file: Express.Multer.File
     ) {
         console.log(file);
         return {
             message: 'File uploaded successfully',
-            url: `/upload/img/${file.filename}`
+            fileName: file.filename,
+            filePath: file.path,
         }
     }
 
-    @Post('uploads')
-    @ApiFiles('files', true)
-    uploadFiles(@UploadedFiles(ParseFile) files: Array<Express.Multer.File>) {
-        console.log(files);
+    @Post('upload-pdf')
+    @ApiPdfFile('pdf', true)
+    uploadPdf(
+        @UploadedFile(ParseFile) file: Express.Multer.File
+    ) {
+        console.log(file);
+        return {
+            message: 'File uploaded successfully',
+            fileName: file.filename,
+            filePath: file.path,
+        }
     }
 
-    @Post('uploadFields')
-    @ApiFileFields([
-        { name: 'avatar', maxCount: 1, required: true },
-        { name: 'background', maxCount: 1 },
-    ])
-    uploadMultipleFiles(@UploadedFiles(ParseFile) files: Express.Multer.File[]) {
-        console.log(files);
-    }
+    // @Post('uploads')
+    // @ApiFiles('files', true)
+    // uploadFiles(@UploadedFiles(ParseFile) files: Array<Express.Multer.File>) {
+    //     console.log(files);
+    // }
+
+    // @Post('uploadFields')
+    // @ApiFileFields([
+    //     { name: 'avatar', maxCount: 1, required: true },
+    //     { name: 'background', maxCount: 1 },
+    // ])
+    // uploadMultipleFiles(@UploadedFiles(ParseFile) files: Express.Multer.File[]) {
+    //     console.log(files);
+    // }
 }
