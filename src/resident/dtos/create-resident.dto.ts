@@ -44,11 +44,5 @@ export class CreateResidentDto {
 
   @ApiProperty()
   @IsOptional()
-  @Type(() => CreateRoomDto)
-  @ValidateNested()
-  rooms: CreateRoomDto[];
-
-  @ApiProperty()
-  @IsOptional()
   contact: CreateResidentContactDto;
 }

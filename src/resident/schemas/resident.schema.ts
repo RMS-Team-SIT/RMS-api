@@ -7,6 +7,7 @@ import {
   ResidentContactSchema,
 } from './resident-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
+import { Rental, RentalSchema } from './rental.schema';
 @Schema()
 export class Resident extends Document {
   _id: string;
@@ -40,6 +41,9 @@ export class Resident extends Document {
 
   @Prop({ type: [RoomSchema], default: [] })
   rooms: Room[];
+
+  @Prop({ type: [RentalSchema], default: [] })
+  rentals: Rental[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

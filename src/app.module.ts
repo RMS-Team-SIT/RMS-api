@@ -11,7 +11,7 @@ import { MailModule } from './mail/mail.module';
 import { LineController } from './line/line.controller';
 import { LineService } from './line/line.service';
 import { LineModule } from './line/line.module';
-import { RentalModule } from './rental/rental.module';
+// import { RentalModule } from './rental/rental.module';
 import { FilesModule } from './files/files.module';
 
 const ENV = process.env.NODE_ENV;
@@ -29,7 +29,7 @@ const ENV = process.env.NODE_ENV;
     HealthModule,
     MailModule,
     LineModule,
-    RentalModule,
+    // RentalModule,
     FilesModule,
   ],
   controllers: [LineController],

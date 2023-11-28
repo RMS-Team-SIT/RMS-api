@@ -1,16 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
+import { CreateRentalDto } from 'src/rental/dtos/create-rental.dto';
+import { Rental } from './schemas/rental.schema';
 
 @Injectable()
 export class ResidentService {
   constructor(
     @InjectModel(Resident.name)
     private readonly residentModel: Model<Resident>,
-  ) {}
+  ) { }
 
   async create(
     userId: string,
@@ -82,7 +84,21 @@ export class ResidentService {
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
-  // private hideFields(fields: string[]): object {
-  //   return fields.map(field => ({ [field]: 0 }));
-  // }
+  async createRental(id: string, createRentalDto: CreateRentalDto): Promise<Resident> {
+
+    const resident = await this.residentModel.findOneAndUpdate(
+      { _id: id },
+      { $push: { rentals: createRentalDto } },
+      { new: true },
+    ).exec();
+    console.log('create rental to resident', resident);
+    return resident;
+  }
+
+  async findAllRentalInResident(residentId: string): Promise<Rental[]> {
+    const resident = await this.residentModel.findById(residentId).exec();
+    return resident.rentals;
+  }
+
+
 }

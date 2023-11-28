@@ -1,27 +1,29 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Rental } from './schemas/rental.schema';
-import { CreateRentalDto } from './dtos/create-rental.dto';
+// import { Injectable } from '@nestjs/common';
+// import { InjectModel } from '@nestjs/mongoose';
+// import { Model } from 'mongoose';
+// import { Rental } from './schemas/rental.schema';
+// import { CreateRentalDto } from './dtos/create-rental.dto';
 
-@Injectable()
-export class RentalService {
-  constructor(
-    @InjectModel(Rental.name)
-    private rentalModel: Model<Rental>,
-  ) { }
+// @Injectable()
+// export class RentalService {
+//   constructor(
+//     @InjectModel(Rental.name)
+//     private rentalModel: Model<Rental>,
+//   ) { }
 
-  async create(residentId: string, dto: CreateRentalDto): Promise<Rental> {
-    const createdRental = new this.rentalModel({ ...dto });
-    return createdRental.save();
-  }
+//   async create(residentId: string, dto: CreateRentalDto): Promise<Rental> {
+//     const createdRental = new this.rentalModel({ ...dto });
+//     return createdRental.save();
+//   }
 
-  async findAll(): Promise<Rental[]> {
-    return this.rentalModel.find().exec();
-  }
+//   async findAllRentalInResident(residentId: string): Promise<Rental[]> {
+//     return this.rentalModel.find({
+//       resident: residentId,
+//     }).exec();
+//   }
 
-  async findOne(id: string): Promise<Rental> {
-    return this.rentalModel.findById(id).exec();
-  }
+//   async findOne(id: string): Promise<Rental> {
+//     return this.rentalModel.findById(id).exec();
+//   }
 
-}
+// }

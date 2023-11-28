@@ -12,6 +12,7 @@ import {
   Res,
   ForbiddenException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schema';
@@ -19,11 +20,15 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
+import { CreateRentalDto } from 'src/rental/dtos/create-rental.dto';
+import { Rental } from './schemas/rental.schema';
 
 @ApiTags('resident')
 @Controller('resident')
 export class ResidentController {
-  constructor(private readonly residentService: ResidentService) { }
+  constructor(
+    private readonly residentService: ResidentService,
+  ) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -93,4 +98,37 @@ export class ResidentController {
       throw new ForbiddenException();
     }
   }
+
+  @Post(":id/rental")
+  async createRental(
+    @Req() req,
+    @Param("id") residentId: string,
+    @Body() dto: CreateRentalDto,
+  ): Promise<Resident> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.createRental(residentId, dto);
+  }
+
+  @Get(":id/rental")
+  async findAllRentalInResident(
+    @Req() req,
+    @Param("id") residentId: string,
+  ): Promise<Rental[]> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+    return await this.residentService.findAllRentalInResident(residentId);
+  }
+
 }

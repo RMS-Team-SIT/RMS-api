@@ -43,12 +43,6 @@ export class CreateRoomDto {
 
   @ApiProperty()
   @IsOptional()
-  @Type(() => CreateRoomUserDto)
-  @ValidateNested()
-  roomUsers: CreateRoomUserDto[];
-
-  @ApiProperty()
-  @IsOptional()
   @Type(() => CreateBillDto)
   @ValidateNested()
   billHistories: CreateBillDto[];

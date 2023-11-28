@@ -22,11 +22,11 @@ async function bootstrap() {
       new ValidationPipe({ whitelist: true, transform: true }),
     );
 
-    // swagger
-    configureSwagger(app);
-
     // set global prefix
     app.setGlobalPrefix('api/v1');
+
+    // swagger
+    configureSwagger(app);
 
     // set payload request limit
     app.use(json({ limit: '50mb' }));
@@ -49,6 +49,7 @@ function configureSwagger(app: NestExpressApplication) {
   const config = new DocumentBuilder()
     .setTitle('RMS API')
     .setVersion('1.0')
+    .addTag('api')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
