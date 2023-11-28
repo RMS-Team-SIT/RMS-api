@@ -47,7 +47,7 @@ async function bootstrap() {
 
 function configureSwagger(app: NestExpressApplication) {
   const config = new DocumentBuilder()
-    .setTitle('Smart Resident API')
+    .setTitle('RMS API')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
