@@ -37,4 +37,4 @@ lerna-debug.log*
 # .env
 
 # Public folder
-/public/upload/*/**
+/public/upload/*
