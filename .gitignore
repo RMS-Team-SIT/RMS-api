@@ -36,6 +36,5 @@ lerna-debug.log*
 
 # .env
 
-# Public folder except .gitkeep
-/public/upload/img/**/*
-/public/upload/pdf/**/*
+# Public folder
+/public/upload/*/**
