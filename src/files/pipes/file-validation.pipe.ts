@@ -11,7 +11,7 @@ export class ParseFile implements PipeTransform {
         files: Express.Multer.File | Express.Multer.File[],
         metadata: ArgumentMetadata,
     ): Express.Multer.File | Express.Multer.File[] {
-        console.log('Pipe');
+        console.log('Validation Pipe called');
         
         if (files === undefined || files === null) {
             throw new BadRequestException('Validation failed (file expected)');
