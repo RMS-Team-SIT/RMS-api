@@ -12,11 +12,14 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+    // enable cors
+    app.enableCors({
+      origin: '*',
+      credentials: true,
+    });
+
     // static route for public folder
     app.useStaticAssets(join(__dirname, '..', 'public'));
-    
-    // enable cors
-    app.enableCors();
 
     // middleware
     app.use(logger);

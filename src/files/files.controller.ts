@@ -59,11 +59,22 @@ export class FilesController {
     }
 
     @Post('upload-pdfs')
-    @ApiPdfFile('pdfs', true)
+    @ApiPdfFiles('pdfs', true)
     uploadPdfs(
         @UploadedFiles(ParseFile) files: Array<Express.Multer.File>
     ) {
         console.log(files);
+        const result = {
+            message: 'Files uploaded successfully',
+            files: [],
+        };
+        files.forEach(file => {
+            result.files.push({
+                fileName: file.filename,
+                filePath: file.path,
+            });
+        });
+        return result;
     }
 
     // @Post('uploads')

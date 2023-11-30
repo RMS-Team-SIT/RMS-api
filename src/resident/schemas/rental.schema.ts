@@ -20,6 +20,12 @@ export class Rental extends Document {
   @Prop({ required: true })
   phone: string;
 
+  @Prop({ default: null })
+  copyOfIdCard: string;
+
+  @Prop({ default: null })
+  rentalContract: string;
+
   @Prop({ default: true })
   isActive: boolean;
 
