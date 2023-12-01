@@ -22,6 +22,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { Rental } from './schemas/rental.schema';
 import { CreateRentalDto } from './dtos/create-rental.dto';
+import { UpdateRentalDto } from './dtos/update-rental.dto';
 
 @ApiTags('resident')
 @Controller('resident')
@@ -151,4 +152,25 @@ export class ResidentController {
     );
   }
 
+  @Put(":residentId/rental/:rentalId")
+  async updateRentalInResident(
+    @Req() req,
+    @Param('residentId') residentId: string,
+    @Param('rentalId') rentalId: string,
+    @Body() updateRentalDto: UpdateRentalDto
+  ): Promise<Rental> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.updateRentalInResident(
+      residentId,
+      rentalId,
+      updateRentalDto
+    );
+  }
 }

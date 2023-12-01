@@ -6,6 +6,7 @@ import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { Rental } from './schemas/rental.schema';
 import { CreateRentalDto } from './dtos/create-rental.dto';
+import { UpdateRentalDto } from './dtos/update-rental.dto';
 
 @Injectable()
 export class ResidentService {
@@ -55,7 +56,7 @@ export class ResidentService {
   }
 
   async findOne(id: string): Promise<Resident> {
-    return this.residentModel
+    const resident = this.residentModel
       .findById(id)
       .select({
         __v: 0,
@@ -66,6 +67,10 @@ export class ResidentService {
         'contact.updated_at': 0,
       })
       .exec();
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
+    return resident;
   }
 
   async update(id: string, dto: UpdateResidentDto): Promise<Resident> {
@@ -107,16 +112,37 @@ export class ResidentService {
       _id: residentId,
       'rentals._id': rentalId,
     })
-    .select('rentals.$')
-    .exec();
+      .select('rentals.$')
+      .exec();
 
     if (!resident) {
       throw new NotFoundException('Rental not found');
     }
-    console.log(resident);
-    
+
     return resident.rentals[0];
   }
 
+  async updateRentalInResident(
+    residentId: string,
+    rentalId: string,
+    updateRentalDto: UpdateRentalDto
+  ): Promise<Rental> {
+
+    const resident = await this.residentModel.findOneAndUpdate(
+      {
+        _id: residentId,
+        'rentals._id': rentalId,
+      },
+      {
+        $set: {
+          'rentals.$': { ...updateRentalDto, updated_at: Date.now() },
+        },
+      },
+      { new: true },
+    ).exec();
+
+
+    return resident.rentals[0];
+  }
 
 }
