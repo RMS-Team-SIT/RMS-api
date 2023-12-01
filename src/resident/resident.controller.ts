@@ -131,4 +131,24 @@ export class ResidentController {
     return await this.residentService.findAllRentalInResident(residentId);
   }
 
+  @Get(":residentId/rental/:rentalId")
+  async findOneRentalInResident(
+    @Req() req,
+    @Param("residentId") residentId: string,
+    @Param("rentalId") rentalId: string,
+  ): Promise<Rental> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.findOneRentalInResident(
+      residentId,
+      rentalId,
+    );
+  }
+
 }

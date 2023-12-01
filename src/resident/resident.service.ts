@@ -113,6 +113,7 @@ export class ResidentService {
     if (!resident) {
       throw new NotFoundException('Rental not found');
     }
+    console.log(resident);
     
     return resident.rentals[0];
   }
