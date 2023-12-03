@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -30,6 +31,16 @@ export class CreateRoomDto {
   @IsNotEmpty()
   @IsNumber()
   lightPriceRate: number;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  isUseDefaultWaterPriceRate: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  isUseDefaultLightPriceRate: boolean;
 
   @ApiProperty()
   @IsNotEmpty()
