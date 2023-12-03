@@ -56,12 +56,13 @@ async function bootstrap() {
 }
 
 function configureSwagger(app: NestExpressApplication) {
-  const config = new DocumentBuilder()
+  const options = new DocumentBuilder()
     .setTitle('RMS API')
     .setVersion('1.0')
     .addTag('api')
+    .addBearerAuth()
     .build();
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
 }
 

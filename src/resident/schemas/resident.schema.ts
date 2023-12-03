@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
 import { Room, RoomSchema } from './room.schema';
@@ -8,6 +8,7 @@ import {
 } from './resident-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Rental, RentalSchema } from './rental.schema';
+
 @Schema()
 export class Resident extends Document {
   _id: string;

@@ -7,6 +7,8 @@ import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { Rental } from './schemas/rental.schema';
 import { CreateRentalDto } from './dtos/create-rental.dto';
 import { UpdateRentalDto } from './dtos/update-rental.dto';
+import { Room } from './schemas/room.schema';
+import { CreateRoomDto } from './dtos/create-room.dto';
 
 @Injectable()
 export class ResidentService {
@@ -141,8 +143,16 @@ export class ResidentService {
       { new: true },
     ).exec();
 
-
     return resident.rentals[0];
   }
 
+  async createRoom(residentId: string, createRoomDto: CreateRoomDto):Promise<Room[]>{
+    const resident = await this.residentModel.findOneAndUpdate(
+      { _id: residentId },
+      { $push: { rooms: createRoomDto } },
+      { new: true },
+    ).exec();
+
+    return resident.rooms;
+  }
 }

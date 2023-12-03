@@ -1,6 +1,6 @@
 import { Controller, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { FilesService } from './files.service';
 import { ApiImageFile, ApiPdfFile } from './decorators/api-file.decorator';
@@ -10,6 +10,7 @@ import { fileMimetypeFilter } from './filters/file-mimetype.filter';
 import { ParseFile } from './pipes/file-validation.pipe';
 
 @Controller('files')
+@ApiBearerAuth()
 @ApiTags('files')
 @Public() //<- For testing only (remove this line in production)
 export class FilesController {

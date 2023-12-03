@@ -9,6 +9,7 @@ import {
 import { UserRole } from '../role/enum/user-role.enum';
 import { CreateUserDto } from './create-user.dto';
 import { PASSWORD_RULE } from './password.rule';
+import { Exclude } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ApiProperty()
@@ -23,4 +24,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsStrongPassword(PASSWORD_RULE)
   newPassword: string;
+
+  @Exclude()
+  email?: string;
 }

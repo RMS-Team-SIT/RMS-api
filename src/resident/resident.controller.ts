@@ -18,13 +18,16 @@ import { ResidentService } from './resident.service';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { Rental } from './schemas/rental.schema';
 import { CreateRentalDto } from './dtos/create-rental.dto';
 import { UpdateRentalDto } from './dtos/update-rental.dto';
+import { Room } from './schemas/room.schema';
+import { CreateRoomDto } from './dtos/create-room.dto';
 
 @ApiTags('resident')
+@ApiBearerAuth()
 @Controller('resident')
 export class ResidentController {
   constructor(
@@ -172,5 +175,22 @@ export class ResidentController {
       rentalId,
       updateRentalDto
     );
+  }
+
+  @Post(":residentId/room")
+  async createRoom(
+    @Req() req,
+    @Body() dto: CreateRoomDto,
+    @Param("residentId") residentId: string,
+  ): Promise<Room[]> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.createRoom(residentId, dto);
   }
 }

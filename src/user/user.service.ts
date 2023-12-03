@@ -8,7 +8,7 @@ import { hashPassword, isPasswordMatch } from 'src/utils/password.utils';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { randomResetPasswordToken } from 'src/utils/random.utils';
+import { randomToken } from 'src/utils/random.utils';
 import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 
@@ -18,7 +18,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     return this.userModel
@@ -40,6 +40,7 @@ export class UserService {
         __v: 0,
         resetPasswordToken: 0,
         resetPasswordExpires: 0,
+        emailVerificationToken: 0
       })
       .exec();
   }
@@ -63,7 +64,16 @@ export class UserService {
     const createdUser = new this.userModel({
       ...createUserDto,
       password: await hashPassword(createUserDto.password),
+      isEmailVerified: false,
+      emailVerificationToken: randomToken(),
     });
+
+    // send email verification
+    const sendMailResult = await this.mailService.sendVerification({
+      to: createdUser.email,
+      token: createdUser.emailVerificationToken,
+    });
+    console.log(sendMailResult);
     return createdUser.save();
   }
 
@@ -79,6 +89,7 @@ export class UserService {
         __v: 0,
         resetPasswordToken: 0,
         resetPasswordExpires: 0,
+        emailVerificationToken: 0,
       })
       .exec();
     return updateUser;
@@ -117,6 +128,7 @@ export class UserService {
         __v: 0,
         resetPasswordToken: 0,
         resetPasswordExpires: 0,
+        emailVerificationToken: 0,
       })
       .exec();
     return updateUser;
@@ -135,7 +147,7 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
-    const resetPasswordToken = randomResetPasswordToken();
+    const resetPasswordToken = randomToken();
 
     // set reset password token and expires
     const updatedUser = await this.userModel
@@ -178,6 +190,26 @@ export class UserService {
       .exec();
     return {
       message: 'Password reset successfully',
+    };
+  }
+
+  async verifyEmail(token: string): Promise<{ message: string }> {
+    const user = await this.userModel
+      .findOne({
+        emailVerificationToken: token,
+      })
+      .exec();
+    if (!user) {
+      throw new HttpException('Verify token is invalid', HttpStatus.BAD_REQUEST);
+    }
+    await this.userModel
+      .findByIdAndUpdate(user._id, {
+        isEmailVerified: true,
+        emailVerificationToken: null,
+      })
+      .exec();
+    return {
+      message: 'Email verified successfully',
     };
   }
 }

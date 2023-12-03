@@ -16,11 +16,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './schemas/user.schemas';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -108,5 +109,12 @@ export class UserController {
     @Param('resetToken') resetToken: string,
   ): Promise<object> {
     return this.userService.resetPassword(resetToken, resetPasswordDto);
+  }
+
+  @Public()
+  @Post('verify-email/:token')
+  @HttpCode(HttpStatus.OK)
+  async verifyEmail(@Param('token') token: string): Promise<object> {
+    return this.userService.verifyEmail(token);
   }
 }
