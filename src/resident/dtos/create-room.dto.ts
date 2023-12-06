@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import { CreateRoomUserDto } from './create-room-user.dto';
@@ -23,6 +24,12 @@ export class CreateRoomDto {
   @IsOptional()
   @IsString()
   description: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  floor: string;
 
   @ApiProperty()
   @IsNotEmpty()
