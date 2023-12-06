@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
@@ -10,6 +11,7 @@ import { CreateRoomUserDto } from './create-room-user.dto';
 import { CreateBillDto } from './create-bill.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Types } from 'mongoose';
 
 export class CreateRoomDto {
   @ApiProperty()
@@ -51,6 +53,11 @@ export class CreateRoomDto {
   @IsNotEmpty()
   @IsNumber()
   currentLightGauge: number;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  currentRentals: Types.ObjectId[];
 
   @ApiProperty()
   @IsOptional()

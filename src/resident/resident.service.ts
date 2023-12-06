@@ -146,10 +146,10 @@ export class ResidentService {
     return resident.rentals[0];
   }
 
-  async createRoom(residentId: string, createRoomDto: CreateRoomDto):Promise<Room[]>{
+  async createRoom(residentId: string, createRoomDto: CreateRoomDto): Promise<Room[]> {
     const resident = await this.residentModel.findOneAndUpdate(
       { _id: residentId },
-      { $push: { rooms: createRoomDto } },
+      { $push: { rooms: { ...createRoomDto } } },
       { new: true },
     ).exec();
 
