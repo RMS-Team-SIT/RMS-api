@@ -9,6 +9,7 @@ import { CreateRentalDto } from './dtos/create-rental.dto';
 import { UpdateRentalDto } from './dtos/update-rental.dto';
 import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dtos/create-room.dto';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 
 @Injectable()
 export class ResidentService {
@@ -154,5 +155,57 @@ export class ResidentService {
     ).exec();
 
     return resident.rooms;
+  }
+
+  async findAllRoomInResident(residentId: string): Promise<Room[]> {
+    const resident = await this.residentModel.findById(residentId).exec();
+    return resident.rooms;
+  }
+
+  async findOneRoomInResident(residentId: string, roomId: string): Promise<Room> {
+    const resident = await this.residentModel.findOne({
+      _id: residentId,
+      'rooms._id': roomId,
+    })
+      .select('rooms.$')
+      .exec();
+
+    if (!resident) {
+      throw new NotFoundException('Room not found');
+    }
+
+    return resident.rooms[0];
+  }
+
+  async updateRoomInResident(
+    residentId: string,
+    roomId: string,
+    updateRoomDto: UpdateRoomDto
+  ): Promise<Room> {
+
+    const resident = await this.residentModel.findOneAndUpdate(
+      {
+        _id: residentId,
+        'rooms._id': roomId,
+      },
+      {
+        $set: {
+          'rooms.$': { ...updateRoomDto, updated_at: Date.now() },
+        },
+      },
+      { new: true },
+    ).exec();
+
+    return resident.rooms[0];
+  }
+
+  async deleteRoomInResident(residentId: string, roomId: string): Promise<Room> {
+    const resident = await this.residentModel.findOneAndUpdate(
+      { _id: residentId },
+      { $pull: { rooms: { _id: roomId } } },
+      { new: true },
+    ).exec();
+
+    return resident.rooms[0];
   }
 }

@@ -25,6 +25,7 @@ import { CreateRentalDto } from './dtos/create-rental.dto';
 import { UpdateRentalDto } from './dtos/update-rental.dto';
 import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dtos/create-room.dto';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 
 @ApiTags('resident')
 @ApiBearerAuth()
@@ -60,8 +61,8 @@ export class ResidentController {
     return await this.residentService.findAll();
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Resident> {
+  @Get(':residentId')
+  async findOne(@Param('residentId') id: string): Promise<Resident> {
     try {
       return await this.residentService.findOne(id);
     } catch (error) {
@@ -70,10 +71,10 @@ export class ResidentController {
     }
   }
 
-  @Put(':id')
+  @Put(':residentId')
   async update(
     @Req() req,
-    @Param('id') id: string,
+    @Param('residentId') id: string,
     @Body() updateResidentDto: UpdateResidentDto,
   ): Promise<Resident> {
     const userId = req.user.id;
@@ -87,7 +88,7 @@ export class ResidentController {
     return await this.residentService.update(id, updateResidentDto);
   }
 
-  @Delete(':id')
+  @Delete(':residentId')
   async delete(@Req() req, @Param('id') id: string): Promise<Resident> {
     const userId = req.user.id;
     const resident = await this.residentService.findOne(id);
@@ -103,10 +104,10 @@ export class ResidentController {
     }
   }
 
-  @Post(":id/rental")
+  @Post(":residentId/rental")
   async createRental(
     @Req() req,
-    @Param("id") residentId: string,
+    @Param("residentId") residentId: string,
     @Body() dto: CreateRentalDto,
   ): Promise<Resident> {
     const userId = req.user.id;
@@ -120,10 +121,10 @@ export class ResidentController {
     return await this.residentService.createRental(residentId, dto);
   }
 
-  @Get(":id/rental")
+  @Get(":residentId/rental")
   async findAllRentalInResident(
     @Req() req,
-    @Param("id") residentId: string,
+    @Param("residentId") residentId: string,
   ): Promise<Rental[]> {
     const userId = req.user.id;
 
@@ -193,4 +194,82 @@ export class ResidentController {
 
     return await this.residentService.createRoom(residentId, dto);
   }
+
+  @Get(":residentId/room")
+  async findAllRoomInResident(
+    @Req() req,
+    @Param("residentId") residentId: string,
+  ): Promise<Room[]> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+    return await this.residentService.findAllRoomInResident(residentId);
+  }
+
+  @Get(":residentId/room/:roomId")
+  async findOneRoomInResident(
+    @Req() req,
+    @Param("residentId") residentId: string,
+    @Param("roomId") roomId: string,
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.findOneRoomInResident(
+      residentId,
+      roomId,
+    );
+  }
+
+  @Put(":residentId/room/:roomId")
+  async updateRoomInResident(
+    @Req() req,
+    @Param('residentId') residentId: string,
+    @Param('roomId') roomId: string,
+    @Body() updateRoomDto: UpdateRoomDto
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.updateRoomInResident(
+      residentId,
+      roomId,
+      updateRoomDto
+    );
+  }
+
+  @Delete(":residentId/room/:roomId")
+  async deleteRoomInResident(
+    @Req() req,
+    @Param("residentId") residentId: string,
+    @Param("roomId") roomId: string,
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of resident or not ?
+    const resident = await this.residentService.findOne(residentId);
+    if (resident.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException("You are not owner of this resident");
+    }
+
+    return await this.residentService.deleteRoomInResident(
+      residentId,
+      roomId,
+    );
+  }
+
 }
