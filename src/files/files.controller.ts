@@ -8,10 +8,12 @@ import { ApiFiles, ApiImageFiles, ApiPdfFiles } from './decorators/api-files.dec
 import { ApiFileFields } from './decorators/api-file-fields.decorator';
 import { fileMimetypeFilter } from './filters/file-mimetype.filter';
 import { ParseFile } from './pipes/file-validation.pipe';
+import { SkipThrottle } from '@nestjs/throttler';
 
 @Controller('files')
 @ApiBearerAuth()
 @ApiTags('files')
+@SkipThrottle()
 @Public() //<- For testing only (remove this line in production)
 export class FilesController {
     constructor(private readonly filesService: FilesService) { }

@@ -193,6 +193,23 @@ export class UserService {
     };
   }
 
+  async checkValidResetPasswordToken(
+    token: string,
+  ): Promise<{ message: string }> {
+    const user = await this.userModel
+      .findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      })
+      .exec();
+    if (!user) {
+      throw new HttpException('Reset token is invalid', HttpStatus.BAD_REQUEST);
+    }
+    return {
+      message: 'Reset token is valid',
+    };
+  }
+
   async verifyEmail(token: string): Promise<{ message: string }> {
     const user = await this.userModel
       .findOne({

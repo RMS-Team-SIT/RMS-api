@@ -14,6 +14,7 @@ import { LineModule } from './line/line.module';
 import { FilesModule } from './files/files.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 const ENV = process.env.NODE_ENV;
 
@@ -24,6 +25,10 @@ const ENV = process.env.NODE_ENV;
       envFilePath: `./env/.env.${ENV || 'development'}`,
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
+    ThrottlerModule.forRoot([{
+      ttl: 60 * 1000, // milliseconds
+      limit: 10, // requests per ttl
+    }]),
     AuthModule,
     UserModule,
     ResidentModule,
@@ -38,7 +43,10 @@ const ENV = process.env.NODE_ENV;
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    LineService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule { }

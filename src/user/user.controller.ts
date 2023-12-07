@@ -112,6 +112,17 @@ export class UserController {
   }
 
   @Public()
+  @Post('checkvalid-reset-password-token/:resetToken')
+  @HttpCode(HttpStatus.OK)
+  async checkValidResetPasswordToken(
+    @Req() req,
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Param('resetToken') resetToken: string,
+  ): Promise<object> {
+    return this.userService.checkValidResetPasswordToken(resetToken);
+  }
+
+  @Public()
   @Post('verify-email/:token')
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Param('token') token: string): Promise<object> {
