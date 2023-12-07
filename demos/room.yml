@@ -1,0 +1,46 @@
+Room:
+  _id: string
+  name:
+    required: true
+    type: string
+  description:
+    default: ''
+    type: string
+  isUseDefaultWaterPriceRate:
+    required: true
+    default: false
+    type: boolean
+  isUseDefaultLightPriceRate:
+    required: true
+    default: false
+    type: boolean
+  waterPriceRate:
+    required: true
+    default: 0
+    type: number
+  lightPriceRate:
+    required: true
+    default: 0
+    type: number
+  currentWaterGauge:
+    required: true
+    default: 0
+    type: number
+  currentLightGauge:
+    required: true
+    default: 0
+    type: number
+  roomUsers:
+    type: RoomUserSchema
+    default: []
+  billHistories:
+    type: BillHistorySchema
+    default: []
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date

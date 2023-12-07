@@ -1,0 +1,25 @@
+Announcement:
+  _id: string
+  date:
+    required: true
+    default: Date.now()
+    type: Date
+  title:
+    required: true
+    type: string
+  description:
+    required: true
+    type: string
+  images:
+    default:
+      - null
+    type: string[]
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date
+
