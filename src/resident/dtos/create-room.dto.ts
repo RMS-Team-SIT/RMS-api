@@ -62,9 +62,9 @@ export class CreateRoomDto {
   currentLightGauge: number;
 
   @ApiProperty()
-  @IsArray()
+  @IsString()
   @IsOptional()
-  currentRentals: Types.ObjectId[];
+  currentRental: Types.ObjectId;
 
   @ApiProperty()
   @IsOptional()
