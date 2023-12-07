@@ -112,11 +112,10 @@ export class UserController {
   }
 
   @Public()
-  @Post('checkvalid-reset-password-token/:resetToken')
+  @Get('reset-password/:resetToken')
   @HttpCode(HttpStatus.OK)
   async checkValidResetPasswordToken(
     @Req() req,
-    @Body() resetPasswordDto: ResetPasswordDto,
     @Param('resetToken') resetToken: string,
   ): Promise<object> {
     return this.userService.checkValidResetPasswordToken(resetToken);
