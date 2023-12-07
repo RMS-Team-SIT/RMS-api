@@ -1,0 +1,41 @@
+RoomUser:
+  _id: string
+  username:
+    required: true
+    type: string
+  password:
+    required: true
+    type: string
+  firstname:
+    required: true
+    type: string
+  lastname:
+    required: true
+    type: string
+  email:
+    required: true
+    type: string
+  phone:
+    required: true
+    type: string
+  profileImage:
+    default: null
+    type: string
+  isActive:
+    required: true
+    default: true
+    type: boolean
+  lineNotifyToken:
+    required: false
+    default: ''
+    type: string
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date
+
+

@@ -1,0 +1,46 @@
+BillHistory:
+  _id: string
+  date:
+    required: true
+    default: Date.now()
+    type: Date
+  waterPriceRate:
+    required: true
+    type: number
+  lightPriceRate:
+    required: true
+    type: number
+  waterGauge:
+    required: true
+    type: number
+  lightGauge:
+    required: true
+    type: number
+  waterTotalPrice:
+    required: true
+    type: number
+  lightTotalPrice:
+    required: true
+    type: number
+  totalPrice:
+    required: true
+    type: number
+  paidEvidenceImage:
+    default: null
+    type: string
+  isPaid:
+    default: false
+    type: boolean
+  paidDate:
+    default: null
+    type: Date
+  created_at:
+    required: true
+    default: Date.now()
+    type: Date
+  updated_at:
+    required: true
+    default: Date.now()
+    type: Date
+
+
