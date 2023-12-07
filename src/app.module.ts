@@ -26,8 +26,8 @@ const ENV = process.env.NODE_ENV;
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     ThrottlerModule.forRoot([{
-      ttl: 60 * 1000, // milliseconds
-      limit: 10, // requests per ttl
+      ttl: 60 * 1000, // milliseconds => 1 minute
+      limit: 100, // requests per ttl
     }]),
     AuthModule,
     UserModule,
