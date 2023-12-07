@@ -17,6 +17,7 @@ import { diskStorage } from 'multer';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 const ENV = process.env.NODE_ENV;
+console.log(`Current environment: ${ENV}`);
 
 @Module({
   imports: [
