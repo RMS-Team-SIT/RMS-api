@@ -39,7 +39,7 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   currentLightGauge: number;
 
-  @Prop({ type: Types.ObjectId, ref: Rental.name, default: null })
+  @Prop({ type: Types.ObjectId, ref: 'Rental', default: null })
   currentRental: Rental;
 
   @Prop({ type: [BillHistorySchema], default: [] })

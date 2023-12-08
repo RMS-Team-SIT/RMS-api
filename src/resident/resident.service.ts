@@ -84,6 +84,7 @@ export class ResidentService {
       .populate('rooms')
       .populate('rooms.currentRental')
       .exec();
+
     console.log('resident', await resident);
 
     if (!resident) {
@@ -215,7 +216,7 @@ export class ResidentService {
     }
 
     // set default price rate if isUseDefaultPriceRate is true
-    if (createRoomDto.isUseDefaultLightPriceRate) {
+    if (createRoomDto.isUseDefaultWaterPriceRate) {
       createRoomDto.waterPriceRate = resident.defaultWaterPriceRate;
     }
     if (createRoomDto.isUseDefaultLightPriceRate) {
@@ -297,7 +298,7 @@ export class ResidentService {
     }
 
     // set default price rate if isUseDefaultPriceRate is true
-    if (updateRoomDto.isUseDefaultLightPriceRate) {
+    if (updateRoomDto.isUseDefaultWaterPriceRate) {
       updateRoomDto.waterPriceRate = resident.defaultWaterPriceRate;
     }
     if (updateRoomDto.isUseDefaultLightPriceRate) {
@@ -323,7 +324,7 @@ export class ResidentService {
         { new: true },
       ).exec();
     }
-    
+
     return updatedRoom;
   }
 
