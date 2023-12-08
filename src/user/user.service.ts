@@ -78,6 +78,9 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    // TODO: check email is duplicate
+    // TODO: check phone is duplicate
+    // TODO: send email verification after update email (if email changed and isEmailVerified is false)
     const updateUser = this.userModel
       .findByIdAndUpdate(
         id,
