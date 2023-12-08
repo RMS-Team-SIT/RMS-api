@@ -150,10 +150,7 @@ export class ResidentController {
       throw new UnauthorizedException("You are not owner of this resident");
     }
 
-    return await this.residentService.findOneRentalInResident(
-      residentId,
-      rentalId,
-    );
+    return await this.residentService.findOneRental(rentalId);
   }
 
   @Put(":residentId/rental/:rentalId")
@@ -171,8 +168,7 @@ export class ResidentController {
       throw new UnauthorizedException("You are not owner of this resident");
     }
 
-    return await this.residentService.updateRentalInResident(
-      residentId,
+    return await this.residentService.updateRental(
       rentalId,
       updateRentalDto
     );
@@ -183,7 +179,7 @@ export class ResidentController {
     @Req() req,
     @Body() dto: CreateRoomDto,
     @Param("residentId") residentId: string,
-  ): Promise<Room[]> {
+  ): Promise<Room> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
@@ -224,8 +220,7 @@ export class ResidentController {
       throw new UnauthorizedException("You are not owner of this resident");
     }
 
-    return await this.residentService.findOneRoomInResident(
-      residentId,
+    return await this.residentService.findOneRoom(
       roomId,
     );
   }
@@ -245,8 +240,7 @@ export class ResidentController {
       throw new UnauthorizedException("You are not owner of this resident");
     }
 
-    return await this.residentService.updateRoomInResident(
-      residentId,
+    return await this.residentService.updateRoom(
       roomId,
       updateRoomDto
     );

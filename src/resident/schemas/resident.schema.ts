@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from 'mongoose';
+import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
 import { Room, RoomSchema } from './room.schema';
@@ -9,11 +9,13 @@ import {
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Rental, RentalSchema } from './rental.schema';
 
+export type ResidentDocument = HydratedDocument<Resident>;
+
 @Schema()
 export class Resident extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
   owner: User;
 
   @Prop({ required: true })
@@ -40,10 +42,10 @@ export class Resident extends Document {
   @Prop({ required: true })
   defaultLightPriceRate: number;
 
-  @Prop({ type: [RoomSchema], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: Room.name }], default: [] })
   rooms: Room[];
 
-  @Prop({ type: [RentalSchema], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: Rental.name }], default: [] })
   rentals: Rental[];
 
   @Prop({ required: true, default: Date.now() })

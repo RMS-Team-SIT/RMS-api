@@ -1,13 +1,17 @@
 import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Resident } from './resident.schema';
+import { Room } from './room.schema';
 
 @Schema()
 export class Rental extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: Resident.name, required: true })
+  @Prop({ type: Types.ObjectId, ref: 'Resident', required: true })
   resident: Resident;
+
+  @Prop({ type: Types.ObjectId, ref: 'Room', default: null })
+  room: Room;
 
   @Prop({ required: true })
   firstname: string;

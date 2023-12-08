@@ -9,8 +9,8 @@ import { Resident } from './resident.schema';
 export class Room extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: Resident.name, required: true })
-  resident: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: 'Resident', required: true })
+  resident: Resident;
 
   @Prop({ required: true })
   name: string;
@@ -39,8 +39,8 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   currentLightGauge: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'resident.rentals', default: null })
-  currentRental: Types.ObjectId;
+  @Prop({ type: Types.ObjectId, ref: Rental.name, default: null })
+  currentRental: Rental;
 
   @Prop({ type: [BillHistorySchema], default: [] })
   billHistories: BillHistory[];

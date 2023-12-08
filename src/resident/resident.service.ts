@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
@@ -45,6 +45,9 @@ export class ResidentService {
         'contact.created_at': 0,
         'contact.updated_at': 0,
       })
+      .populate('owner')
+      .populate('rentals')
+      .populate('rooms')
       .exec();
   }
 
@@ -59,6 +62,9 @@ export class ResidentService {
         'contact.created_at': 0,
         'contact.updated_at': 0,
       })
+      .populate('owner')
+      .populate('rentals')
+      .populate('rooms')
       .exec();
   }
 
@@ -73,7 +79,13 @@ export class ResidentService {
         'contact.created_at': 0,
         'contact.updated_at': 0,
       })
+      .populate('owner')
+      .populate('rentals')
+      .populate('rooms')
+      .populate('rooms.currentRental')
       .exec();
+    console.log('resident', await resident);
+
     if (!resident) {
       throw new NotFoundException('Resident not found');
     }
@@ -94,17 +106,32 @@ export class ResidentService {
   }
 
   async delete(id: string): Promise<Resident> {
+    // delete all rental
+    // await this.rentalModel.deleteMany({ resident: id }).exec();
+    // delete all room
+    // await this.roomModel.deleteMany({ resident: id }).exec();
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
   // Rental
-  async createRental(id: string, createRentalDto: CreateRentalDto): Promise<Rental> {
-    const createdRental = await new this.rentalModel(createRentalDto).save();
+  async createRental(residentId: string, createRentalDto: CreateRentalDto): Promise<Rental> {
+
+    // check resident is exist
+    const resident = await this.residentModel.findById(residentId).exec();
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
+
+    const createdRental = await new this.rentalModel({
+      ...createRentalDto,
+      resident: residentId
+    }).save();
+
     console.log('created rental', createdRental);
 
     // save rental to resident
     await this.residentModel.findOneAndUpdate(
-      { _id: id },
+      { _id: residentId },
       { $push: { rentals: createdRental._id } },
       { new: true },
     ).exec();
@@ -113,106 +140,151 @@ export class ResidentService {
   }
 
   async findAllRentalInResident(residentId: string): Promise<Rental[]> {
-    const resident = await this.residentModel.findById(residentId).exec();
+    const resident = await this.residentModel
+      .findById(residentId)
+      .populate('rentals')
+      .exec();
     return resident.rentals;
   }
 
-  async findOneRentalInResident(residentId: string, rentalId: string): Promise<Rental> {
-    const resident = await this.residentModel.findOne({
-      _id: residentId,
-      'rentals._id': rentalId,
-    })
-      .select('rentals.$')
+  async findOneRental(rentalId: string): Promise<Rental> {
+    const rental = await this.rentalModel
+      .findById(rentalId)
       .exec();
 
-    if (!resident) {
+    if (!rental) {
       throw new NotFoundException('Rental not found');
     }
 
-    return resident.rentals[0];
+    return rental;
   }
 
-  async updateRentalInResident(
-    residentId: string,
+  async updateRental(
     rentalId: string,
     updateRentalDto: UpdateRentalDto
   ): Promise<Rental> {
-
-    const resident = await this.residentModel.findOneAndUpdate(
-      {
-        _id: residentId,
-        'rentals._id': rentalId,
-      },
-      {
-        $set: {
-          'rentals.$': { ...updateRentalDto, updated_at: Date.now() },
+    const updatedRental = await this
+      .rentalModel
+      .findByIdAndUpdate(rentalId,
+        {
+          ...updateRentalDto,
+          updated_at: Date.now(),
         },
-      },
-      { new: true },
-    ).exec();
-
-    return resident.rentals[0];
+        { new: true }
+      ).exec();
+    return updatedRental;
   }
 
-  async createRoom(residentId: string, createRoomDto: CreateRoomDto): Promise<Room[]> {
-    const resident = await this.residentModel.findOneAndUpdate(
-      { _id: residentId },
-      { $push: { rooms: { ...createRoomDto } } },
+  async deleteRental(rentalId: string): Promise<Rental> {
+    // delete rental in resident
+    const rental = await this.rentalModel.findById(rentalId).exec();
+    await this.residentModel.findOneAndUpdate(
+      { _id: rental.resident },
+      { $pull: { rentals: rentalId } },
       { new: true },
     ).exec();
 
-    return resident.rooms;
+    // delete rental
+    return this.rentalModel.findByIdAndDelete(rentalId).exec();
+  }
+
+  async createRoom(residentId: string, createRoomDto: CreateRoomDto): Promise<Room> {
+
+    // check resident is exist
+    const resident = await this.residentModel.findById(residentId).exec();
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
+
+    // check room name is exist
+    const room = await this.roomModel.findOne({ name: createRoomDto.name, resident: residentId }).exec();
+    if (room) {
+      throw new BadRequestException('Room name is exist');
+    }
+
+
+    // check is rental exist and not in other room
+    if (createRoomDto.currentRental) {
+      const rental = await this.rentalModel.findById(createRoomDto.currentRental).exec();
+      if (!rental) {
+        throw new NotFoundException('Rental not found');
+      }
+      const room = await this.roomModel.findOne({ currentRental: createRoomDto.currentRental, resident: residentId }).exec();
+      if (room) {
+        throw new BadRequestException('Rental is exist in other room');
+      }
+    }
+
+    // create room
+    const createdRoom = await new this.roomModel({
+      ...createRoomDto,
+      resident: residentId,
+    }).save();
+
+    // save room to resident
+    await this.residentModel.findOneAndUpdate(
+      { _id: residentId },
+      { $push: { rooms: createdRoom._id } },
+      { new: true },
+    ).exec();
+
+    // save room to rental
+    if (createRoomDto.currentRental) {
+      await this.rentalModel.findOneAndUpdate(
+        { _id: createRoomDto.currentRental },
+        { $set: { room: createdRoom._id } },
+        { new: true },
+      ).exec();
+    }
+
+    return createdRoom;
   }
 
   async findAllRoomInResident(residentId: string): Promise<Room[]> {
-    const resident = await this.residentModel.findById(residentId).exec();
+    const resident = await this
+      .residentModel
+      .findById(residentId)
+      .populate('rooms')
+      .exec();
     return resident.rooms;
   }
 
-  async findOneRoomInResident(residentId: string, roomId: string): Promise<Room> {
-    const resident = await this.residentModel.findOne({
-      _id: residentId,
-      'rooms._id': roomId,
-    })
-      .select('rooms.$')
-      .exec();
+  async findOneRoom(roomId: string): Promise<Room> {
+    const room = await this.roomModel.findById(roomId).exec();
 
-    if (!resident) {
+    if (!room) {
       throw new NotFoundException('Room not found');
     }
 
-    return resident.rooms[0];
+    return room;
   }
 
-  async updateRoomInResident(
-    residentId: string,
+  async updateRoom(
     roomId: string,
     updateRoomDto: UpdateRoomDto
   ): Promise<Room> {
-
-    const resident = await this.residentModel.findOneAndUpdate(
-      {
-        _id: residentId,
-        'rooms._id': roomId,
-      },
-      {
-        $set: {
-          'rooms.$': { ...updateRoomDto, updated_at: Date.now() },
+    const updatedRoom = await this
+      .roomModel
+      .findByIdAndUpdate(roomId,
+        {
+          ...updateRoomDto,
+          updated_at: Date.now(),
         },
-      },
-      { new: true },
-    ).exec();
+        { new: true }
+      ).exec();
 
-    return resident.rooms[0];
+    return updatedRoom;
   }
 
   async deleteRoomInResident(residentId: string, roomId: string): Promise<Room> {
-    const resident = await this.residentModel.findOneAndUpdate(
+    // delete room in resident
+    await this.residentModel.findOneAndUpdate(
       { _id: residentId },
-      { $pull: { rooms: { _id: roomId } } },
+      { $pull: { rooms: roomId } },
       { new: true },
     ).exec();
 
-    return resident.rooms[0];
+    // delete room
+    return this.roomModel.findByIdAndDelete(roomId).exec();
   }
 }
