@@ -241,6 +241,7 @@ export class ResidentController {
     }
 
     return await this.residentService.updateRoom(
+      residentId,
       roomId,
       updateRoomDto
     );

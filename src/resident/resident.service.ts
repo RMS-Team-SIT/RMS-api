@@ -202,7 +202,6 @@ export class ResidentService {
       throw new BadRequestException('Room name is exist');
     }
 
-
     // check is rental exist and not in other room
     if (createRoomDto.currentRental) {
       const rental = await this.rentalModel.findById(createRoomDto.currentRental).exec();
@@ -213,6 +212,14 @@ export class ResidentService {
       if (room) {
         throw new BadRequestException('Rental is exist in other room');
       }
+    }
+
+    // set default price rate if isUseDefaultPriceRate is true
+    if (createRoomDto.isUseDefaultLightPriceRate) {
+      createRoomDto.waterPriceRate = resident.defaultWaterPriceRate;
+    }
+    if (createRoomDto.isUseDefaultLightPriceRate) {
+      createRoomDto.lightPriceRate = resident.defaultLightPriceRate;
     }
 
     // create room
@@ -260,9 +267,44 @@ export class ResidentService {
   }
 
   async updateRoom(
+    residentId: string,
     roomId: string,
     updateRoomDto: UpdateRoomDto
   ): Promise<Room> {
+
+    // check resident is exist
+    const resident = await this.residentModel.findById(residentId).exec();
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
+
+    // check room name is exist except this room
+    const room = await this.roomModel.findOne({ name: updateRoomDto.name, _id: { $ne: roomId } }).exec();
+    if (room) {
+      throw new BadRequestException('Room name is exist');
+    }
+
+    // check is rental exist and in other room
+    if (updateRoomDto.currentRental) {
+      const rental = await this.rentalModel.findById(updateRoomDto.currentRental).exec();
+      if (!rental) {
+        throw new NotFoundException('Rental not found');
+      }
+      const room = await this.roomModel.findOne({ currentRental: updateRoomDto.currentRental, _id: { $ne: roomId } }).exec();
+      if (room) {
+        throw new BadRequestException('Rental is exist in other room');
+      }
+    }
+
+    // set default price rate if isUseDefaultPriceRate is true
+    if (updateRoomDto.isUseDefaultLightPriceRate) {
+      updateRoomDto.waterPriceRate = resident.defaultWaterPriceRate;
+    }
+    if (updateRoomDto.isUseDefaultLightPriceRate) {
+      updateRoomDto.lightPriceRate = resident.defaultLightPriceRate;
+    }
+
+    // update room
     const updatedRoom = await this
       .roomModel
       .findByIdAndUpdate(roomId,
@@ -273,6 +315,15 @@ export class ResidentService {
         { new: true }
       ).exec();
 
+    // update room in rental
+    if (updateRoomDto.currentRental) {
+      await this.rentalModel.findOneAndUpdate(
+        { _id: updateRoomDto.currentRental },
+        { $set: { room: roomId } },
+        { new: true },
+      ).exec();
+    }
+    
     return updatedRoom;
   }
 
