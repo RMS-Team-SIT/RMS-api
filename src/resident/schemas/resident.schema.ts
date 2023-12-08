@@ -13,7 +13,7 @@ import { Rental, RentalSchema } from './rental.schema';
 export class Resident extends Document {
   _id: string;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
+  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   owner: User;
 
   @Prop({ required: true })

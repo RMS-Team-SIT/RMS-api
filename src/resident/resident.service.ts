@@ -16,6 +16,10 @@ export class ResidentService {
   constructor(
     @InjectModel(Resident.name)
     private readonly residentModel: Model<Resident>,
+    @InjectModel(Rental.name)
+    private readonly rentalModel: Model<Rental>,
+    @InjectModel(Room.name)
+    private readonly roomModel: Model<Room>,
   ) { }
 
   // Resident
@@ -94,15 +98,18 @@ export class ResidentService {
   }
 
   // Rental
-  async createRental(id: string, createRentalDto: CreateRentalDto): Promise<Resident> {
+  async createRental(id: string, createRentalDto: CreateRentalDto): Promise<Rental> {
+    const createdRental = await new this.rentalModel(createRentalDto).save();
+    console.log('created rental', createdRental);
 
-    const resident = await this.residentModel.findOneAndUpdate(
+    // save rental to resident
+    await this.residentModel.findOneAndUpdate(
       { _id: id },
-      { $push: { rentals: createRentalDto } },
+      { $push: { rentals: createdRental._id } },
       { new: true },
     ).exec();
-    console.log('create rental to resident', resident);
-    return resident;
+
+    return createdRental;
   }
 
   async findAllRentalInResident(residentId: string): Promise<Rental[]> {

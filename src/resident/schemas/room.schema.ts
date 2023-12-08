@@ -3,12 +3,13 @@ import { RoomUser, RoomUserSchema } from './room-user.schema';
 import { BillHistory, BillHistorySchema } from './bill-history.schema';
 import mongoose, { Document, Types } from 'mongoose';
 import { Rental } from './rental.schema';
+import { Resident } from './resident.schema';
 
 @Schema()
 export class Room extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Resident' })
+  @Prop({ type: Types.ObjectId, ref: Resident.name, required: true })
   resident: Types.ObjectId;
 
   @Prop({ required: true })

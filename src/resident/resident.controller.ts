@@ -109,7 +109,7 @@ export class ResidentController {
     @Req() req,
     @Param("residentId") residentId: string,
     @Body() dto: CreateRentalDto,
-  ): Promise<Resident> {
+  ): Promise<Rental> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
