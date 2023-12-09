@@ -108,9 +108,9 @@ export class ResidentService {
 
   async delete(id: string): Promise<Resident> {
     // delete all rental
-    // await this.rentalModel.deleteMany({ resident: id }).exec();
+    await this.rentalModel.deleteMany({ resident: id }).exec();
     // delete all room
-    // await this.roomModel.deleteMany({ resident: id }).exec();
+    await this.roomModel.deleteMany({ resident: id }).exec();
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
