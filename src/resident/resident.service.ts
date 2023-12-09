@@ -48,6 +48,10 @@ export class ResidentService {
       .populate('owner')
       .populate('rentals')
       .populate('rooms')
+      .populate({
+        path: 'rooms',
+        populate: { path: 'currentRental' },
+      })
       .exec();
   }
 
@@ -65,6 +69,10 @@ export class ResidentService {
       .populate('owner')
       .populate('rentals')
       .populate('rooms')
+      .populate({
+        path: 'rooms',
+        populate: { path: 'currentRental' },
+      })
       .exec();
   }
 
@@ -82,7 +90,10 @@ export class ResidentService {
       .populate('owner')
       .populate('rentals')
       .populate('rooms')
-      .populate('rooms.currentRental')
+      .populate({
+        path: 'rooms',
+        populate: { path: 'currentRental' },
+      })
       .exec();
 
     console.log('resident', await resident);
@@ -279,22 +290,48 @@ export class ResidentService {
       throw new NotFoundException('Resident not found');
     }
 
+    // check room is exist
+    const room = await this.roomModel.findById(roomId).exec();
+    if (!room) {
+      throw new NotFoundException('Room not found');
+    }
+
     // check room name is exist except this room
-    const room = await this.roomModel.findOne({ name: updateRoomDto.name, _id: { $ne: roomId } }).exec();
-    if (room) {
+    const duplicateRoomName = await this.roomModel.findOne({ name: updateRoomDto.name, _id: { $ne: roomId } }).exec();
+    if (duplicateRoomName) {
       throw new BadRequestException('Room name is exist');
     }
 
-    // check is rental exist and in other room
+    // check if rantal update
     if (updateRoomDto.currentRental) {
+
+      // check is new rental exist
       const rental = await this.rentalModel.findById(updateRoomDto.currentRental).exec();
       if (!rental) {
         throw new NotFoundException('Rental not found');
       }
-      const room = await this.roomModel.findOne({ currentRental: updateRoomDto.currentRental, _id: { $ne: roomId } }).exec();
-      if (room) {
+
+      // check is new rental not in other room
+      const rentalRoom = await this.roomModel.findOne({ currentRental: updateRoomDto.currentRental, _id: { $ne: roomId } }).exec();
+      if (rentalRoom) {
         throw new BadRequestException('Rental is exist in other room');
       }
+
+      // remove room from old rental if exist
+      if (room.currentRental) {
+        await this.rentalModel.findOneAndUpdate(
+          { _id: room.currentRental },
+          { $set: { room: null } },
+          { new: true },
+        ).exec();
+      }
+
+      // update new rental set room to this room 
+      await this.rentalModel.findOneAndUpdate(
+        { _id: updateRoomDto.currentRental },
+        { $set: { room: roomId } },
+        { new: true },
+      ).exec();
     }
 
     // set default price rate if isUseDefaultPriceRate is true
@@ -315,15 +352,6 @@ export class ResidentService {
         },
         { new: true }
       ).exec();
-
-    // update room in rental
-    if (updateRoomDto.currentRental) {
-      await this.rentalModel.findOneAndUpdate(
-        { _id: updateRoomDto.currentRental },
-        { $set: { room: roomId } },
-        { new: true },
-      ).exec();
-    }
 
     return updatedRoom;
   }

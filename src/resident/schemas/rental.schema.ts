@@ -3,6 +3,8 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Resident } from './resident.schema';
 import { Room } from './room.schema';
 
+export type RentalDocument = Rental & Document;
+
 @Schema()
 export class Rental extends Document {
   _id: string;

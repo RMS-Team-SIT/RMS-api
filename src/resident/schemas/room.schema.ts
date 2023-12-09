@@ -5,6 +5,7 @@ import mongoose, { Document, Types } from 'mongoose';
 import { Rental } from './rental.schema';
 import { Resident } from './resident.schema';
 
+export type RoomDocument = Room & Document;
 @Schema()
 export class Room extends Document {
   _id: string;

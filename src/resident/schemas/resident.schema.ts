@@ -9,7 +9,7 @@ import {
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Rental, RentalSchema } from './rental.schema';
 
-export type ResidentDocument = HydratedDocument<Resident>;
+export type ResidentDocument = Resident & Document;
 
 @Schema()
 export class Resident extends Document {
