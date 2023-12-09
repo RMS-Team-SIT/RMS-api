@@ -26,6 +26,11 @@ export class CreateRentalDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty()
   phone: string;
 
   @IsString()

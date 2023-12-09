@@ -89,14 +89,16 @@ export class ResidentService {
       })
       .populate('owner')
       .populate('rentals')
+      .populate({
+        path: 'rentals',
+        populate: { path: 'room' },
+      })
       .populate('rooms')
       .populate({
         path: 'rooms',
         populate: { path: 'currentRental' },
       })
       .exec();
-
-    console.log('resident', await resident);
 
     if (!resident) {
       throw new NotFoundException('Resident not found');
@@ -138,8 +140,6 @@ export class ResidentService {
       ...createRentalDto,
       resident: residentId
     }).save();
-
-    console.log('created rental', createdRental);
 
     // save rental to resident
     await this.residentModel.findOneAndUpdate(
@@ -190,6 +190,16 @@ export class ResidentService {
   async deleteRental(rentalId: string): Promise<Rental> {
     // delete rental in resident
     const rental = await this.rentalModel.findById(rentalId).exec();
+
+    if (!rental) {
+      throw new NotFoundException('Rental not found');
+    }
+
+    if (rental.room) {
+      throw new BadRequestException('Rental is in room. Please remove rental from room first.');
+    }
+
+    // delete rental in resident
     await this.residentModel.findOneAndUpdate(
       { _id: rental.resident },
       { $pull: { rentals: rentalId } },
@@ -319,11 +329,15 @@ export class ResidentService {
 
       // remove room from old rental if exist
       if (room.currentRental) {
-        await this.rentalModel.findOneAndUpdate(
+        console.log('remove room from old rental');
+
+        const temp = await this.rentalModel.findOneAndUpdate(
           { _id: room.currentRental },
           { $set: { room: null } },
           { new: true },
         ).exec();
+        console.log('temp', temp);
+
       }
 
       // update new rental set room to this room 
@@ -332,6 +346,20 @@ export class ResidentService {
         { $set: { room: roomId } },
         { new: true },
       ).exec();
+    } else {
+
+      // remove room from old rental if exist
+      if (room.currentRental) {
+        console.log('remove room from old rental');
+
+        const temp = await this.rentalModel.findOneAndUpdate(
+          { _id: room.currentRental },
+          { $set: { room: null } },
+          { new: true },
+        ).exec();
+        console.log('temp', temp);
+
+      }
     }
 
     // set default price rate if isUseDefaultPriceRate is true
