@@ -23,8 +23,8 @@ console.log(`Current environment: ${ENV}`);
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     ThrottlerModule.forRoot([{
-      ttl: 60 * 1000, // milliseconds => 1 minute
-      limit: 100, // requests per ttl
+      ttl: parseInt(process.env.RATE_LIMIT_TTL || '60000'),
+      limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
     }]),
     AuthModule,
     UserModule,
