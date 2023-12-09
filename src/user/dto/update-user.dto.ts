@@ -24,7 +24,4 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @IsOptional()
   @IsStrongPassword(PASSWORD_RULE)
   newPassword: string;
-
-  @Exclude()
-  email?: string;
 }

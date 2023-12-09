@@ -61,6 +61,17 @@ export class UserService {
       );
     }
 
+    const isDuplicatePhone = await this.userModel.findOne({
+      phone: createUserDto.phone,
+    });
+    if (isDuplicatePhone) {
+      const errors = { username: 'Phone must be unique.' };
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const createdUser = new this.userModel({
       ...createUserDto,
       password: await hashPassword(createUserDto.password),
@@ -77,13 +88,56 @@ export class UserService {
     return createdUser.save();
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    // TODO: check email is duplicate
+  async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+    // if email verified, email can not be changed
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    console.log(user);
+    
+
+    // if email verified, email can not be changed
+    if (user.isEmailVerified) {
+      console.log('email verified can not be changed');
+      delete updateUserDto.email;
+    } else {
+      console.log('email not verified can be changed');
+      // TODO: send email verification after update email (if email changed and isEmailVerified is false)
+      console.log(updateUserDto);
+      
+      if (updateUserDto.email) {
+        // TODO: check email is duplicate
+        const duplicateEmail = await this.userModel.findOne({ email: updateUserDto.email, _id: { $ne: userId } }).exec();
+        if (duplicateEmail) {
+          throw new HttpException('Email is duplicate', HttpStatus.BAD_REQUEST);
+        }
+        
+        // send email verification if email changed and isEmailVerified is false
+        const shouldSendEmailVerification = await this.userModel.findOne({ _id: userId, email: { $ne: updateUserDto.email }, isEmailVerified: false });
+        if (shouldSendEmailVerification) {
+          console.log('send email verification');
+          const sendMailResult = await this.mailService.sendVerification({
+            to: updateUserDto.email,
+            token: user.emailVerificationToken,
+          });
+          console.log(sendMailResult);
+        }
+      }
+    }
+
     // TODO: check phone is duplicate
-    // TODO: send email verification after update email (if email changed and isEmailVerified is false)
+    if (updateUserDto.phone) {
+      const duplicatePhone = await this.userModel.findOne({ phone: updateUserDto.phone, _id: { $ne: userId } }).exec();
+      
+      if (duplicatePhone) {
+        throw new HttpException('Phone is duplicate', HttpStatus.BAD_REQUEST);
+      }
+    }
+
     const updateUser = this.userModel
       .findByIdAndUpdate(
-        id,
+        userId,
         { ...updateUserDto, updated_at: Date.now() },
         { new: true },
       )
