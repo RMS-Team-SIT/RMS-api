@@ -21,7 +21,7 @@ export class Resident extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ required: true })
+  @Prop({ default: null })
   description: string;
 
   @Prop({ default: [] })
