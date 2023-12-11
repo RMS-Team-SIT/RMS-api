@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
@@ -77,6 +77,9 @@ export class ResidentService {
   }
 
   async findOne(id: string): Promise<Resident> {
+    
+    this.validateObjectIdFormat(id, 'Resident');
+    
     const resident = this.residentModel
       .findById(id)
       .select({
@@ -107,6 +110,9 @@ export class ResidentService {
   }
 
   async update(id: string, dto: UpdateResidentDto): Promise<Resident> {
+
+    this.validateObjectIdFormat(id, 'Resident');
+    
     return this.residentModel
       .findByIdAndUpdate(
         id,
@@ -120,15 +126,19 @@ export class ResidentService {
   }
 
   async delete(id: string): Promise<Resident> {
+    
     // delete all rental
     await this.rentalModel.deleteMany({ resident: id }).exec();
     // delete all room
     await this.roomModel.deleteMany({ resident: id }).exec();
+
     return this.residentModel.findByIdAndDelete(id).exec();
   }
 
   // Rental
   async createRental(residentId: string, createRentalDto: CreateRentalDto): Promise<Rental> {
+    
+    this.validateObjectIdFormat(residentId, 'Resident');
 
     // check resident is exist
     const resident = await this.residentModel.findById(residentId).exec();
@@ -152,6 +162,9 @@ export class ResidentService {
   }
 
   async findAllRentalInResident(residentId: string): Promise<Rental[]> {
+
+    this.validateObjectIdFormat(residentId, 'Resident');
+
     const resident = await this.residentModel
       .findById(residentId)
       .populate('rentals')
@@ -160,6 +173,9 @@ export class ResidentService {
   }
 
   async findOneRental(rentalId: string): Promise<Rental> {
+
+    this.validateObjectIdFormat(rentalId, 'Rental');
+
     const rental = await this.rentalModel
       .findById(rentalId)
       .exec();
@@ -175,6 +191,9 @@ export class ResidentService {
     rentalId: string,
     updateRentalDto: UpdateRentalDto
   ): Promise<Rental> {
+    
+    this.validateObjectIdFormat(rentalId, 'Rental');
+
     const updatedRental = await this
       .rentalModel
       .findByIdAndUpdate(rentalId,
@@ -188,6 +207,9 @@ export class ResidentService {
   }
 
   async deleteRental(rentalId: string): Promise<Rental> {
+
+    this.validateObjectIdFormat(rentalId, 'Rental');
+
     // delete rental in resident
     const rental = await this.rentalModel.findById(rentalId).exec();
 
@@ -211,6 +233,8 @@ export class ResidentService {
   }
 
   async createRoom(residentId: string, createRoomDto: CreateRoomDto): Promise<Room> {
+
+    this.validateObjectIdFormat(residentId, 'Resident');
 
     // check resident is exist
     const resident = await this.residentModel.findById(residentId).exec();
@@ -270,6 +294,9 @@ export class ResidentService {
   }
 
   async findAllRoomInResident(residentId: string): Promise<Room[]> {
+
+    this.validateObjectIdFormat(residentId, 'Resident');
+
     const resident = await this
       .residentModel
       .findById(residentId)
@@ -279,6 +306,9 @@ export class ResidentService {
   }
 
   async findOneRoom(roomId: string): Promise<Room> {
+
+    this.validateObjectIdFormat(roomId, 'Room');
+
     const room = await this.roomModel.findById(roomId).exec();
 
     if (!room) {
@@ -293,6 +323,9 @@ export class ResidentService {
     roomId: string,
     updateRoomDto: UpdateRoomDto
   ): Promise<Room> {
+
+    this.validateObjectIdFormat(residentId, 'Resident');
+    this.validateObjectIdFormat(roomId, 'Room');
 
     // check resident is exist
     const resident = await this.residentModel.findById(residentId).exec();
@@ -385,6 +418,10 @@ export class ResidentService {
   }
 
   async deleteRoomInResident(residentId: string, roomId: string): Promise<Room> {
+
+    this.validateObjectIdFormat(residentId, 'Resident');
+    this.validateObjectIdFormat(roomId, 'Room');
+
     // delete room in resident
     await this.residentModel.findOneAndUpdate(
       { _id: residentId },
@@ -394,5 +431,12 @@ export class ResidentService {
 
     // delete room
     return this.roomModel.findByIdAndDelete(roomId).exec();
+  }
+
+  private validateObjectIdFormat(objectId: string, fieldName?: string): boolean {
+    if (!Types.ObjectId.isValid(objectId)) {
+      throw new BadRequestException(`${fieldName || 'Object'} id is invalid format`);
+    }
+    return true;
   }
 }
