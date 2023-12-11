@@ -2,12 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
-  IsNumber,
   IsPhoneNumber,
   IsStrongPassword,
-  Max,
   MaxLength,
-  minLength,
 } from 'class-validator';
 import { PASSWORD_RULE } from './password.rule';
 

@@ -6,10 +6,7 @@ import {
   IsString,
   MaxLength,
   Min,
-  ValidateNested,
 } from 'class-validator';
-import { CreateRoomDto } from './create-room.dto';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateResidentContactDto } from './create-resident-contact.dto';
 

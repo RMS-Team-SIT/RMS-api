@@ -1,16 +1,13 @@
 import {
-  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
-  MAX,
   MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
-import { CreateRoomUserDto } from './create-room-user.dto';
 import { CreateBillDto } from './create-bill.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';

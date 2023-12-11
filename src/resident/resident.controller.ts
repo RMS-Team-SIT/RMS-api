@@ -9,7 +9,6 @@ import {
   Put,
   Delete,
   Param,
-  Res,
   ForbiddenException,
   NotFoundException,
   UnauthorizedException,
@@ -19,7 +18,6 @@ import { Resident } from './schemas/resident.schema';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Public } from 'src/auth/decorator/public.decorator';
 import { Rental } from './schemas/rental.schema';
 import { CreateRentalDto } from './dtos/create-rental.dto';
 import { UpdateRentalDto } from './dtos/update-rental.dto';
