@@ -18,13 +18,11 @@ export class CreateResidentDto {
   name: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   @MaxLength(500)
   description: string;
 
   @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   @MaxLength(500)
   address: string;

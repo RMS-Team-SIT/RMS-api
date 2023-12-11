@@ -89,12 +89,10 @@ export class UserService {
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
-    // if email verified, email can not be changed
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
-    console.log(user);
 
     // if email verified, email can not be changed
     if (user.isEmailVerified) {
