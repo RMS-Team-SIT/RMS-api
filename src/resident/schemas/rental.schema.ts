@@ -25,7 +25,7 @@ export class Rental extends Document {
   image: string;
 
   @Prop({ required: true })
-  email: string;
+  username: string;
 
   @Prop({ required: true })
   password: string;

@@ -52,10 +52,10 @@ export class ResidentController {
     }
   }
 
-  @Get()
-  async findAll(): Promise<Resident[]> {
-    return await this.residentService.findAll();
-  }
+  // @Get()
+  // async findAll(): Promise<Resident[]> {
+  //   return await this.residentService.findAll();
+  // }
 
   @Get(':residentId')
   async findOne(@Param('residentId') id: string): Promise<Resident> {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateRentalDto {
   @IsString()
@@ -18,10 +18,10 @@ export class CreateRentalDto {
   image: string;
 
   @IsString()
-  @IsEmail()
+  @MaxLength(200)
   @IsNotEmpty()
   @ApiProperty()
-  email: string;
+  username: string;
 
   @IsString()
   @IsNotEmpty()

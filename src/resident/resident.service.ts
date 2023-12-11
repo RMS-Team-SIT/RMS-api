@@ -24,7 +24,7 @@ export class ResidentService {
     private readonly rentalModel: Model<Rental>,
     @InjectModel(Room.name)
     private readonly roomModel: Model<Room>,
-  ) {}
+  ) { }
 
   // Resident
   async create(
@@ -42,14 +42,14 @@ export class ResidentService {
     return this.residentModel
       .find({ owner: userId })
       .select({
-        __v: 0,
-        created_at: 0,
-        updated_at: 0,
-        'contact._id': 0,
-        'contact.created_at': 0,
-        'contact.updated_at': 0,
+        __v: 0
       })
-      .populate('owner')
+      .populate({
+        path: 'owner',
+        select: {
+          _id: 1,
+        }
+      })
       .populate('rentals')
       .populate('rooms')
       .populate({
@@ -59,26 +59,31 @@ export class ResidentService {
       .exec();
   }
 
-  async findAll(): Promise<Resident[]> {
-    return this.residentModel
-      .find()
-      .select({
-        __v: 0,
-        created_at: 0,
-        updated_at: 0,
-        'contact._id': 0,
-        'contact.created_at': 0,
-        'contact.updated_at': 0,
-      })
-      .populate('owner')
-      .populate('rentals')
-      .populate('rooms')
-      .populate({
-        path: 'rooms',
-        populate: { path: 'currentRental' },
-      })
-      .exec();
-  }
+  // private async findAll(): Promise<Resident[]> {
+  //   return this.residentModel
+  //     .find()
+  //     .select({
+  //       __v: 0,
+  //       created_at: 0,
+  //       updated_at: 0,
+  //       'contact._id': 0,
+  //       'contact.created_at': 0,
+  //       'contact.updated_at': 0,
+  //     })
+  //     .populate({
+  //       path: 'owner',
+  //       select: {
+  //         _id: 1,
+  //       }
+  //     })
+  //     .populate('rentals')
+  //     .populate('rooms')
+  //     .populate({
+  //       path: 'rooms',
+  //       populate: { path: 'currentRental' },
+  //     })
+  //     .exec();
+  // }
 
   async findOne(id: string): Promise<Resident> {
     this.validateObjectIdFormat(id, 'Resident');
@@ -89,11 +94,13 @@ export class ResidentService {
         __v: 0,
         created_at: 0,
         updated_at: 0,
-        'contact._id': 0,
-        'contact.created_at': 0,
-        'contact.updated_at': 0,
       })
-      .populate('owner')
+      .populate({
+        path: 'owner',
+        select: {
+          _id: 1,
+        }
+      })
       .populate('rentals')
       .populate({
         path: 'rentals',
@@ -151,12 +158,15 @@ export class ResidentService {
       throw new NotFoundException('Resident not found');
     }
 
-    // check rental email is exist
+    // check rental username is exist
     const duplicateRental = await this.rentalModel
-      .findOne({ email: createRentalDto.email })
+      .findOne({
+        username: createRentalDto.username,
+        resident: residentId,
+      })
       .exec();
     if (!duplicateRental) {
-      throw new BadRequestException('Rental email is exist');
+      throw new BadRequestException('Rental username is exist');
     }
 
     const createdRental = await new this.rentalModel({
@@ -189,7 +199,17 @@ export class ResidentService {
   async findOneRental(rentalId: string): Promise<Rental> {
     this.validateObjectIdFormat(rentalId, 'Rental');
 
-    const rental = await this.rentalModel.findById(rentalId).exec();
+    const rental = await this
+      .rentalModel
+      .findById(rentalId)
+      .populate({
+        path: 'room',
+        select: {
+          _id: 1,
+          name: 1,
+        }
+      })
+      .exec();
 
     if (!rental) {
       throw new NotFoundException('Rental not found');
