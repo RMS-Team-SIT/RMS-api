@@ -127,6 +127,8 @@ export class ResidentService {
 
   async delete(id: string): Promise<Resident> {
     
+    this.validateObjectIdFormat(id, 'Resident');
+
     // delete all rental
     await this.rentalModel.deleteMany({ resident: id }).exec();
     // delete all room
