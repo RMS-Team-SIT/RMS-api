@@ -3,8 +3,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { fileMimetypeFilter } from '../filters/file-mimetype.filter';
-import multer, { diskStorage } from 'multer';
-import { extname } from 'path';
+import { diskStorage } from 'multer';
 import { customFileName } from 'src/utils/custom-filename.util';
 
 export function ApiFile(
@@ -14,14 +13,14 @@ export function ApiFile(
 ) {
   return applyDecorators(
     UseInterceptors(
-      FileInterceptor(fieldName,
-        {
-          ...localOptions,
-          storage: diskStorage({
-            destination: localOptions?.dest || 'public/upload/',
-            filename: customFileName,
-          })
-        })),
+      FileInterceptor(fieldName, {
+        ...localOptions,
+        storage: diskStorage({
+          destination: localOptions?.dest || 'public/upload/',
+          filename: customFileName,
+        }),
+      }),
+    ),
     ApiConsumes('multipart/form-data'),
     ApiBody({
       schema: {

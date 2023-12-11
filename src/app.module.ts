@@ -22,10 +22,12 @@ console.log(`Current environment: ${ENV}`);
       envFilePath: `./env/.env.${ENV || 'development'}`,
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
-    ThrottlerModule.forRoot([{
-      ttl: parseInt(process.env.RATE_LIMIT_TTL || '60000'),
-      limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: parseInt(process.env.RATE_LIMIT_TTL || '60000'),
+        limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
+      },
+    ]),
     AuthModule,
     UserModule,
     ResidentModule,
@@ -46,4 +48,4 @@ console.log(`Current environment: ${ENV}`);
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

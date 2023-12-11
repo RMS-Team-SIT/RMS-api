@@ -18,7 +18,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailService: MailService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userModel
@@ -40,7 +40,7 @@ export class UserService {
         __v: 0,
         resetPasswordToken: 0,
         resetPasswordExpires: 0,
-        emailVerificationToken: 0
+        emailVerificationToken: 0,
       })
       .exec();
   }
@@ -95,7 +95,6 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
     console.log(user);
-    
 
     // if email verified, email can not be changed
     if (user.isEmailVerified) {
@@ -105,16 +104,22 @@ export class UserService {
       console.log('email not verified can be changed');
       // TODO: send email verification after update email (if email changed and isEmailVerified is false)
       console.log(updateUserDto);
-      
+
       if (updateUserDto.email) {
         // TODO: check email is duplicate
-        const duplicateEmail = await this.userModel.findOne({ email: updateUserDto.email, _id: { $ne: userId } }).exec();
+        const duplicateEmail = await this.userModel
+          .findOne({ email: updateUserDto.email, _id: { $ne: userId } })
+          .exec();
         if (duplicateEmail) {
           throw new HttpException('Email is duplicate', HttpStatus.BAD_REQUEST);
         }
-        
+
         // send email verification if email changed and isEmailVerified is false
-        const shouldSendEmailVerification = await this.userModel.findOne({ _id: userId, email: { $ne: updateUserDto.email }, isEmailVerified: false });
+        const shouldSendEmailVerification = await this.userModel.findOne({
+          _id: userId,
+          email: { $ne: updateUserDto.email },
+          isEmailVerified: false,
+        });
         if (shouldSendEmailVerification) {
           console.log('send email verification');
           const sendMailResult = await this.mailService.sendVerification({
@@ -128,8 +133,10 @@ export class UserService {
 
     // TODO: check phone is duplicate
     if (updateUserDto.phone) {
-      const duplicatePhone = await this.userModel.findOne({ phone: updateUserDto.phone, _id: { $ne: userId } }).exec();
-      
+      const duplicatePhone = await this.userModel
+        .findOne({ phone: updateUserDto.phone, _id: { $ne: userId } })
+        .exec();
+
       if (duplicatePhone) {
         throw new HttpException('Phone is duplicate', HttpStatus.BAD_REQUEST);
       }
@@ -274,7 +281,10 @@ export class UserService {
       })
       .exec();
     if (!user) {
-      throw new HttpException('Verify token is invalid', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Verify token is invalid',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     await this.userModel
       .findByIdAndUpdate(user._id, {

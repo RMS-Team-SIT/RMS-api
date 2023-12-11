@@ -27,7 +27,7 @@ export class Rental extends Document {
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   password: string;
 
   @Prop({ required: true })

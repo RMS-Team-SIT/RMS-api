@@ -1,24 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
 
 export class CreateResidentContactDto {
   @ApiProperty()
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   facebook: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   line: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   phone: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
+  @MaxLength(200)
   email: string;
 }

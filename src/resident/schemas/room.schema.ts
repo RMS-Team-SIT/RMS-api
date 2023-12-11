@@ -1,7 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { RoomUser, RoomUserSchema } from './room-user.schema';
 import { BillHistory, BillHistorySchema } from './bill-history.schema';
-import mongoose, { Document, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Rental } from './rental.schema';
 import { Resident } from './resident.schema';
 

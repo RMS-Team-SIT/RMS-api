@@ -5,6 +5,8 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  MAX,
+  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
@@ -18,11 +20,13 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @MaxLength(200)
   name: string;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
+  @MaxLength(500)
   description: string;
 
   @ApiProperty()
@@ -34,11 +38,13 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   waterPriceRate: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   lightPriceRate: number;
 
   @ApiProperty()
@@ -54,11 +60,13 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   currentWaterGauge: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
+  @Min(0)
   currentLightGauge: number;
 
   @ApiProperty()

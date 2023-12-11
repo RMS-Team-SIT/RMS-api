@@ -31,9 +31,7 @@ import { UpdateRoomDto } from './dtos/update-room.dto';
 @ApiBearerAuth()
 @Controller('resident')
 export class ResidentController {
-  constructor(
-    private readonly residentService: ResidentService,
-  ) { }
+  constructor(private readonly residentService: ResidentService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -104,10 +102,10 @@ export class ResidentController {
     }
   }
 
-  @Post(":residentId/rental")
+  @Post(':residentId/rental')
   async createRental(
     @Req() req,
-    @Param("residentId") residentId: string,
+    @Param('residentId') residentId: string,
     @Body() dto: CreateRentalDto,
   ): Promise<Rental> {
     const userId = req.user.id;
@@ -115,175 +113,164 @@ export class ResidentController {
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
     return await this.residentService.createRental(residentId, dto);
   }
 
-  @Get(":residentId/rental")
+  @Get(':residentId/rental')
   async findAllRentalInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
+    @Param('residentId') residentId: string,
   ): Promise<Rental[]> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
     return await this.residentService.findAllRentalInResident(residentId);
   }
 
-  @Get(":residentId/rental/:rentalId")
+  @Get(':residentId/rental/:rentalId')
   async findOneRentalInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
-    @Param("rentalId") rentalId: string,
+    @Param('residentId') residentId: string,
+    @Param('rentalId') rentalId: string,
   ): Promise<Rental> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
     return await this.residentService.findOneRental(rentalId);
   }
 
-  @Put(":residentId/rental/:rentalId")
+  @Put(':residentId/rental/:rentalId')
   async updateRentalInResident(
     @Req() req,
     @Param('residentId') residentId: string,
     @Param('rentalId') rentalId: string,
-    @Body() updateRentalDto: UpdateRentalDto
+    @Body() updateRentalDto: UpdateRentalDto,
   ): Promise<Rental> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
-    return await this.residentService.updateRental(
-      rentalId,
-      updateRentalDto
-    );
+    return await this.residentService.updateRental(rentalId, updateRentalDto);
   }
 
-  @Delete(":residentId/rental/:rentalId")
+  @Delete(':residentId/rental/:rentalId')
   async deleteRentalInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
-    @Param("rentalId") rentalId: string,
+    @Param('residentId') residentId: string,
+    @Param('rentalId') rentalId: string,
   ): Promise<Rental> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
-    return await this.residentService.deleteRental(
-      rentalId,
-    );
+    return await this.residentService.deleteRental(rentalId);
   }
 
-  @Post(":residentId/room")
+  @Post(':residentId/room')
   async createRoom(
     @Req() req,
     @Body() dto: CreateRoomDto,
-    @Param("residentId") residentId: string,
+    @Param('residentId') residentId: string,
   ): Promise<Room> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
     return await this.residentService.createRoom(residentId, dto);
   }
 
-  @Get(":residentId/room")
+  @Get(':residentId/room')
   async findAllRoomInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
+    @Param('residentId') residentId: string,
   ): Promise<Room[]> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
     return await this.residentService.findAllRoomInResident(residentId);
   }
 
-  @Get(":residentId/room/:roomId")
+  @Get(':residentId/room/:roomId')
   async findOneRoomInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
-    @Param("roomId") roomId: string,
+    @Param('residentId') residentId: string,
+    @Param('roomId') roomId: string,
   ): Promise<Room> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
-    return await this.residentService.findOneRoom(
-      roomId,
-    );
+    return await this.residentService.findOneRoom(roomId);
   }
 
-  @Put(":residentId/room/:roomId")
+  @Put(':residentId/room/:roomId')
   async updateRoomInResident(
     @Req() req,
     @Param('residentId') residentId: string,
     @Param('roomId') roomId: string,
-    @Body() updateRoomDto: UpdateRoomDto
+    @Body() updateRoomDto: UpdateRoomDto,
   ): Promise<Room> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
     return await this.residentService.updateRoom(
       residentId,
       roomId,
-      updateRoomDto
+      updateRoomDto,
     );
   }
 
-  @Delete(":residentId/room/:roomId")
+  @Delete(':residentId/room/:roomId')
   async deleteRoomInResident(
     @Req() req,
-    @Param("residentId") residentId: string,
-    @Param("roomId") roomId: string,
+    @Param('residentId') residentId: string,
+    @Param('roomId') roomId: string,
   ): Promise<Room> {
     const userId = req.user.id;
 
     // check permission req.user is onwer of resident or not ?
     const resident = await this.residentService.findOne(residentId);
     if (resident.owner._id.toString() != userId.toString()) {
-      throw new UnauthorizedException("You are not owner of this resident");
+      throw new UnauthorizedException('You are not owner of this resident');
     }
 
-    return await this.residentService.deleteRoomInResident(
-      residentId,
-      roomId,
-    );
+    return await this.residentService.deleteRoomInResident(residentId, roomId);
   }
-
 }

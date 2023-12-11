@@ -48,7 +48,6 @@ async function bootstrap() {
     console.log(`Environment : ${process.env.TEST_ENV}`);
     console.log(`Application is running on port : ${port}`);
     console.log(`Swagger is running on : /${process.env.OPENAPI_PATH}`);
-
   } catch (error) {
     console.error('Error during application startup:', error);
     process.exit(1);

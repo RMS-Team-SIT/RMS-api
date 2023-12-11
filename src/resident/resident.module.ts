@@ -18,4 +18,4 @@ import { Room, RoomSchema } from './schemas/room.schema';
   providers: [ResidentService],
   exports: [ResidentService],
 })
-export class ResidentModule { }
+export class ResidentModule {}

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Resident } from './schemas/resident.schema';
@@ -20,7 +24,7 @@ export class ResidentService {
     private readonly rentalModel: Model<Rental>,
     @InjectModel(Room.name)
     private readonly roomModel: Model<Room>,
-  ) { }
+  ) {}
 
   // Resident
   async create(
@@ -77,9 +81,8 @@ export class ResidentService {
   }
 
   async findOne(id: string): Promise<Resident> {
-    
     this.validateObjectIdFormat(id, 'Resident');
-    
+
     const resident = this.residentModel
       .findById(id)
       .select({
@@ -110,9 +113,8 @@ export class ResidentService {
   }
 
   async update(id: string, dto: UpdateResidentDto): Promise<Resident> {
-
     this.validateObjectIdFormat(id, 'Resident');
-    
+
     return this.residentModel
       .findByIdAndUpdate(
         id,
@@ -126,7 +128,6 @@ export class ResidentService {
   }
 
   async delete(id: string): Promise<Resident> {
-    
     this.validateObjectIdFormat(id, 'Resident');
 
     // delete all rental
@@ -138,8 +139,10 @@ export class ResidentService {
   }
 
   // Rental
-  async createRental(residentId: string, createRentalDto: CreateRentalDto): Promise<Rental> {
-    
+  async createRental(
+    residentId: string,
+    createRentalDto: CreateRentalDto,
+  ): Promise<Rental> {
     this.validateObjectIdFormat(residentId, 'Resident');
 
     // check resident is exist
@@ -148,23 +151,32 @@ export class ResidentService {
       throw new NotFoundException('Resident not found');
     }
 
+    // check rental email is exist
+    const duplicateRental = await this.rentalModel
+      .findOne({ email: createRentalDto.email })
+      .exec();
+    if (!duplicateRental) {
+      throw new BadRequestException('Rental email is exist');
+    }
+
     const createdRental = await new this.rentalModel({
       ...createRentalDto,
-      resident: residentId
+      resident: residentId,
     }).save();
 
     // save rental to resident
-    await this.residentModel.findOneAndUpdate(
-      { _id: residentId },
-      { $push: { rentals: createdRental._id } },
-      { new: true },
-    ).exec();
+    await this.residentModel
+      .findOneAndUpdate(
+        { _id: residentId },
+        { $push: { rentals: createdRental._id } },
+        { new: true },
+      )
+      .exec();
 
     return createdRental;
   }
 
   async findAllRentalInResident(residentId: string): Promise<Rental[]> {
-
     this.validateObjectIdFormat(residentId, 'Resident');
 
     const resident = await this.residentModel
@@ -175,12 +187,9 @@ export class ResidentService {
   }
 
   async findOneRental(rentalId: string): Promise<Rental> {
-
     this.validateObjectIdFormat(rentalId, 'Rental');
 
-    const rental = await this.rentalModel
-      .findById(rentalId)
-      .exec();
+    const rental = await this.rentalModel.findById(rentalId).exec();
 
     if (!rental) {
       throw new NotFoundException('Rental not found');
@@ -191,25 +200,24 @@ export class ResidentService {
 
   async updateRental(
     rentalId: string,
-    updateRentalDto: UpdateRentalDto
+    updateRentalDto: UpdateRentalDto,
   ): Promise<Rental> {
-    
     this.validateObjectIdFormat(rentalId, 'Rental');
 
-    const updatedRental = await this
-      .rentalModel
-      .findByIdAndUpdate(rentalId,
+    const updatedRental = await this.rentalModel
+      .findByIdAndUpdate(
+        rentalId,
         {
           ...updateRentalDto,
           updated_at: Date.now(),
         },
-        { new: true }
-      ).exec();
+        { new: true },
+      )
+      .exec();
     return updatedRental;
   }
 
   async deleteRental(rentalId: string): Promise<Rental> {
-
     this.validateObjectIdFormat(rentalId, 'Rental');
 
     // delete rental in resident
@@ -220,22 +228,28 @@ export class ResidentService {
     }
 
     if (rental.room) {
-      throw new BadRequestException('Rental is in room. Please remove rental from room first.');
+      throw new BadRequestException(
+        'Rental is in room. Please remove rental from room first.',
+      );
     }
 
     // delete rental in resident
-    await this.residentModel.findOneAndUpdate(
-      { _id: rental.resident },
-      { $pull: { rentals: rentalId } },
-      { new: true },
-    ).exec();
+    await this.residentModel
+      .findOneAndUpdate(
+        { _id: rental.resident },
+        { $pull: { rentals: rentalId } },
+        { new: true },
+      )
+      .exec();
 
     // delete rental
     return this.rentalModel.findByIdAndDelete(rentalId).exec();
   }
 
-  async createRoom(residentId: string, createRoomDto: CreateRoomDto): Promise<Room> {
-
+  async createRoom(
+    residentId: string,
+    createRoomDto: CreateRoomDto,
+  ): Promise<Room> {
     this.validateObjectIdFormat(residentId, 'Resident');
 
     // check resident is exist
@@ -245,18 +259,27 @@ export class ResidentService {
     }
 
     // check room name is exist
-    const room = await this.roomModel.findOne({ name: createRoomDto.name, resident: residentId }).exec();
+    const room = await this.roomModel
+      .findOne({ name: createRoomDto.name, resident: residentId })
+      .exec();
     if (room) {
       throw new BadRequestException('Room name is exist');
     }
 
     // check is rental exist and not in other room
     if (createRoomDto.currentRental) {
-      const rental = await this.rentalModel.findById(createRoomDto.currentRental).exec();
+      const rental = await this.rentalModel
+        .findById(createRoomDto.currentRental)
+        .exec();
       if (!rental) {
         throw new NotFoundException('Rental not found');
       }
-      const room = await this.roomModel.findOne({ currentRental: createRoomDto.currentRental, resident: residentId }).exec();
+      const room = await this.roomModel
+        .findOne({
+          currentRental: createRoomDto.currentRental,
+          resident: residentId,
+        })
+        .exec();
       if (room) {
         throw new BadRequestException('Rental is exist in other room');
       }
@@ -277,30 +300,32 @@ export class ResidentService {
     }).save();
 
     // save room to resident
-    await this.residentModel.findOneAndUpdate(
-      { _id: residentId },
-      { $push: { rooms: createdRoom._id } },
-      { new: true },
-    ).exec();
+    await this.residentModel
+      .findOneAndUpdate(
+        { _id: residentId },
+        { $push: { rooms: createdRoom._id } },
+        { new: true },
+      )
+      .exec();
 
     // save room to rental
     if (createRoomDto.currentRental) {
-      await this.rentalModel.findOneAndUpdate(
-        { _id: createRoomDto.currentRental },
-        { $set: { room: createdRoom._id } },
-        { new: true },
-      ).exec();
+      await this.rentalModel
+        .findOneAndUpdate(
+          { _id: createRoomDto.currentRental },
+          { $set: { room: createdRoom._id } },
+          { new: true },
+        )
+        .exec();
     }
 
     return createdRoom;
   }
 
   async findAllRoomInResident(residentId: string): Promise<Room[]> {
-
     this.validateObjectIdFormat(residentId, 'Resident');
 
-    const resident = await this
-      .residentModel
+    const resident = await this.residentModel
       .findById(residentId)
       .populate('rooms')
       .exec();
@@ -308,7 +333,6 @@ export class ResidentService {
   }
 
   async findOneRoom(roomId: string): Promise<Room> {
-
     this.validateObjectIdFormat(roomId, 'Room');
 
     const room = await this.roomModel.findById(roomId).exec();
@@ -323,9 +347,8 @@ export class ResidentService {
   async updateRoom(
     residentId: string,
     roomId: string,
-    updateRoomDto: UpdateRoomDto
+    updateRoomDto: UpdateRoomDto,
   ): Promise<Room> {
-
     this.validateObjectIdFormat(residentId, 'Resident');
     this.validateObjectIdFormat(roomId, 'Room');
 
@@ -342,22 +365,30 @@ export class ResidentService {
     }
 
     // check room name is exist except this room
-    const duplicateRoomName = await this.roomModel.findOne({ name: updateRoomDto.name, _id: { $ne: roomId } }).exec();
+    const duplicateRoomName = await this.roomModel
+      .findOne({ name: updateRoomDto.name, _id: { $ne: roomId } })
+      .exec();
     if (duplicateRoomName) {
       throw new BadRequestException('Room name is exist');
     }
 
     // check if rantal update
     if (updateRoomDto.currentRental) {
-
       // check is new rental exist
-      const rental = await this.rentalModel.findById(updateRoomDto.currentRental).exec();
+      const rental = await this.rentalModel
+        .findById(updateRoomDto.currentRental)
+        .exec();
       if (!rental) {
         throw new NotFoundException('Rental not found');
       }
 
       // check is new rental not in other room
-      const rentalRoom = await this.roomModel.findOne({ currentRental: updateRoomDto.currentRental, _id: { $ne: roomId } }).exec();
+      const rentalRoom = await this.roomModel
+        .findOne({
+          currentRental: updateRoomDto.currentRental,
+          _id: { $ne: roomId },
+        })
+        .exec();
       if (rentalRoom) {
         throw new BadRequestException('Rental is exist in other room');
       }
@@ -366,34 +397,37 @@ export class ResidentService {
       if (room.currentRental) {
         console.log('remove room from old rental');
 
-        const temp = await this.rentalModel.findOneAndUpdate(
-          { _id: room.currentRental },
-          { $set: { room: null } },
-          { new: true },
-        ).exec();
+        const temp = await this.rentalModel
+          .findOneAndUpdate(
+            { _id: room.currentRental },
+            { $set: { room: null } },
+            { new: true },
+          )
+          .exec();
         console.log('temp', temp);
-
       }
 
-      // update new rental set room to this room 
-      await this.rentalModel.findOneAndUpdate(
-        { _id: updateRoomDto.currentRental },
-        { $set: { room: roomId } },
-        { new: true },
-      ).exec();
+      // update new rental set room to this room
+      await this.rentalModel
+        .findOneAndUpdate(
+          { _id: updateRoomDto.currentRental },
+          { $set: { room: roomId } },
+          { new: true },
+        )
+        .exec();
     } else {
-
       // remove room from old rental if exist
       if (room.currentRental) {
         console.log('remove room from old rental');
 
-        const temp = await this.rentalModel.findOneAndUpdate(
-          { _id: room.currentRental },
-          { $set: { room: null } },
-          { new: true },
-        ).exec();
+        const temp = await this.rentalModel
+          .findOneAndUpdate(
+            { _id: room.currentRental },
+            { $set: { room: null } },
+            { new: true },
+          )
+          .exec();
         console.log('temp', temp);
-
       }
     }
 
@@ -406,38 +440,48 @@ export class ResidentService {
     }
 
     // update room
-    const updatedRoom = await this
-      .roomModel
-      .findByIdAndUpdate(roomId,
+    const updatedRoom = await this.roomModel
+      .findByIdAndUpdate(
+        roomId,
         {
           ...updateRoomDto,
           updated_at: Date.now(),
         },
-        { new: true }
-      ).exec();
+        { new: true },
+      )
+      .exec();
 
     return updatedRoom;
   }
 
-  async deleteRoomInResident(residentId: string, roomId: string): Promise<Room> {
-
+  async deleteRoomInResident(
+    residentId: string,
+    roomId: string,
+  ): Promise<Room> {
     this.validateObjectIdFormat(residentId, 'Resident');
     this.validateObjectIdFormat(roomId, 'Room');
 
     // delete room in resident
-    await this.residentModel.findOneAndUpdate(
-      { _id: residentId },
-      { $pull: { rooms: roomId } },
-      { new: true },
-    ).exec();
+    await this.residentModel
+      .findOneAndUpdate(
+        { _id: residentId },
+        { $pull: { rooms: roomId } },
+        { new: true },
+      )
+      .exec();
 
     // delete room
     return this.roomModel.findByIdAndDelete(roomId).exec();
   }
 
-  private validateObjectIdFormat(objectId: string, fieldName?: string): boolean {
+  private validateObjectIdFormat(
+    objectId: string,
+    fieldName?: string,
+  ): boolean {
     if (!Types.ObjectId.isValid(objectId)) {
-      throw new BadRequestException(`${fieldName || 'Object'} id is invalid format`);
+      throw new BadRequestException(
+        `${fieldName || 'Object'} id is invalid format`,
+      );
     }
     return true;
   }
