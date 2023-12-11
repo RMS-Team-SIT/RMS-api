@@ -1,25 +1,9 @@
-import {
-  Controller,
-  Post,
-  UploadedFile,
-  UploadedFiles,
-  UseInterceptors,
-} from '@nestjs/common';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, UploadedFile, UploadedFiles } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { FilesService } from './files.service';
 import { ApiImageFile, ApiPdfFile } from './decorators/api-file.decorator';
-import {
-  ApiFiles,
-  ApiImageFiles,
-  ApiPdfFiles,
-} from './decorators/api-files.decorator';
-import { ApiFileFields } from './decorators/api-file-fields.decorator';
-import { fileMimetypeFilter } from './filters/file-mimetype.filter';
+import { ApiImageFiles, ApiPdfFiles } from './decorators/api-files.decorator';
 import { ParseFile } from './pipes/file-validation.pipe';
 import { SkipThrottle } from '@nestjs/throttler';
 

@@ -1,13 +1,13 @@
-import mongoose, { Document, HydratedDocument, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
-import { Room, RoomSchema } from './room.schema';
+import { Room } from './room.schema';
 import {
   ResidentContact,
   ResidentContactSchema,
 } from './resident-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
-import { Rental, RentalSchema } from './rental.schema';
+import { Rental } from './rental.schema';
 
 export type ResidentDocument = Resident & Document;
 
