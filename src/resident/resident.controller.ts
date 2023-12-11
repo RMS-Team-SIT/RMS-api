@@ -29,7 +29,7 @@ import { UpdateRoomDto } from './dtos/update-room.dto';
 @ApiBearerAuth()
 @Controller('resident')
 export class ResidentController {
-  constructor(private readonly residentService: ResidentService) {}
+  constructor(private readonly residentService: ResidentService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -164,7 +164,7 @@ export class ResidentController {
       throw new UnauthorizedException('You are not owner of this resident');
     }
 
-    return await this.residentService.updateRental(rentalId, updateRentalDto);
+    return await this.residentService.updateRental(residentId, rentalId, updateRentalDto);
   }
 
   @Delete(':residentId/rental/:rentalId')

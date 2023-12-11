@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsPhoneNumber, IsString, MaxLength } from 'class-validator';
 
 export class CreateRentalDto {
   @IsString()
@@ -18,9 +18,9 @@ export class CreateRentalDto {
   image: string;
 
   @IsString()
-  @MaxLength(200)
   @IsNotEmpty()
   @ApiProperty()
+  @MaxLength(200)
   username: string;
 
   @IsString()
@@ -31,6 +31,7 @@ export class CreateRentalDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
+  @IsPhoneNumber('TH')
   phone: string;
 
   @IsString()

@@ -165,7 +165,7 @@ export class ResidentService {
         resident: residentId,
       })
       .exec();
-    if (!duplicateRental) {
+    if (duplicateRental) {
       throw new BadRequestException('Rental username is exist');
     }
 
@@ -219,11 +219,39 @@ export class ResidentService {
   }
 
   async updateRental(
+    residentId: string,
     rentalId: string,
     updateRentalDto: UpdateRentalDto,
   ): Promise<Rental> {
-    this.validateObjectIdFormat(rentalId, 'Rental');
 
+    this.validateObjectIdFormat(rentalId, 'Rental');
+    this.validateObjectIdFormat(residentId, 'Resident');
+
+    // check resident is exist
+    const resident = await this.residentModel.findById(residentId).exec();
+    if (!resident) {
+      throw new NotFoundException('Resident not found');
+    }
+
+    // check rental is exist
+    const rental = await this.rentalModel.findById(rentalId).exec();
+    if (!rental) {
+      throw new NotFoundException('Rental not found');
+    }
+
+    // check rental username is exist in this resident except this rental
+    const duplicateRental = await this.rentalModel
+      .findOne({
+        resident: residentId,
+        username: updateRentalDto.username,
+        _id: { $ne: rentalId },
+      })
+      .exec();
+    if (duplicateRental) {
+      throw new BadRequestException('Rental username is exist');
+    }
+
+    // update rental
     const updatedRental = await this.rentalModel
       .findByIdAndUpdate(
         rentalId,
@@ -415,8 +443,6 @@ export class ResidentService {
 
       // remove room from old rental if exist
       if (room.currentRental) {
-        console.log('remove room from old rental');
-
         const temp = await this.rentalModel
           .findOneAndUpdate(
             { _id: room.currentRental },
@@ -424,7 +450,6 @@ export class ResidentService {
             { new: true },
           )
           .exec();
-        console.log('temp', temp);
       }
 
       // update new rental set room to this room
@@ -438,8 +463,6 @@ export class ResidentService {
     } else {
       // remove room from old rental if exist
       if (room.currentRental) {
-        console.log('remove room from old rental');
-
         const temp = await this.rentalModel
           .findOneAndUpdate(
             { _id: room.currentRental },
@@ -447,7 +470,6 @@ export class ResidentService {
             { new: true },
           )
           .exec();
-        console.log('temp', temp);
       }
     }
 
