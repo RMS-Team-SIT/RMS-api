@@ -19,12 +19,13 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post('/signup')
   @Public()
@@ -64,14 +65,21 @@ export class UserController {
     if (isForbidden) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+    return this.userService.update(req.params.id, updateUserDto);
+  }
 
-    if (updateUserDto.oldPassword && updateUserDto.newPassword) {
-      return this.userService.updatePassword(req.params.id, updateUserDto);
-    } else {
-      delete updateUserDto.oldPassword;
-      delete updateUserDto.newPassword;
-      return this.userService.update(req.params.id, updateUserDto);
+  @Put('/:id/update-password')
+  @HttpCode(HttpStatus.OK)
+  async updatePassword(
+    @Req() req,
+    @Body() updateUserPasswordDto: UpdateUserPasswordDto,
+  ): Promise<User> {
+    const isForbidden = req.user.id !== req.params.id;
+    if (isForbidden) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+
+    return this.userService.updatePassword(req.params.id, updateUserPasswordDto);
   }
 
   @Delete('/:id')

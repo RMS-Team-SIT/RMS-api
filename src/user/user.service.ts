@@ -11,6 +11,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { randomToken } from 'src/utils/random.utils';
 import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
+import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 
 @Injectable()
 export class UserService {
@@ -159,14 +160,14 @@ export class UserService {
 
   async updatePassword(
     id: string,
-    updateUserDto: UpdateUserDto,
+    updateUserPasswordDto: UpdateUserPasswordDto,
   ): Promise<User> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
     const isMatch = await isPasswordMatch(
-      updateUserDto.oldPassword,
+      updateUserPasswordDto.oldPassword,
       user.password,
     );
     if (!isMatch) {
@@ -175,7 +176,7 @@ export class UserService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const password = await hashPassword(updateUserDto.newPassword);
+    const password = await hashPassword(updateUserPasswordDto.newPassword);
     const updateUser = await this.userModel
       .findByIdAndUpdate(
         id,

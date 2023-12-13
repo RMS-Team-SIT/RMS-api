@@ -3,6 +3,7 @@ import {
   IsEmail,
   IsNotEmpty,
   IsPhoneNumber,
+  IsString,
   IsStrongPassword,
   MaxLength,
 } from 'class-validator';
@@ -12,11 +13,13 @@ export class CreateUserDto {
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(200)
+  @IsString()
   firstname: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @MaxLength(200)
+  @IsString()
   lastname: string;
 
   @ApiProperty()
@@ -27,6 +30,7 @@ export class CreateUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @IsString()
   @IsStrongPassword(PASSWORD_RULE)
   password: string;
 
