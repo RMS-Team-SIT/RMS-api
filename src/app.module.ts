@@ -3,7 +3,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { ResidenceModule } from './residence/residence.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { HealthModule } from './health/health.module';
@@ -11,6 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { LineModule } from './line/line.module';
 import { FilesModule } from './files/files.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ResidenceModule } from './residence/residence.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
