@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { ResidentModule } from './resident/resident.module';
+import { ResidenceModule } from './residence/residence.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { HealthModule } from './health/health.module';
@@ -30,7 +30,7 @@ console.log(`Current environment: ${ENV}`);
     ]),
     AuthModule,
     UserModule,
-    ResidentModule,
+    ResidenceModule,
     HealthModule,
     MailModule,
     LineModule,

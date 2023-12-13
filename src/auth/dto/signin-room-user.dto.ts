@@ -5,7 +5,7 @@ export class SignInRoomUserDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  residentId: string;
+  residenceId: string;
 
   @ApiProperty()
   @IsString()

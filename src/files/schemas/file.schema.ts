@@ -1,7 +1,7 @@
 import { Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export class ResidentFile extends Document {
+export class ResidenceFile extends Document {
   _id: string;
 
   @Prop({ required: true })
@@ -10,4 +10,4 @@ export class ResidentFile extends Document {
   @Prop({ required: true })
   filePath: string;
 }
-export const ResidentFileSchema = SchemaFactory.createForClass(ResidentFile);
+export const ResidenceFileSchema = SchemaFactory.createForClass(ResidenceFile);

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsPhoneNumber, IsString, MaxLength } from 'class-validator';
 
-export class CreateResidentContactDto {
+export class CreateResidenceContactDto {
   @ApiProperty()
   @IsOptional()
   @IsString()

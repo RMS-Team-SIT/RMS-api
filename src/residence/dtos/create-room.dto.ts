@@ -69,7 +69,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  currentRental: Types.ObjectId;
+  currentRenter: Types.ObjectId;
 
   @ApiProperty()
   @IsOptional()

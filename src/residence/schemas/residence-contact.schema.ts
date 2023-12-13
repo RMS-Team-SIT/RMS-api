@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 @Schema()
-export class ResidentContact extends Document {
+export class ResidenceContact extends Document {
   _id: string;
 
   @Prop({ default: '' })
@@ -23,5 +23,5 @@ export class ResidentContact extends Document {
   updated_at: Date;
 }
 
-export const ResidentContactSchema =
-  SchemaFactory.createForClass(ResidentContact);
+export const ResidenceContactSchema =
+  SchemaFactory.createForClass(ResidenceContact);

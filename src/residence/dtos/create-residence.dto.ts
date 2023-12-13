@@ -8,9 +8,9 @@ import {
   Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { CreateResidentContactDto } from './create-resident-contact.dto';
+import { CreateResidenceContactDto } from './create-residence-contact.dto';
 
-export class CreateResidentDto {
+export class CreateResidenceDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -46,5 +46,5 @@ export class CreateResidentDto {
 
   @ApiProperty()
   @IsOptional()
-  contact: CreateResidentContactDto;
+  contact: CreateResidenceContactDto;
 }

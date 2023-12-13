@@ -3,16 +3,16 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
 import { Room } from './room.schema';
 import {
-  ResidentContact,
-  ResidentContactSchema,
-} from './resident-contact.schema';
+  ResidenceContact,
+  ResidenceContactSchema,
+} from './residence-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
-import { Rental } from './rental.schema';
+import { Renter } from './renter.schema';
 
-export type ResidentDocument = Resident & Document;
+export type ResidenceDocument = Residence & Document;
 
 @Schema()
-export class Resident extends Document {
+export class Residence extends Document {
   _id: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User', required: true })
@@ -30,8 +30,8 @@ export class Resident extends Document {
   @Prop({ type: [AnnouncementSchema], default: [] })
   announcements: Announcement[];
 
-  @Prop({ type: ResidentContactSchema, default: undefined })
-  contact: ResidentContact;
+  @Prop({ type: ResidenceContactSchema, default: undefined })
+  contact: ResidenceContact;
 
   @Prop({ default: '' })
   address: string;
@@ -45,8 +45,8 @@ export class Resident extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: Room.name }], default: [] })
   rooms: Room[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: Rental.name }], default: [] })
-  rentals: Rental[];
+  @Prop({ type: [{ type: Types.ObjectId, ref: Renter.name }], default: [] })
+  renters: Renter[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;
@@ -55,4 +55,4 @@ export class Resident extends Document {
   updated_at: Date;
 }
 
-export const ResidentSchema = SchemaFactory.createForClass(Resident);
+export const ResidenceSchema = SchemaFactory.createForClass(Residence);

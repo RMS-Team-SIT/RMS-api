@@ -1,16 +1,16 @@
 import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Resident } from './resident.schema';
+import { Residence } from './residence.schema';
 import { Room } from './room.schema';
 
-export type RentalDocument = Rental & Document;
+export type RenterDocument = Renter & Document;
 
 @Schema()
-export class Rental extends Document {
+export class Renter extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Resident', required: true })
-  resident: Resident;
+  @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
+  residence: Residence;
 
   @Prop({ type: Types.ObjectId, ref: 'Room', default: null })
   room: Room;
@@ -37,7 +37,7 @@ export class Rental extends Document {
   copyOfIdCard: string;
 
   @Prop({ default: null })
-  rentalContract: string;
+  renterContract: string;
 
   @Prop({ default: true })
   isActive: boolean;
@@ -49,4 +49,4 @@ export class Rental extends Document {
   updated_at: Date;
 }
 
-export const RentalSchema = SchemaFactory.createForClass(Rental);
+export const RenterSchema = SchemaFactory.createForClass(Renter);

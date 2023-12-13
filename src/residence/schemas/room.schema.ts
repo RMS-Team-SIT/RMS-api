@@ -1,16 +1,16 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { BillHistory, BillHistorySchema } from './bill-history.schema';
 import { Document, Types } from 'mongoose';
-import { Rental } from './rental.schema';
-import { Resident } from './resident.schema';
+import { Renter } from './renter.schema';
+import { Residence } from './residence.schema';
 
 export type RoomDocument = Room & Document;
 @Schema()
 export class Room extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'Resident', required: true })
-  resident: Resident;
+  @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
+  residence: Residence;
 
   @Prop({ required: true })
   name: string;
@@ -39,8 +39,8 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   currentLightGauge: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Rental', default: null })
-  currentRental: Rental;
+  @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
+  currentRenter: Renter;
 
   @Prop({ type: [BillHistorySchema], default: [] })
   billHistories: BillHistory[];
