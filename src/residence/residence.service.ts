@@ -453,12 +453,18 @@ export class ResidenceService {
 
     // check if rantal update
     if (updateRoomDto.currentRenter) {
+
       // check is new renter exist
       const renter = await this.renterModel
         .findById(updateRoomDto.currentRenter)
         .exec();
       if (!renter) {
         throw new NotFoundException('Renter not found');
+      }
+
+      // check is new renter is active
+      if (!renter.isActive) {
+        throw new BadRequestException('Renter is inactive. Please reactive renter first.');
       }
 
       // check is new renter not in other room
@@ -527,7 +533,7 @@ export class ResidenceService {
     return updatedRoom;
   }
 
-  async deleteRoomInResidence(
+  async deleteRoom(
     residenceId: string,
     roomId: string,
   ): Promise<Room> {

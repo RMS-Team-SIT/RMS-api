@@ -281,6 +281,6 @@ export class ResidenceController {
       throw new UnauthorizedException('You are not owner of this residence');
     }
 
-    return await this.residenceService.deleteRoomInResidence(residenceId, roomId);
+    return await this.residenceService.deleteRoom(residenceId, roomId);
   }
 }
