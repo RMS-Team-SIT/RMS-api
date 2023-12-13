@@ -8,7 +8,7 @@ import { Model, Types } from 'mongoose';
 import { Residence } from './schemas/residence.schema';
 import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
-import {  Renter } from './schemas/renter.schema';
+import { Renter } from './schemas/renter.schema';
 import { CreateRenterDto } from './dtos/create-renter.dto';
 import { UpdateRenterDto } from './dtos/update-renter.dto';
 import { Room } from './schemas/room.schema';
@@ -265,7 +265,7 @@ export class ResidenceService {
     return updatedRenter;
   }
 
-  async deleteRenter(renterId: string): Promise<Renter> {
+  async deleteRenter(renterId: string, deleteType: 'soft' | 'hard'): Promise<Renter> {
     this.validateObjectIdFormat(renterId, 'Renter');
 
     // delete renter in residence
@@ -291,7 +291,13 @@ export class ResidenceService {
       .exec();
 
     // delete renter
-    return this.renterModel.findByIdAndDelete(renterId).exec();
+    if (deleteType === 'soft') {
+      return this.renterModel.findByIdAndUpdate(renterId, {
+        isActive: false,
+      })
+    } else {
+      return this.renterModel.findByIdAndDelete(renterId).exec();
+    }
   }
 
   async createRoom(

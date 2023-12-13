@@ -176,7 +176,7 @@ export class ResidenceController {
       throw new UnauthorizedException('You are not owner of this residence');
     }
 
-    return await this.residenceService.deleteRenter(renterId);
+    return await this.residenceService.deleteRenter(renterId, "soft");
   }
 
   @Post(':residenceId/room')
