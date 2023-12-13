@@ -162,6 +162,23 @@ export class ResidenceController {
     return await this.residenceService.updateRenter(residenceId, renterId, updateRenterDto);
   }
 
+  @Put(':residenceId/renter/:renterId/reactive')
+  async reactiveRenter(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('renterId') renterId: string,
+  ): Promise<Renter> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of residence or not ?
+    const residence = await this.residenceService.findOne(residenceId);
+    if (residence.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException('You are not owner of this residence');
+    }
+
+    return await this.residenceService.reactiveRenter(renterId);
+  }
+
   @Delete(':residenceId/renter/:renterId')
   async deleteRenterInResidence(
     @Req() req,

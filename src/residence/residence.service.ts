@@ -239,6 +239,11 @@ export class ResidenceService {
       throw new NotFoundException('Renter not found');
     }
 
+    // check renter is active or not
+    if (!renter.isActive) {
+      throw new BadRequestException('Renter is inactive. Please reactive renter first.');
+    }
+
     // check renter username is exist in this residence except this renter
     const duplicateRenter = await this.renterModel
       .findOne({
@@ -281,14 +286,6 @@ export class ResidenceService {
       );
     }
 
-    // delete renter in residence
-    await this.residenceModel
-      .findOneAndUpdate(
-        { _id: renter.residence },
-        { $pull: { renters: renterId } },
-        { new: true },
-      )
-      .exec();
 
     // delete renter
     if (deleteType === 'soft') {
@@ -296,9 +293,37 @@ export class ResidenceService {
         isActive: false,
       })
     } else {
+      // delete renter in residence
+      await this.residenceModel
+        .findOneAndUpdate(
+          { _id: renter.residence },
+          { $pull: { renters: renterId } },
+          { new: true },
+        )
+        .exec();
+
       return this.renterModel.findByIdAndDelete(renterId).exec();
     }
   }
+
+  async reactiveRenter(renterId: string): Promise<Renter> {
+    this.validateObjectIdFormat(renterId, 'Renter');
+
+    // delete renter in residence
+    const renter = await this.renterModel.findOne({
+      _id: renterId,
+    }).exec();
+
+    if (!renter) {
+      throw new NotFoundException('Renter not found');
+    }
+
+    // reactive renter
+    return this.renterModel.findByIdAndUpdate(renterId, {
+      isActive: true,
+    })
+  }
+
 
   async createRoom(
     residenceId: string,
@@ -461,7 +486,7 @@ export class ResidenceService {
       // update new renter set room to this room
       await this.renterModel
         .findOneAndUpdate(
-          { _id: updateRoomDto.currentRenter },
+          { _id: updateRoomDto.currentRenter, updated_at: Date.now(), },
           { $set: { room: roomId } },
           { new: true },
         )
