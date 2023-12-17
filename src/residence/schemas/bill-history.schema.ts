@@ -1,6 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { Renter } from './renter.schema';
 
+export type BillHistoryDocument = BillHistory & Document;
 @Schema()
 export class BillHistory extends Document {
   _id: string;
@@ -31,6 +33,9 @@ export class BillHistory extends Document {
 
   @Prop({ default: null })
   paidEvidenceImage: string;
+
+  @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
+  renter: Renter;
 
   @Prop({ default: false })
   isPaid: boolean;
