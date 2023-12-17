@@ -58,7 +58,6 @@ function configureSwagger(app: NestExpressApplication) {
   const options = new DocumentBuilder()
     .setTitle('RMS API')
     .setVersion('1.0')
-    .addTag('api')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
