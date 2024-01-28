@@ -453,7 +453,6 @@ export class ResidenceService {
 
     // check if rantal update
     if (updateRoomDto.currentRenter) {
-
       // check is new renter exist
       const renter = await this.renterModel
         .findById(updateRoomDto.currentRenter)
@@ -467,7 +466,7 @@ export class ResidenceService {
         throw new BadRequestException('Renter is inactive. Please reactive renter first.');
       }
 
-      // check is new renter not in other room
+      // check: Is new renter not in other room
       const renterRoom = await this.roomModel
         .findOne({
           currentRenter: updateRoomDto.currentRenter,
@@ -478,9 +477,9 @@ export class ResidenceService {
         throw new BadRequestException('Renter is exist in other room');
       }
 
-      // remove room from old renter if exist
+      // Remove room from old renter if exist
       if (room.currentRenter) {
-        const temp = await this.renterModel
+        await this.renterModel
           .findOneAndUpdate(
             { _id: room.currentRenter },
             { $set: { room: null } },
@@ -489,18 +488,18 @@ export class ResidenceService {
           .exec();
       }
 
-      // update new renter set room to this room
+      // Update new renter set room to this room
       await this.renterModel
         .findOneAndUpdate(
-          { _id: updateRoomDto.currentRenter, updated_at: Date.now(), },
-          { $set: { room: roomId } },
+          { _id: updateRoomDto.currentRenter },
+          { $set: { room: roomId, updated_at: Date.now() } },
           { new: true },
         )
-        .exec();
+
     } else {
       // remove room from old renter if exist
       if (room.currentRenter) {
-        const temp = await this.renterModel
+        await this.renterModel
           .findOneAndUpdate(
             { _id: room.currentRenter },
             { $set: { room: null } },
