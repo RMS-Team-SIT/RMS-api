@@ -24,6 +24,8 @@ import { UpdateRenterDto } from './dtos/update-renter.dto';
 import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
+import { CreateResidencePaymentDto } from './dtos/create-residence-payment.dto';
+import { Payment } from './schemas/payment.schema';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -282,5 +284,22 @@ export class ResidenceController {
     }
 
     return await this.residenceService.deleteRoom(residenceId, roomId);
+  }
+
+  @Post(':residenceId/payment')
+  async createPayment(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Body() dto: CreateResidencePaymentDto,
+  ): Promise<Payment> {
+    const userId = req.user.id;
+
+    // check permission req.user is onwer of residence or not ?
+    const residence = await this.residenceService.findOne(residenceId);
+    if (residence.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException('You are not owner of this residence');
+    }
+
+    return await this.residenceService.createPayment(residenceId, dto);
   }
 }

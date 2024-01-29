@@ -1,5 +1,8 @@
 import { Document } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
+
+export type ResidenceContactDocument = ResidenceContact & Document;
+
 @Schema()
 export class ResidenceContact extends Document {
   _id: string;

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
@@ -11,6 +11,7 @@ import { LineModule } from './line/line.module';
 import { FilesModule } from './files/files.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ResidenceModule } from './residence/residence.module';
+import { Connection } from 'mongoose';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
@@ -48,4 +49,11 @@ console.log(`Current environment: ${ENV}`);
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  @InjectConnection() private connection: Connection;
+
+  onModuleInit() {
+    // execute logic + access mongoDB via this.connection
+    console.log('AppModule initialized');
+  }
+}

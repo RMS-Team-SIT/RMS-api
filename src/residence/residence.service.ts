@@ -14,6 +14,8 @@ import { UpdateRenterDto } from './dtos/update-renter.dto';
 import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
+import { CreateResidencePaymentDto } from './dtos/create-residence-payment.dto';
+import { Payment } from './schemas/payment.schema';
 
 @Injectable()
 export class ResidenceService {
@@ -24,6 +26,8 @@ export class ResidenceService {
     private readonly renterModel: Model<Renter>,
     @InjectModel(Room.name)
     private readonly roomModel: Model<Room>,
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<Payment>,
   ) { }
 
   // Residence
@@ -525,6 +529,25 @@ export class ResidenceService {
 
     // delete room
     return this.roomModel.findByIdAndDelete(roomId).exec();
+  }
+
+  // ==================== Payment ====================
+  async createPayment(residenceId: string, createResidencePaymentDto: CreateResidencePaymentDto) {
+    this.validateObjectIdFormat(residenceId, 'Residence');
+
+    // check residence is exist
+    const residence = await this.residenceModel.findOne({ _id: residenceId }).exec();
+    if (!residence) {
+      throw new NotFoundException('Residence not found');
+    }
+
+    // Add payment
+    const createdPayment = await new this.paymentModel({
+      ...createResidencePaymentDto,
+      residence: residenceId,
+    }).save();
+
+    return createdPayment;
   }
 
   private validateObjectIdFormat(
