@@ -8,6 +8,7 @@ import {
 } from './residence-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Renter } from './renter.schema';
+import { Payment } from './payment.schema';
 
 export type ResidenceDocument = Residence & Document;
 
@@ -47,6 +48,9 @@ export class Residence extends Document {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Renter.name }], default: [] })
   renters: Renter[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Payment.name }], default: [] })
+  payments: Payment[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

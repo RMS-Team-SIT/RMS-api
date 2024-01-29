@@ -11,8 +11,9 @@ import { LineModule } from './line/line.module';
 import { FilesModule } from './files/files.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ResidenceModule } from './residence/residence.module';
-import { Connection } from 'mongoose';
+import { Connection, Types } from 'mongoose';
 import { BankModule } from './bank/bank.module';
+import * as BankData from './data/bank_cleaned.json';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
@@ -54,9 +55,30 @@ console.log(`Current environment: ${ENV}`);
 export class AppModule {
   @InjectConnection() private connection: Connection;
 
-  onModuleInit() {
-    // execute logic + access mongoDB via this.connection
-    console.log('AppModule initialized');
-    // init bank data if not exists
+  async onModuleInit() {
+    try {
+      console.log('AppModule initialized');
+      await this.initBankData();
+    } catch (error) {
+      console.error('Error initializing AppModule:', error);
+    }
+  }
+
+
+  private async initBankData() {
+    const bankCollection = this.connection.collection('banks');
+    const bankCount = await bankCollection.countDocuments();
+
+    if (bankCount === 0) {
+      console.log('Initializing bank data from JSON file...');
+      for (const bank of BankData) {
+        console.log('Inserting bank:', bank.bank);
+        const objId = new Types.ObjectId(bank.objId);
+        await bankCollection.insertOne({ _id: objId, ...bank });
+      }
+      console.log('Bank data initialized successfully.');
+    } else {
+      console.log('Bank data already exists.');
+    }
   }
 }

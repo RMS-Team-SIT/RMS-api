@@ -1,6 +1,9 @@
 import { Module } from "@nestjs/common";
-import { MongooseModule } from "@nestjs/mongoose";
+import { InjectConnection, MongooseModule } from "@nestjs/mongoose";
 import { Bank, BankSchema } from "./schemas/bank.schema";
+import { Connection } from "mongoose";
+import { BankController } from "./bank.controller";
+import { BankService } from "./bank.service";
 
 @Module({
     imports: [
@@ -8,8 +11,8 @@ import { Bank, BankSchema } from "./schemas/bank.schema";
             { name: Bank.name, schema: BankSchema },
         ]),
     ],
-    controllers: [],
-    providers: [],
-    exports: [],
+    controllers: [BankController],
+    providers: [BankService],
+    exports: [BankService],
 })
 export class BankModule { }

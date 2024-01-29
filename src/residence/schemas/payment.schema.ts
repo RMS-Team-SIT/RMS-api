@@ -22,17 +22,17 @@ export class Payment extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Bank', required: false })
     bank: Bank;
 
-    @Prop({ required: true })
-    name: string;
-
     @Prop({ required: true, default: PaymentType.BANK_TRANSFER })
     type: PaymentType;
 
     @Prop({ required: false })
-    account_number: string;
+    account_name: string;
 
     @Prop({ required: false })
-    promptpay_number: string;
+    account_number: string;
+
+    @Prop({ required: true, default: true})
+    isActive: boolean;
 
     @Prop({ required: true, default: Date.now() })
     created_at: Date;

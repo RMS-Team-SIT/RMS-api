@@ -16,6 +16,8 @@ import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { CreateResidencePaymentDto } from './dtos/create-residence-payment.dto';
 import { Payment } from './schemas/payment.schema';
+import { BankService } from 'src/bank/bank.service';
+import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 
 @Injectable()
 export class ResidenceService {
@@ -28,7 +30,9 @@ export class ResidenceService {
     private readonly roomModel: Model<Room>,
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
-  ) { }
+    private readonly bankService: BankService,
+  ) {
+  }
 
   // Residence
   async create(
@@ -64,7 +68,7 @@ export class ResidenceService {
   }
 
   async findOne(id: string): Promise<Residence> {
-    this.validateObjectIdFormat(id, 'Residence');
+    validateObjectIdFormat(id, 'Residence');
 
     const residence = this.residenceModel
       .findById(id)
@@ -89,6 +93,11 @@ export class ResidenceService {
         path: 'rooms',
         populate: { path: 'currentRenter' },
       })
+      .populate('payments', { __v: 0, residence: 0 })
+      .populate({
+        path: 'payments',
+        populate: { path: 'bank', select: { _id: 1, thai_name: 1, bank: 1, color: 1, nice_name: 1 } },
+      })
       .exec();
 
     if (!residence) {
@@ -99,7 +108,7 @@ export class ResidenceService {
   }
 
   async update(id: string, dto: UpdateResidenceDto): Promise<Residence> {
-    this.validateObjectIdFormat(id, 'Residence');
+    validateObjectIdFormat(id, 'Residence');
 
     return this.residenceModel
       .findByIdAndUpdate(
@@ -114,7 +123,7 @@ export class ResidenceService {
   }
 
   async delete(id: string): Promise<Residence> {
-    this.validateObjectIdFormat(id, 'Residence');
+    validateObjectIdFormat(id, 'Residence');
 
     // delete all renter
     await this.renterModel.deleteMany({ residence: id }).exec();
@@ -129,7 +138,7 @@ export class ResidenceService {
     residenceId: string,
     createRenterDto: CreateRenterDto,
   ): Promise<Renter> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(residenceId, 'Residence');
 
     // check residence is exist
     const residence = await this.residenceModel.findById(residenceId).exec();
@@ -166,7 +175,7 @@ export class ResidenceService {
   }
 
   async findAllRenterInResidence(residenceId: string): Promise<Renter[]> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(residenceId, 'Residence');
 
     const residence = await this.residenceModel
       .findById(residenceId)
@@ -176,7 +185,7 @@ export class ResidenceService {
   }
 
   async findOneRenter(renterId: string): Promise<Renter> {
-    this.validateObjectIdFormat(renterId, 'Renter');
+    validateObjectIdFormat(renterId, 'Renter');
 
     const renter = await this
       .renterModel
@@ -203,8 +212,8 @@ export class ResidenceService {
     updateRenterDto: UpdateRenterDto,
   ): Promise<Renter> {
 
-    this.validateObjectIdFormat(renterId, 'Renter');
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(renterId, 'Renter');
+    validateObjectIdFormat(residenceId, 'Residence');
 
     // check residence is exist
     const residence = await this.residenceModel.findById(residenceId).exec();
@@ -250,7 +259,7 @@ export class ResidenceService {
   }
 
   async deleteRenter(renterId: string, deleteType: 'soft' | 'hard'): Promise<Renter> {
-    this.validateObjectIdFormat(renterId, 'Renter');
+    validateObjectIdFormat(renterId, 'Renter');
 
     // delete renter in residence
     const renter = await this.renterModel.findById(renterId).exec();
@@ -286,7 +295,7 @@ export class ResidenceService {
   }
 
   async reactiveRenter(renterId: string): Promise<Renter> {
-    this.validateObjectIdFormat(renterId, 'Renter');
+    validateObjectIdFormat(renterId, 'Renter');
 
     // delete renter in residence
     const renter = await this.renterModel.findOne({
@@ -308,7 +317,7 @@ export class ResidenceService {
     residenceId: string,
     createRoomDto: CreateRoomDto,
   ): Promise<Room> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(residenceId, 'Residence');
 
     // check residence is exist
     const residence = await this.residenceModel.findById(residenceId).exec();
@@ -381,7 +390,7 @@ export class ResidenceService {
   }
 
   async findAllRoomInResidence(residenceId: string): Promise<Room[]> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(residenceId, 'Residence');
 
     const residence = await this.residenceModel
       .findById(residenceId)
@@ -391,7 +400,7 @@ export class ResidenceService {
   }
 
   async findOneRoom(roomId: string): Promise<Room> {
-    this.validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(roomId, 'Room');
 
     const room = await this.roomModel.findById(roomId).exec();
 
@@ -407,8 +416,8 @@ export class ResidenceService {
     roomId: string,
     updateRoomDto: UpdateRoomDto,
   ): Promise<Room> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
-    this.validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(roomId, 'Room');
 
     // check residence is exist
     const residence = await this.residenceModel.findById(residenceId).exec();
@@ -515,8 +524,8 @@ export class ResidenceService {
     residenceId: string,
     roomId: string,
   ): Promise<Room> {
-    this.validateObjectIdFormat(residenceId, 'Residence');
-    this.validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(roomId, 'Room');
 
     // delete room in residence
     await this.residenceModel
@@ -533,7 +542,8 @@ export class ResidenceService {
 
   // ==================== Payment ====================
   async createPayment(residenceId: string, createResidencePaymentDto: CreateResidencePaymentDto) {
-    this.validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(createResidencePaymentDto.bankId, 'Bank');
 
     // check residence is exist
     const residence = await this.residenceModel.findOne({ _id: residenceId }).exec();
@@ -541,24 +551,33 @@ export class ResidenceService {
       throw new NotFoundException('Residence not found');
     }
 
-    // Add payment
+    // check bankId is exist
+    const bank = await this.bankService.findOne(createResidencePaymentDto.bankId);
+    if (!bank) {
+      throw new BadRequestException('Bank not found');
+    }
+
+    // Add payment to payment
     const createdPayment = await new this.paymentModel({
       ...createResidencePaymentDto,
+      bank: createResidencePaymentDto.bankId,
       residence: residenceId,
     }).save();
+
+    // Add payment to residence
+    await this.residenceModel.findOneAndUpdate({ _id: residenceId }, {
+      $push: { payments: createdPayment._id }
+    }).exec();
 
     return createdPayment;
   }
 
-  private validateObjectIdFormat(
-    objectId: string,
-    fieldName?: string,
-  ): boolean {
-    if (!Types.ObjectId.isValid(objectId)) {
-      throw new BadRequestException(
-        `${fieldName || 'Object'} id is invalid format`,
-      );
-    }
-    return true;
+  async findAllPaymentInResidence(residenceId: string): Promise<Payment[]> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    const payments = await this.paymentModel.find({ residence: residenceId }).exec();
+    return payments;
   }
+
+
 }

@@ -12,10 +12,15 @@ export class CreateResidencePaymentDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    name: string;
+    bankId: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
     account_number: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    account_name: string;
 }
