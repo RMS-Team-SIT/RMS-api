@@ -12,6 +12,7 @@ import { FilesModule } from './files/files.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ResidenceModule } from './residence/residence.module';
 import { Connection } from 'mongoose';
+import { BankModule } from './bank/bank.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
@@ -29,6 +30,7 @@ console.log(`Current environment: ${ENV}`);
         limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
       },
     ]),
+    BankModule,
     AuthModule,
     UserModule,
     ResidenceModule,
@@ -55,5 +57,6 @@ export class AppModule {
   onModuleInit() {
     // execute logic + access mongoDB via this.connection
     console.log('AppModule initialized');
+    // init bank data if not exists
   }
 }

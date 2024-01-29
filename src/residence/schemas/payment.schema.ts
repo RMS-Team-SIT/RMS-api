@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
 import { Residence } from "./residence.schema";
-import { Bank } from "./bank.schema";
+import { Bank } from "../../bank/schemas/bank.schema";
 
 export type PaymentDocument = Payment & Document;
 
@@ -19,7 +19,7 @@ export class Payment extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
     residence: Residence;
 
-    @Prop({ type: Types.ObjectId, ref: 'Residence', required: false })
+    @Prop({ type: Types.ObjectId, ref: 'Bank', required: false })
     bank: Bank;
 
     @Prop({ required: true })
