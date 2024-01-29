@@ -42,6 +42,12 @@ export class CreateRoomDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
+  roomRentalPrice: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(0)
   lightPriceRate: number;
 
   @ApiProperty()

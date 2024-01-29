@@ -21,6 +21,9 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   floor: number;
 
+  @Prop({ required: true, default: 0 })
+  roomRentalPrice: number;
+
   @Prop({ required: true, default: false })
   isUseDefaultWaterPriceRate: boolean;
 

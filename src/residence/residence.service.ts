@@ -59,32 +59,6 @@ export class ResidenceService {
       .exec();
   }
 
-  // private async findAll(): Promise<Residence[]> {
-  //   return this.residenceModel
-  //     .find()
-  //     .select({
-  //       __v: 0,
-  //       created_at: 0,
-  //       updated_at: 0,
-  //       'contact._id': 0,
-  //       'contact.created_at': 0,
-  //       'contact.updated_at': 0,
-  //     })
-  //     .populate({
-  //       path: 'owner',
-  //       select: {
-  //         _id: 1,
-  //       }
-  //     })
-  //     .populate('renters')
-  //     .populate('rooms')
-  //     .populate({
-  //       path: 'rooms',
-  //       populate: { path: 'currentRenter' },
-  //     })
-  //     .exec();
-  // }
-
   async findOne(id: string): Promise<Residence> {
     this.validateObjectIdFormat(id, 'Residence');
 
@@ -116,6 +90,7 @@ export class ResidenceService {
     if (!residence) {
       throw new NotFoundException('Residence not found');
     }
+
     return residence;
   }
 
