@@ -31,7 +31,7 @@ export class Payment extends Document {
     @Prop({ required: false })
     account_number: string;
 
-    @Prop({ required: true, default: true})
+    @Prop({ required: true, default: true })
     isActive: boolean;
 
     @Prop({ required: true, default: Date.now() })

@@ -36,12 +36,6 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   lightPriceRate: number;
 
-  @Prop({ required: true, default: 0 })
-  currentWaterGauge: number;
-
-  @Prop({ required: true, default: 0 })
-  currentLightGauge: number;
-
   @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
   currentRenter: Renter;
 

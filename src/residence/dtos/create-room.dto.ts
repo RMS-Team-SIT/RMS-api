@@ -61,18 +61,6 @@ export class CreateRoomDto {
   isUseDefaultLightPriceRate: boolean;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  currentWaterGauge: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  currentLightGauge: number;
-
-  @ApiProperty()
   @IsString()
   @IsOptional()
   currentRenter: Types.ObjectId;
