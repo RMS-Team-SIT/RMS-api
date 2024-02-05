@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateMeterRecordListDto {
@@ -5,10 +6,12 @@ export class CreateMeterRecordListDto {
     // @IsNotEmpty()
     // residence: string;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     meterRecordListName: string;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     record_date: Date;
