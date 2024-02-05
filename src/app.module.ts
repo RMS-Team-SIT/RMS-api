@@ -14,6 +14,7 @@ import { ResidenceModule } from './residence/residence.module';
 import { Connection, Types } from 'mongoose';
 import { BankModule } from './bank/bank.module';
 import * as BankData from './data/bank_cleaned.json';
+import { MeterRecordModule } from './meter-record/meter-record.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
@@ -39,6 +40,7 @@ console.log(`Current environment: ${ENV}`);
     MailModule,
     LineModule,
     FilesModule,
+    MeterRecordModule,
   ],
   controllers: [],
   providers: [
