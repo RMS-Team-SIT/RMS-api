@@ -2,6 +2,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Bank } from "./schemas/bank.schema";
 import { Model } from "mongoose";
 import { CreateBankDto } from "./dtos/create-bank.dto";
+import { validateObjectIdFormat } from "src/utils/mongo.utils";
 
 export class BankService {
     constructor(
@@ -18,8 +19,11 @@ export class BankService {
         return this.bankModel.find().exec();
     }
 
-    async findOne(id: string): Promise<Bank> {
-        return this.bankModel.findById(id);
+    async findOne(bankId: string): Promise<Bank> {
+        
+        validateObjectIdFormat(bankId, 'Bank');
+
+        return this.bankModel.findById(bankId).exec();
     }
 
     async update(id: string, createBankDto: CreateBankDto): Promise<Bank> {

@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Residence } from './schemas/residence.schema';
 import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
@@ -14,9 +14,6 @@ import { UpdateRenterDto } from './dtos/update-renter.dto';
 import { Room } from './schemas/room.schema';
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
-import { CreateResidencePaymentDto } from './dtos/create-residence-payment.dto';
-import { Payment } from './schemas/payment.schema';
-import { BankService } from 'src/bank/bank.service';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 
 @Injectable()
@@ -28,9 +25,6 @@ export class ResidenceService {
     private readonly renterModel: Model<Renter>,
     @InjectModel(Room.name)
     private readonly roomModel: Model<Room>,
-    @InjectModel(Payment.name)
-    private readonly paymentModel: Model<Payment>,
-    private readonly bankService: BankService,
   ) {
   }
 
@@ -540,44 +534,16 @@ export class ResidenceService {
     return this.roomModel.findByIdAndDelete(roomId).exec();
   }
 
-  // ==================== Payment ====================
-  async createPayment(residenceId: string, createResidencePaymentDto: CreateResidencePaymentDto) {
+  async addPaymentToResidence(residenceId: string, paymentId: string): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
-    validateObjectIdFormat(createResidencePaymentDto.bankId, 'Bank');
+    validateObjectIdFormat(paymentId, 'Payment');
 
-    // check residence is exist
-    const residence = await this.residenceModel.findOne({ _id: residenceId }).exec();
-    if (!residence) {
-      throw new NotFoundException('Residence not found');
-    }
-
-    // check bankId is exist
-    const bank = await this.bankService.findOne(createResidencePaymentDto.bankId);
-    if (!bank) {
-      throw new BadRequestException('Bank not found');
-    }
-
-    // Add payment to payment
-    const createdPayment = await new this.paymentModel({
-      ...createResidencePaymentDto,
-      bank: createResidencePaymentDto.bankId,
-      residence: residenceId,
-    }).save();
-
-    // Add payment to residence
-    await this.residenceModel.findOneAndUpdate({ _id: residenceId }, {
-      $push: { payments: createdPayment._id }
-    }).exec();
-
-    return createdPayment;
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { payments: paymentId } },
+        { new: true },
+      )
+      .exec();
   }
-
-  async findAllPaymentInResidence(residenceId: string): Promise<Payment[]> {
-    validateObjectIdFormat(residenceId, 'Residence');
-
-    const payments = await this.paymentModel.find({ residence: residenceId }).exec();
-    return payments;
-  }
-
-
 }

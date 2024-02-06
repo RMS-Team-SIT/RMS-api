@@ -5,8 +5,6 @@ import { Room, RoomSchema } from './schemas/room.schema';
 import { Residence, ResidenceSchema } from './schemas/residence.schema';
 import { Renter, RenterSchema } from './schemas/renter.schema';
 import { ResidenceController } from './residence.controller';
-import { Payment, PaymentSchema } from './schemas/payment.schema';
-import { BankModule } from 'src/bank/bank.module';
 
 @Module({
   imports: [
@@ -14,9 +12,7 @@ import { BankModule } from 'src/bank/bank.module';
       { name: Residence.name, schema: ResidenceSchema },
       { name: Room.name, schema: RoomSchema },
       { name: Renter.name, schema: RenterSchema },
-      { name: Payment.name, schema: PaymentSchema },
     ]),
-    BankModule,
   ],
   controllers: [ResidenceController],
   providers: [ResidenceService],

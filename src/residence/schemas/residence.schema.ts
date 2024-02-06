@@ -8,7 +8,7 @@ import {
 } from './residence-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Renter } from './renter.schema';
-import { Payment } from './payment.schema';
+import { Payment } from '../../payment/schemas/payment.schema';
 
 export type ResidenceDocument = Residence & Document;
 
