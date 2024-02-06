@@ -72,7 +72,7 @@ export class ResidenceService {
   async findOne(id: string): Promise<Residence> {
     validateObjectIdFormat(id, 'Residence');
 
-    const residence = this.residenceModel
+    const residence = await this.residenceModel
       .findById(id)
       .select({
         __v: 0,
