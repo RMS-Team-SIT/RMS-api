@@ -1,6 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Room } from 'src/residence/schemas/room.schema';
+import { MeterRecordList } from './meter-record-list.schema';
 
 export type MeterRecordDocument = MeterRecord & Document;
 
@@ -10,6 +11,9 @@ export class MeterRecord extends Document {
 
     @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
     room: Room;
+
+    @Prop({ type: Types.ObjectId, ref: 'MeterRecordList', required: true })
+    meterRecordList: MeterRecordList;
 
     // water meter
     @Prop({ type: Number, required: true })
