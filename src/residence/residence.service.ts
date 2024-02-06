@@ -100,6 +100,11 @@ export class ResidenceService {
         path: 'payments',
         populate: { path: 'bank', select: { _id: 1, thai_name: 1, bank: 1, color: 1, nice_name: 1 } },
       })
+      .populate('meterRecord', { __v: 0, residence: 0 })
+      .populate({
+        path: 'meterRecord',
+        populate: { path: 'meterRecordItems', select: { __v: 0, meterRecord: 0 } },
+      })
       .exec();
 
     if (!residence) {
@@ -186,6 +191,19 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $push: { payments: paymentId } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async addMeterRecordToResidence(residenceId: string, meterRecordId: string): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(meterRecordId, 'MeterRecord');
+
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { meterRecord: meterRecordId } },
         { new: true },
       )
       .exec();

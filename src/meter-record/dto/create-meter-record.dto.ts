@@ -1,33 +1,18 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { IsNotEmpty, IsNumber, IsString, Min } from "class-validator"
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateMeterRecordDto {
+    // @IsString()
+    // @IsNotEmpty()
+    // residence: string;
+
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    room: string
+    meterRecordName: string;
 
     @ApiProperty()
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    @Min(0)
-    oldWaterMeter: number
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0)
-    newWaterMeter: number
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0)
-    oldElectricMeter: number
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0)
-    newElectricMeter: number
+    record_date: Date;
 }

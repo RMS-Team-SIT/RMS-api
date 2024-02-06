@@ -1,79 +1,90 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { CreateMeterRecordListDto } from "./dto/create-meter-record-list.dto";
 import { InjectModel } from "@nestjs/mongoose";
-import { MeterRecordList } from "./schemas/meter-record-list.schema";
 import { Model } from "mongoose";
-import { MeterRecord } from "./schemas/meter-record.schema copy";
-import { CreateMeterRecordDto } from "./dto/create-meter-record.dto";
 import { validateObjectIdFormat } from "src/utils/mongo.utils";
+import { MeterRecord } from "./schemas/meter-record.schema";
+import { MeterRecordItem } from "./schemas/meter-record-item.schema copy";
+import { CreateMeterRecordDto } from "./dto/create-meter-record.dto";
+import { ResidenceService } from "src/residence/residence.service";
+import { CreateMeterRecordItemDto } from "./dto/create-meter-record-item.dto";
 
 @Injectable()
 export class MeterRecordService {
     constructor(
-        @InjectModel(MeterRecordList.name)
-        private readonly meterRecordListModel: Model<MeterRecordList>,
         @InjectModel(MeterRecord.name)
         private readonly meterRecordModel: Model<MeterRecord>,
+        @InjectModel(MeterRecordItem.name)
+        private readonly meterRecordItemModel: Model<MeterRecordItem>,
+        private readonly residenceService: ResidenceService,
     ) { }
 
-    async createMeterRecordList(
+    async createMeterRecord(
         residenceId: string,
-        createMeterRecordListDto: CreateMeterRecordListDto
-    ): Promise<MeterRecordList> {
+        createMeterRecordDto: CreateMeterRecordDto
+    ): Promise<MeterRecord> {
 
-        const createdMeterRecordList = new this.meterRecordListModel({
-            residence: residenceId,
-            ...createMeterRecordListDto
-        });
+        // Check residence exists
+        await this.residenceService.findOne(residenceId);
 
-        return createdMeterRecordList.save();
-    }
-
-    async getMeterRecordList(): Promise<MeterRecordList[]> {
-        return this.meterRecordListModel.find().exec();
-    }
-
-    async getMeterRecordListByResidence(
-        residenceId: string
-    ): Promise<MeterRecordList[]> {
-        return this.meterRecordListModel.find({ residence: residenceId }).exec();
-    }
-
-    async getMeterRecordListById(meterRecordListId: string): Promise<MeterRecordList> {
-        return this.meterRecordListModel.findById(meterRecordListId).exec();
-    }
-
-    async addRecordToMeterRecordList(
-        meterRecordListId: string,
-        meterRecord: CreateMeterRecordDto
-    ) {
-        // check Id is valid
-        validateObjectIdFormat(meterRecordListId)
-
-        // find the meter record list exists
-        const meterRecordListExists = await this.meterRecordListModel.findById(meterRecordListId).exec();
-        if (!meterRecordListExists) {
-            throw new BadRequestException('Meter record list not found');
-        }
-
-
-        // create a new meter record
         const createdMeterRecord = await new this.meterRecordModel({
-            ...meterRecord,
-            meterRecordList: meterRecordListId
+            residence: residenceId,
+            ...createMeterRecordDto
         }).save();
 
-        // add the created meter record to the meter record list
-        const meterRecordList = await this.meterRecordListModel.findByIdAndUpdate(meterRecordListId, {
-            $push: { meterRecords: createdMeterRecord._id }
-        }).exec();
-        
-        return meterRecordList;
+        // Add the created meter record to the residence
+        await this.residenceService.addMeterRecordToResidence(
+            residenceId,
+            createdMeterRecord._id
+        );
+
+        return createdMeterRecord;
     }
 
-    // updateMeterRecordList() { }
+    async getMeterRecord(): Promise<MeterRecord[]> {
+        return this.meterRecordModel.find().exec();
+    }
 
-    // deleteMeterRecordList() { }
+    async getMeterRecordByResidence(
+        residenceId: string
+    ): Promise<MeterRecord[]> {
+        return this.meterRecordModel.find({ residence: residenceId }).exec();
+    }
+
+    async getMeterRecordById(meterRecordId: string): Promise<MeterRecord> {
+        return this.meterRecordModel.findById(meterRecordId).exec();
+    }
+
+    // async addRecordToMeterRecord(
+    //     meterRecordId: string,
+    //     meterRecordItem: CreateMeterRecordItemDto
+    // ) {
+    //     // check Id is valid
+    //     validateObjectIdFormat(meterRecordId)
+
+    //     // find the meter record  exists
+    //     const meterRecordExists = await this.meterRecordModel.findById(meterRecordId).exec();
+    //     if (!meterRecordExists) {
+    //         throw new BadRequestException('Meter record  not found');
+    //     }
+
+
+    //     // create a new meter record
+    //     const createdMeterRecord = await new this.meterRecordModel({
+    //         ...meterRecordItem,
+    //         meterRecord: meterRecordId
+    //     }).save();
+
+    //     // add the created meter record to the meter record 
+    //     const meterRecord = await this.meterRecordModel.findByIdAndUpdate(meterRecordId, {
+    //         $push: { meterRecords: createdMeterRecord._id }
+    //     }).exec();
+
+    //     return meterRecord;
+    // }
+
+    // updateMeterRecord() { }
+
+    // deleteMeterRecord() { }
 
     // createMeterRecord() { }
 

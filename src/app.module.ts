@@ -45,6 +45,7 @@ console.log(`Current environment: ${ENV}`);
     MeterRecordModule,
     PaymentModule,
     RoomModule,
+    MeterRecordModule,
   ],
   controllers: [],
   providers: [

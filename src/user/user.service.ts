@@ -100,9 +100,6 @@ export class UserService {
       console.log('email verified can not be changed');
       delete updateUserDto.email;
     } else {
-      console.log('email not verified can be changed');
-      // TODO: send email verification after update email (if email changed and isEmailVerified is false)
-      console.log(updateUserDto);
 
       if (updateUserDto.email) {
         // TODO: check email is duplicate
@@ -130,7 +127,6 @@ export class UserService {
       }
     }
 
-    // TODO: check phone is duplicate
     if (updateUserDto.phone) {
       const duplicatePhone = await this.userModel
         .findOne({ phone: updateUserDto.phone, _id: { $ne: userId } })

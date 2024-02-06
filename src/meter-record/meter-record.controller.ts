@@ -1,22 +1,25 @@
 import { Body, Controller, Param, Post } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { MeterRecordService } from "./meter-record.service";
-import { CreateMeterRecordListDto } from "./dto/create-meter-record-list.dto";
+import { CreateMeterRecordDto } from "./dto/create-meter-record.dto";
 import { Public } from "src/auth/decorator/public.decorator";
+import { ResidenceService } from "src/residence/residence.service";
 
-@Controller('meter-record')
+@Controller('/residence/:residenceId/meter-record')
 @ApiTags('Meter Record')
+@ApiBearerAuth()
 export class MeterRecordController {
     constructor(
-        private readonly meterRecordService: MeterRecordService
+        private readonly meterRecordService: MeterRecordService,
+        private readonly residenceService: ResidenceService,
     ) { }
 
-    @Post("/:id")
+    @Post('')
     @Public()
     async createMeterRecordList(
-        @Param('id') residenceId: string,
-        @Body() createMeterRecordListDto: CreateMeterRecordListDto
+        @Param('residenceId') residenceId: string,
+        @Body() createMeterRecordListDto: CreateMeterRecordDto
     ) {
-        return this.meterRecordService.createMeterRecordList(residenceId, createMeterRecordListDto);
+        return this.meterRecordService.createMeterRecord(residenceId, createMeterRecordListDto);
     }
 }
