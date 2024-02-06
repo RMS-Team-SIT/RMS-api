@@ -26,6 +26,7 @@ import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { CreateResidencePaymentDto } from './dtos/create-residence-payment.dto';
 import { Payment } from './schemas/payment.schema';
+import { UpdateResidencePaymentDto } from './dtos/update-residence-payment.dto';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -302,4 +303,54 @@ export class ResidenceController {
 
     return await this.residenceService.createPayment(residenceId, dto);
   }
+
+  @Get(':residenceId/payment/:paymentId')
+  async findOnePaymentInResidence(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('paymentId') paymentId: string,
+  ): Promise<Payment> {
+    const userId = req.user.id;
+
+    const residence = await this.residenceService.findOne(residenceId);
+    if (residence.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException('You are not owner of this residence');
+    }
+
+    return await this.residenceService.findOnePayment(paymentId);
+  }
+
+  @Get(':residenceId/payment')
+  async findAllPaymentInResidence(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+  ): Promise<Payment[]> {
+    const userId = req.user.id;
+
+    const residence = await this.residenceService.findOne(residenceId);
+    if (residence.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException('You are not owner of this residence');
+    }
+
+    return await this.residenceService.findAllPaymentInResidence(residenceId);
+  }
+
+  @Put(':residenceId/payment/:paymentId')
+  async updatePaymentInResidence(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('paymentId') paymentId: string,
+    @Body() dto: UpdateResidencePaymentDto,
+  ): Promise<Payment> {
+    const userId = req.user.id;
+
+    const residence = await this.residenceService.findOne(residenceId);
+    if (residence.owner._id.toString() != userId.toString()) {
+      throw new UnauthorizedException('You are not owner of this residence');
+    }
+
+    return await this.residenceService.updatePayment(paymentId, dto);
+  }
+
+
 }
