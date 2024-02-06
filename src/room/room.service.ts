@@ -150,7 +150,7 @@ export class RoomService {
 
             // Remove room from old renter if exist
             if (room.currentRenter) {
-                await this.renterService.removeRoomFromRenter(room.currentRenter._id);
+                await this.renterService.removeRoomFromRenter(room.currentRenter);
             }
 
             // Update new renter: set room to this room

@@ -51,12 +51,7 @@ export class ResidenceController {
 
   @Get(':residenceId')
   async findOne(@Param('residenceId') id: string): Promise<Residence> {
-    try {
-      return await this.residenceService.findOne(id);
-    } catch (error) {
-      console.log(error);
-      throw new NotFoundException('Residence not found');
-    }
+    return await this.residenceService.findOne(id);
   }
 
   @Put(':residenceId')
