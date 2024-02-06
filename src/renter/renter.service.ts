@@ -184,7 +184,7 @@ export class RenterService {
             .exec();
     }
 
-    async removeRoomFromRenter(renterId: string): Promise<Renter> {
+    async removeRoomFromRenter(renterId: string | Renter): Promise<Renter> {
         return this.renterModel
             .findByIdAndUpdate(
                 renterId,

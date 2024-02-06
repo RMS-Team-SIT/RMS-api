@@ -158,10 +158,8 @@ export class RoomService {
 
         } else {
             // remove room from old renter if exist
-            console.log('room.currentRenter', room.currentRenter);
-            
             if (room.currentRenter) {
-                await this.renterService.removeRoomFromRenter(room.currentRenter._id);
+                await this.renterService.removeRoomFromRenter(room.currentRenter);
             }
         }
 
