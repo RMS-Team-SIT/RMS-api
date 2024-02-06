@@ -74,12 +74,17 @@ export class RenterService {
             .exec()
     }
 
-    async findOneRenter(renterId: string): Promise<Renter> {
+    async findOneRenter(renterId: string, isActive?: boolean): Promise<Renter> {
         validateObjectIdFormat(renterId, 'Renter');
+
+        const filter = { _id: renterId };
+        if (isActive) {
+            filter['isActive'] = true;
+        }
 
         const renter = await this
             .renterModel
-            .findById(renterId)
+            .findOne(filter)
             .populate({
                 path: 'room',
                 select: {
@@ -166,6 +171,27 @@ export class RenterService {
         return this.renterModel.findByIdAndUpdate(renterId, {
             isActive: true,
         }).exec()
+    }
+
+    async addRoomToRenter(renterId: string, roomId: string): Promise<Renter> {
+        // add room to renter
+        return this.renterModel
+            .findByIdAndUpdate(
+                renterId,
+                { room: roomId, updated_at: Date.now() },
+                { new: true },
+            )
+            .exec();
+    }
+
+    async removeRoomFromRenter(renterId: string): Promise<Renter> {
+        return this.renterModel
+            .findByIdAndUpdate(
+                renterId,
+                { room: null },
+                { new: true },
+            )
+            .exec();
     }
 
 }

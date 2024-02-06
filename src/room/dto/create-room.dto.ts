@@ -63,11 +63,5 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  currentRenter: Types.ObjectId;
-
-  @ApiProperty()
-  @IsOptional()
-  @Type(() => CreateBillDto)
-  @ValidateNested()
-  billHistories: CreateBillDto[];
+  currentRenter: string;
 }
