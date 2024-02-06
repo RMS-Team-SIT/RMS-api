@@ -1,13 +1,13 @@
 import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { User } from 'src/user/schemas/user.schemas';
-import { Room } from './room.schema';
+import { Room } from '../../room/schemas/room.schema';
 import {
   ResidenceContact,
   ResidenceContactSchema,
 } from './residence-contact.schema';
 import { Announcement, AnnouncementSchema } from './anouncement.schema';
-import { Renter } from './renter.schema';
+import { Renter } from '../../renter/schemas/renter.schema';
 import { Payment } from '../../payment/schemas/payment.schema';
 
 export type ResidenceDocument = Residence & Document;

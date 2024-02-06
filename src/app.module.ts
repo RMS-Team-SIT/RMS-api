@@ -16,6 +16,7 @@ import { BankModule } from './bank/bank.module';
 import * as BankData from './data/bank_cleaned.json';
 import { MeterRecordModule } from './meter-record/meter-record.module';
 import { PaymentModule } from './payment/payment.module';
+import { RoomModule } from './room/room.module';
 
 const ENV = process.env.NODE_ENV;
 console.log(`Current environment: ${ENV}`);
@@ -43,6 +44,7 @@ console.log(`Current environment: ${ENV}`);
     FilesModule,
     MeterRecordModule,
     PaymentModule,
+    RoomModule,
   ],
   controllers: [],
   providers: [

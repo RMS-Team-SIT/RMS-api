@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Room } from 'src/residence/schemas/room.schema';
+import { Room } from 'src/room/schemas/room.schema';
 import { MeterRecordList } from './meter-record-list.schema';
 
 export type MeterRecordDocument = MeterRecord & Document;

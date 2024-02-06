@@ -1,6 +1,6 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Renter } from './renter.schema';
+import { Renter } from '../../renter/schemas/renter.schema';
 
 export type BillHistoryDocument = BillHistory & Document;
 @Schema()

@@ -1,13 +1,13 @@
 import { Body, Controller, Get, Param, Post, Put } from "@nestjs/common";
 import { PaymentService } from "./payment.service";
 import { Public } from "src/auth/decorator/public.decorator";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CreateResidencePaymentDto } from "./dto/create-residence-payment.dto";
 import { UpdateResidencePaymentDto } from "./dto/update-residence-payment.dto";
 
 @Controller('residence/:residenceId/payment')
 @ApiTags('Payment')
-@Public()
+@ApiBearerAuth()
 export class PaymentController {
     constructor(private readonly paymentService: PaymentService) { }
 

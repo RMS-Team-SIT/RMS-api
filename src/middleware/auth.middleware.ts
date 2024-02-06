@@ -2,10 +2,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user: {
-    id: string; // Adjust the properties based on your actual user object
-    // Add any other user properties here
+    id: string;
   };
 }
 

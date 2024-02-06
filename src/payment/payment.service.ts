@@ -43,17 +43,17 @@ export class PaymentService {
         const payments = await this.paymentModel.find({ residence: residenceId }).exec();
         return payments;
     }
-  
+
     async findOnePaymentInResidence(residenceId: string, paymentId: string): Promise<Payment> {
         validateObjectIdFormat(residenceId, 'Residence');
         validateObjectIdFormat(paymentId, 'Payment');
 
         const payment = await this.paymentModel.findOne({ _id: paymentId, residence: residenceId }).exec();
-        
+
         if (!payment) {
             throw new NotFoundException('Payment not found');
         }
-        
+
         return payment;
     }
 
@@ -62,12 +62,15 @@ export class PaymentService {
         validateObjectIdFormat(paymentId, 'Payment');
 
         const payment = await this.paymentModel.findOne({ _id: paymentId, residence: residenceId }).exec();
-        
+
         if (!payment) {
             throw new NotFoundException('Payment not found');
         }
 
-        const updatedPayment = await this.paymentModel.findByIdAndUpdate(paymentId, updateResidencePaymentDto, { new: true });
+        const updatedPayment = await this.paymentModel.findByIdAndUpdate(paymentId, {
+            ...updateResidencePaymentDto,
+            updated_at: Date.now(),
+        }, { new: true });
 
         return updatedPayment;
     }
