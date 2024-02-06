@@ -124,16 +124,6 @@ export class ResidenceService {
       .exec();
   }
 
-  // async delete(id: string): Promise<Residence> {
-  //   validateObjectIdFormat(id, 'Residence');
-
-  //   // delete all renter
-  //   await this.renterModel.deleteMany({ residence: id }).exec();
-  //   // delete all room
-  //   await this.roomModel.deleteMany({ residence: id }).exec();
-
-  //   return this.residenceModel.findByIdAndDelete(id).exec();
-  // }
 
   async addRenterToResidence(residenceId: string, renterId: string): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
