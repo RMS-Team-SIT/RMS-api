@@ -18,6 +18,12 @@ export class MeterRecordItem extends Document {
     @Prop({ type: Number, required: true })
     currentElectricMeter: number;
 
+    @Prop({ type: Number, required: true })
+    totalWaterMeterUsage: number;
+
+    @Prop({ type: Number, required: true })
+    totalElectricMeterUsage: number;
+
     @Prop({ required: true, default: Date.now() })
     created_at: Date;
 
