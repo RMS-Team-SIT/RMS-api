@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
 import { CreateMeterRecordItemDto } from "./create-meter-record-item.dto";
+import { Type } from "class-transformer";
 
 export class CreateMeterRecordDto {
 
@@ -8,8 +9,10 @@ export class CreateMeterRecordDto {
     @IsString()
     @IsNotEmpty()
     record_date: Date;
-    
-    @ApiProperty()
+
+    @ApiProperty({ type: () => [CreateMeterRecordItemDto] })
     @IsNotEmpty()
+    @Type(() => CreateMeterRecordItemDto)
+    @ValidateNested({ each: true })
     meterRecordItems: CreateMeterRecordItemDto[];
 }

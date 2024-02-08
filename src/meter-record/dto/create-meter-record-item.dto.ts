@@ -6,11 +6,6 @@ export class CreateMeterRecordItemDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    meterRecord: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
     room: string;
 
     @ApiProperty()
