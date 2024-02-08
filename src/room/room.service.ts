@@ -111,8 +111,6 @@ export class RoomService {
 
         if (numberOfFloor !== numberOfRoomEachFloor.length)
             throw new BadRequestException('Number of floor and number of room each floor is not match');
-        if (numberOfRoomEachFloor.some((room) => room < 1))
-            throw new BadRequestException('Number of room each floor must be greater than 0');
 
         const rooms = [];
         for (let floor = 1; floor <= numberOfFloor; floor++) {
