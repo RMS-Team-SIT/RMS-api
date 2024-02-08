@@ -84,6 +84,7 @@ export class RoomService {
         const createdRoom = await new this.roomModel({
             ...createRoomDto,
             residence: residenceId,
+            isActive: true,
         }).save();
 
         // Save room to residence
@@ -107,9 +108,15 @@ export class RoomService {
         const numberOfFloor = createManyRoomDto.numberOfFloor;
         const numberOfRoomEachFloor = createManyRoomDto.numberOfRoomEachFloor;
 
+
+        if (numberOfFloor !== numberOfRoomEachFloor.length)
+            throw new BadRequestException('Number of floor and number of room each floor is not match');
+        if (numberOfRoomEachFloor.some((room) => room < 1))
+            throw new BadRequestException('Number of room each floor must be greater than 0');
+
         const rooms = [];
         for (let floor = 1; floor <= numberOfFloor; floor++) {
-            for (let roomNumber = 1; roomNumber <= numberOfRoomEachFloor; roomNumber++) {
+            for (let roomNumber = 1; roomNumber <= numberOfRoomEachFloor[floor - 1]; roomNumber++) {
                 const room = {
                     name: `${floor}${roomNumber.toString().padStart(2, '0')}`,
                     residence: residenceId,
@@ -119,6 +126,7 @@ export class RoomService {
                     lightPriceRate: createManyRoomDto.lightPriceRate,
                     isUseDefaultWaterPriceRate: createManyRoomDto.isUseDefaultWaterPriceRate,
                     isUseDefaultLightPriceRate: createManyRoomDto.isUseDefaultLightPriceRate,
+                    isActive: true,
                 };
                 rooms.push(room);
             }

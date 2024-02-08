@@ -1,14 +1,34 @@
 import {
+  ArrayMinSize,
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
   IsOptional,
   IsString,
   MaxLength,
   Min,
+  Validate,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+
+function IsArrayOfNumbersGreaterThanOne() {
+  return Validate((value: any) => {
+    return false;
+    if (!Array.isArray(value)) {
+      return false;
+    }
+    for (const num of value) {
+      if (typeof num !== 'number' || num < 1) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
 
 export class CreateManyRoomDto {
 
@@ -20,9 +40,9 @@ export class CreateManyRoomDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  numberOfRoomEachFloor: number;
+  @IsNumber({}, { each: true })
+  @Type(() => Number)
+  numberOfRoomEachFloor: number[];
 
   @ApiProperty()
   @IsNotEmpty()
