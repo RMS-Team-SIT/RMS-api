@@ -24,4 +24,16 @@ export class CreateMeterRecordItemDto {
     @IsNotEmpty()
     @Min(0)
     currentElectricMeter: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(0)
+    totalWaterMeterUsage: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    @Min(0)
+    totalElectricMeterUsage: number;
 }
