@@ -8,14 +8,8 @@ export class CreateMeterRecordDto {
     @IsString()
     @IsNotEmpty()
     record_date: Date;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    previous_meterRecord: string;
     
     @ApiProperty()
-    @IsArray()
-    @IsOptional()
+    @IsNotEmpty()
     meterRecordItems: CreateMeterRecordItemDto[];
 }

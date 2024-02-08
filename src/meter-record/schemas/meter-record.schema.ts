@@ -1,7 +1,7 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Residence } from 'src/residence/schemas/residence.schema';
-import { MeterRecordItem } from './meter-record-item.schema copy';
+import { MeterRecordItem, MeterRecordItemSchema } from './meter-record-item.schema';
 
 export type MeterRecordDocument = MeterRecord & Document;
 
@@ -18,7 +18,7 @@ export class MeterRecord extends Document {
     @Prop({ required: true, default: Date.now() })
     record_date: Date;
 
-    @Prop({ type: [Types.ObjectId], ref: 'MeterRecord' })
+    @Prop({ type: [MeterRecordItemSchema], default: [] })
     meterRecordItems: MeterRecordItem[];
 
     @Prop({ required: true, default: Date.now() })

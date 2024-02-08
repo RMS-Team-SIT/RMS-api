@@ -12,9 +12,6 @@ export class MeterRecordItem extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
     room: Room;
 
-    @Prop({ type: Types.ObjectId, ref: 'MeterRecord', required: true })
-    meterRecord: MeterRecord;
-
     @Prop({ type: Number, required: true })
     currentWaterMeter: number;
 

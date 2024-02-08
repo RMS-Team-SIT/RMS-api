@@ -125,10 +125,7 @@ export class RoomService {
         }
 
         // Create room
-
         const createdRooms = await this.roomModel.insertMany(rooms);
-        console.log(createdRooms);
-
 
         // Save rooms to residence
         await this.residenceService.addRoomsToResidence(residenceId, createdRooms.map(r => r._id));
