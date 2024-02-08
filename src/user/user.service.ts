@@ -117,7 +117,7 @@ export class UserService {
           isEmailVerified: false,
         });
         if (shouldSendEmailVerification) {
-          console.log('send email verification');
+          console.log('send email verification to ', updateUserDto.email);
           const sendMailResult = await this.mailService.sendVerification({
             to: updateUserDto.email,
             token: user.emailVerificationToken,
