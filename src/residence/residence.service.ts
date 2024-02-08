@@ -9,12 +9,6 @@ import { Model } from 'mongoose';
 import { Residence } from './schemas/residence.schema';
 import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
-import { Renter } from '../renter/schemas/renter.schema';
-import { CreateRenterDto } from '../renter/dto/create-renter.dto';
-import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
-import { Room } from '../room/schemas/room.schema';
-import { CreateRoomDto } from '../room/dto/create-room.dto';
-import { UpdateRoomDto } from '../room/dto/update-room.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 
 @Injectable()
@@ -165,6 +159,16 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $push: { rooms: roomId } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async addRoomsToResidence(residenceId: string, roomIds: string[]): Promise<Residence> {
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { rooms: [...roomIds] } },
         { new: true },
       )
       .exec();

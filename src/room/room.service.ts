@@ -7,6 +7,7 @@ import { ResidenceService } from "src/residence/residence.service";
 import { validateObjectIdFormat } from "src/utils/mongo.utils";
 import { UpdateRoomDto } from "./dto/update-room.dto";
 import { RenterService } from "src/renter/renter.service";
+import { CreateManyRoomDto } from "./dto/create-many-room.dto";
 
 @Injectable()
 export class RoomService {
@@ -94,6 +95,45 @@ export class RoomService {
         }
 
         return createdRoom;
+    }
+
+    async createManyRoom(
+        residenceId: string,
+        createManyRoomDto: CreateManyRoomDto,
+    ): Promise<any> {
+        // Check residence is exist
+        const residence = await this.residenceService.findOne(residenceId);
+
+        const numberOfFloor = createManyRoomDto.numberOfFloor;
+        const numberOfRoomEachFloor = createManyRoomDto.numberOfRoomEachFloor;
+
+        const rooms = [];
+        for (let floor = 1; floor <= numberOfFloor; floor++) {
+            for (let roomNumber = 1; roomNumber <= numberOfRoomEachFloor; roomNumber++) {
+                const room = {
+                    name: `Room ${floor}${roomNumber}`,
+                    residence: residenceId,
+                    floor: floor,
+                    waterPriceRate: createManyRoomDto.waterPriceRate,
+                    roomRentalPrice: createManyRoomDto.roomRentalPrice,
+                    lightPriceRate: createManyRoomDto.lightPriceRate,
+                    isUseDefaultWaterPriceRate: createManyRoomDto.isUseDefaultWaterPriceRate,
+                    isUseDefaultLightPriceRate: createManyRoomDto.isUseDefaultLightPriceRate,
+                };
+                rooms.push(room);
+            }
+        }
+
+        // Create room
+
+        const createdRooms = await this.roomModel.insertMany(rooms);
+        console.log(createdRooms);
+        
+
+        // Save rooms to residence
+        await this.residenceService.addRoomsToResidence(residenceId, createdRooms.map(r => r._id));
+
+        return createdRooms;
     }
 
     async findAllRoomInResidence(residenceId: string): Promise<Room[]> {

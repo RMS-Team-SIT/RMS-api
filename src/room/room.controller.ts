@@ -2,11 +2,10 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Req } from "@nestjs/co
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CreateRoomDto } from "./dto/create-room.dto";
 import { Room } from "./schemas/room.schema";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
 import { ResidenceService } from "src/residence/residence.service";
 import { RoomService } from "./room.service";
 import { UpdateRoomDto } from "./dto/update-room.dto";
+import { CreateManyRoomDto } from "./dto/create-many-room.dto";
 
 @Controller('/residence/:residenceId/room')
 @ApiTags('Room')
@@ -28,6 +27,19 @@ export class RoomController {
         await this.residenceService.checkOwnerPermission(userId, residenceId);
 
         return await this.roomService.createRoom(residenceId, dto);
+    }
+
+    @Post('/many')
+    async createManyRoom(
+        @Req() req,
+        @Param('residenceId') residenceId: string,
+        @Body() dto: CreateManyRoomDto,
+    ): Promise<Room> {
+        const userId = req.user.id;
+
+        await this.residenceService.checkOwnerPermission(userId, residenceId);
+
+        return await this.roomService.createManyRoom(residenceId, dto);
     }
 
     @Get('')

@@ -10,24 +10,18 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateRoomDto {
+export class CreateManyRoomDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  @MaxLength(200)
-  name: string;
-
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  description: string;
-
-  @ApiProperty()
-  @IsOptional()
   @IsNumber()
   @Min(1)
-  floor: number;
+  numberOfFloor: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(1)
+  numberOfRoomEachFloor: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -56,9 +50,4 @@ export class CreateRoomDto {
   @IsBoolean()
   @IsOptional()
   isUseDefaultLightPriceRate: boolean;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  currentRenter: string;
 }
