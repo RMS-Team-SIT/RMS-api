@@ -11,23 +11,11 @@ export class CreateMeterRecordItemDto {
     @IsNumber()
     @IsNotEmpty()
     @Min(0)
-    oldWaterMeter: number
+    currentWaterMeter: number
 
     @ApiProperty()
     @IsNumber()
     @IsNotEmpty()
     @Min(0)
-    newWaterMeter: number
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0)
-    oldElectricMeter: number
-
-    @ApiProperty()
-    @IsNumber()
-    @IsNotEmpty()
-    @Min(0)
-    newElectricMeter: number
+    currentElectricMeter: number
 }

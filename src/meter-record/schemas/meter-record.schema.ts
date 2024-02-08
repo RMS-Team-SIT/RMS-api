@@ -12,14 +12,14 @@ export class MeterRecord extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
     residence: Residence;
 
-    @Prop({ type: String, required: true })
-    meterRecordName: string;
-
-    @Prop({ type: [Types.ObjectId], ref: 'MeterRecord' })
-    meterRecordItems: MeterRecordItem[];
+    @Prop({ required: true })
+    meterRecordShortname: string;
 
     @Prop({ required: true, default: Date.now() })
     record_date: Date;
+
+    @Prop({ type: [Types.ObjectId], ref: 'MeterRecord' })
+    meterRecordItems: MeterRecordItem[];
 
     @Prop({ required: true, default: Date.now() })
     created_at: Date;

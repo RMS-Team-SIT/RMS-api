@@ -28,7 +28,8 @@ export class MeterRecordService {
 
         const createdMeterRecord = await new this.meterRecordModel({
             residence: residenceId,
-            ...createMeterRecordDto
+            ...createMeterRecordDto,
+            meterRecordShortname: createMeterRecordDto.record_date.toISOString()
         }).save();
 
         // Add the created meter record to the residence

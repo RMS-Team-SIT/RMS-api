@@ -1,18 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { CreateMeterRecordItemDto } from "./create-meter-record-item.dto";
 
 export class CreateMeterRecordDto {
-    // @IsString()
-    // @IsNotEmpty()
-    // residence: string;
-
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    meterRecordName: string;
 
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
     record_date: Date;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    previous_meterRecord: string;
+    
+    @ApiProperty()
+    @IsArray()
+    @IsOptional()
+    meterRecordItems: CreateMeterRecordItemDto[];
 }

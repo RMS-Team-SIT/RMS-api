@@ -15,19 +15,11 @@ export class MeterRecordItem extends Document {
     @Prop({ type: Types.ObjectId, ref: 'MeterRecord', required: true })
     meterRecord: MeterRecord;
 
-    // water meter
     @Prop({ type: Number, required: true })
-    oldWaterMeter: number;
+    currentWaterMeter: number;
 
     @Prop({ type: Number, required: true })
-    newWaterMeter: number;
-
-    // electric meter
-    @Prop({ type: Number, required: true })
-    oldElectricMeter: number;
-
-    @Prop({ type: Number, required: true })
-    newElectricMeter: number;
+    currentElectricMeter: number;
 
     @Prop({ required: true, default: Date.now() })
     created_at: Date;
