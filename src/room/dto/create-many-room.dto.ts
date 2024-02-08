@@ -11,6 +11,13 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateManyRoomDto {
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  namePrefix: string;
+
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

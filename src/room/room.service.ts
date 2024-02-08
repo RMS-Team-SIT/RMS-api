@@ -111,7 +111,7 @@ export class RoomService {
         for (let floor = 1; floor <= numberOfFloor; floor++) {
             for (let roomNumber = 1; roomNumber <= numberOfRoomEachFloor; roomNumber++) {
                 const room = {
-                    name: `Room ${floor}${roomNumber}`,
+                    name: `${createManyRoomDto.namePrefix}${floor}${roomNumber.toString().padStart(2, '0')}`,
                     residence: residenceId,
                     floor: floor,
                     waterPriceRate: createManyRoomDto.waterPriceRate,
@@ -128,7 +128,7 @@ export class RoomService {
 
         const createdRooms = await this.roomModel.insertMany(rooms);
         console.log(createdRooms);
-        
+
 
         // Save rooms to residence
         await this.residenceService.addRoomsToResidence(residenceId, createdRooms.map(r => r._id));
