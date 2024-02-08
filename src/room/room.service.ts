@@ -111,7 +111,7 @@ export class RoomService {
         for (let floor = 1; floor <= numberOfFloor; floor++) {
             for (let roomNumber = 1; roomNumber <= numberOfRoomEachFloor; roomNumber++) {
                 const room = {
-                    name: `${createManyRoomDto.namePrefix}${floor}${roomNumber.toString().padStart(2, '0')}`,
+                    name: `${floor}${roomNumber.toString().padStart(2, '0')}`,
                     residence: residenceId,
                     floor: floor,
                     waterPriceRate: createManyRoomDto.waterPriceRate,
