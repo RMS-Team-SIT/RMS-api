@@ -63,11 +63,11 @@ export class ResidenceService {
       .exec();
   }
 
-  async findOne(id: string): Promise<Residence> {
-    validateObjectIdFormat(id, 'Residence');
+  async findOne(residenceId: string): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
 
     const residence = await this.residenceModel
-      .findById(id)
+      .findById(residenceId)
       .select({
         __v: 0,
         created_at: 0,
@@ -99,6 +99,7 @@ export class ResidenceService {
         path: 'meterRecord',
         populate: { path: 'meterRecordItems', select: { __v: 0, meterRecord: 0 } },
       })
+      .sort({ 'meterRecord.record_date': -1 })
       .exec();
 
     if (!residence) {

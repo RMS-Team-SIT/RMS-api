@@ -43,10 +43,6 @@ export class MeterRecordService {
         return createdMeterRecord;
     }
 
-    async getMeterRecord(): Promise<MeterRecord[]> {
-        return this.meterRecordModel.find().exec();
-    }
-
     async getMeterRecordByResidence(
         residenceId: string
     ): Promise<MeterRecord[]> {
@@ -57,45 +53,4 @@ export class MeterRecordService {
         return this.meterRecordModel.findById(meterRecordId).exec();
     }
 
-    // async addRecordToMeterRecord(
-    //     meterRecordId: string,
-    //     meterRecordItem: CreateMeterRecordItemDto
-    // ) {
-    //     // check Id is valid
-    //     validateObjectIdFormat(meterRecordId)
-
-    //     // find the meter record  exists
-    //     const meterRecordExists = await this.meterRecordModel.findById(meterRecordId).exec();
-    //     if (!meterRecordExists) {
-    //         throw new BadRequestException('Meter record  not found');
-    //     }
-
-
-    //     // create a new meter record
-    //     const createdMeterRecord = await new this.meterRecordModel({
-    //         ...meterRecordItem,
-    //         meterRecord: meterRecordId
-    //     }).save();
-
-    //     // add the created meter record to the meter record 
-    //     const meterRecord = await this.meterRecordModel.findByIdAndUpdate(meterRecordId, {
-    //         $push: { meterRecords: createdMeterRecord._id }
-    //     }).exec();
-
-    //     return meterRecord;
-    // }
-
-    // updateMeterRecord() { }
-
-    // deleteMeterRecord() { }
-
-    // createMeterRecord() { }
-
-    // getMeterRecord() { }
-
-    // getMeterRecordById() { }
-
-    // updateMeterRecord() { }
-
-    // deleteMeterRecord() { }
 }

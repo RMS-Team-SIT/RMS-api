@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { MeterRecordService } from "./meter-record.service";
 import { CreateMeterRecordDto } from "./dto/create-meter-record.dto";
@@ -15,11 +15,17 @@ export class MeterRecordController {
     ) { }
 
     @Post('')
-    @Public()
     async createMeterRecordList(
         @Param('residenceId') residenceId: string,
         @Body() createMeterRecordListDto: CreateMeterRecordDto
     ) {
         return this.meterRecordService.createMeterRecord(residenceId, createMeterRecordListDto);
+    }
+
+    @Get('')
+    async getMeterRecordList(
+        @Param('residenceId') residenceId: string,
+    ) {
+        return this.meterRecordService.getMeterRecordByResidence(residenceId);
     }
 }
