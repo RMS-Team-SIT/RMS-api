@@ -2,9 +2,9 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Renter } from '../../renter/schemas/renter.schema';
 
-export type BillHistoryDocument = BillHistory & Document;
+export type BillDocument = Bill & Document;
 @Schema()
-export class BillHistory extends Document {
+export class Bill extends Document {
   _id: string;
 
   @Prop({ required: true, default: Date.now() })
@@ -49,4 +49,5 @@ export class BillHistory extends Document {
   @Prop({ required: true, default: Date.now() })
   updated_at: Date;
 }
-export const BillHistorySchema = SchemaFactory.createForClass(BillHistory);
+
+export const BillSchema = SchemaFactory.createForClass(Bill);
