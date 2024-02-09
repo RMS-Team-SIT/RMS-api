@@ -50,7 +50,7 @@ async function bootstrap() {
     app.use(json({ limit: '50mb' }));
     app.use(urlencoded({ extended: true, limit: '50mb' }));
 
-    app.use(helmet());
+    app.use(helmet()); // set security header for express
 
     const port = process.env.PORT || 3000;
     await app.listen(port);
