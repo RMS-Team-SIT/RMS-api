@@ -2,6 +2,7 @@ import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Renter } from '../../renter/schemas/renter.schema';
 import { Residence } from '../../residence/schemas/residence.schema';
+import { BillRoom } from 'src/bill/schemas/bill-room.schema';
 
 export type RoomDocument = Room & Document;
 @Schema()
@@ -40,6 +41,9 @@ export class Room extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
   currentRenter: Renter;
+
+  @Prop({ type: Types.ObjectId, ref: 'BillRoom', default: null })
+  bills: BillRoom[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

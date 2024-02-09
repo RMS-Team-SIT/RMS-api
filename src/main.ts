@@ -8,6 +8,17 @@ import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 
+function configureSwagger(app: NestExpressApplication) {
+  const options = new DocumentBuilder()
+    .setTitle('RMS API')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
+}
+
+
 async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -54,14 +65,5 @@ async function bootstrap() {
   }
 }
 
-function configureSwagger(app: NestExpressApplication) {
-  const options = new DocumentBuilder()
-    .setTitle('RMS API')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
-}
 
 bootstrap();
