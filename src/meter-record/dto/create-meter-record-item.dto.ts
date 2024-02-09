@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsNotEmpty, IsNumber, IsString, Min } from "class-validator"
+import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator"
 
 export class CreateMeterRecordItemDto {
 
@@ -7,6 +7,18 @@ export class CreateMeterRecordItemDto {
     @IsString()
     @IsNotEmpty()
     room: string;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    @Min(0)
+    previousWaterMeter: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    @Min(0)
+    previousElectricMeter: number;
 
     @ApiProperty()
     @IsNumber()

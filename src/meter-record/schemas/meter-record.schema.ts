@@ -12,9 +12,6 @@ export class MeterRecord extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
     residence: Residence;
 
-    @Prop({ required: true })
-    meterRecordShortname: string;
-
     @Prop({ required: true, default: Date.now() })
     record_date: Date;
 

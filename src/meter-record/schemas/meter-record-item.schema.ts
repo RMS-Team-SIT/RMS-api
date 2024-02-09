@@ -12,8 +12,14 @@ export class MeterRecordItem extends Document {
     @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
     room: Room;
 
-    @Prop({ type: Number, required: true })
+    @Prop({ type: Number, required: false, default: 0 })
     currentWaterMeter: number;
+
+    @Prop({ type: Number, required: false, default: 0 })
+    previousWaterMeter: number;
+
+    @Prop({ type: Number, required: false, default: 0 })
+    previousElectricMeter: number;
 
     @Prop({ type: Number, required: true })
     currentElectricMeter: number;
