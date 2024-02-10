@@ -17,7 +17,7 @@ export type ResidenceDocument = Residence & Document;
 export class Residence extends Document {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   owner: User;
 
   @Prop({ required: true })

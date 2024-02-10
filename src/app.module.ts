@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { InjectConnection, MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
@@ -19,14 +19,14 @@ import { PaymentModule } from './payment/payment.module';
 import { RoomModule } from './room/room.module';
 import { BillModule } from './bill/bill.module';
 
-const ENV = process.env.NODE_ENV;
+const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `./env/.env.${ENV || 'development'}`,
+      envFilePath: `./env/.env.${ENV}`,
     }),
     MongooseModule.forRoot(process.env.DB_MONGODB_URI),
     ThrottlerModule.forRoot([
@@ -35,10 +35,10 @@ console.log(`Current environment: ${ENV}`);
         limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
       },
     ]),
+    ResidenceModule,
     BankModule,
     AuthModule,
     UserModule,
-    ResidenceModule,
     HealthModule,
     MailModule,
     LineModule,
@@ -49,7 +49,6 @@ console.log(`Current environment: ${ENV}`);
     MeterRecordModule,
     BillModule,
   ],
-  controllers: [],
   providers: [
     {
       provide: APP_GUARD,
@@ -61,7 +60,7 @@ console.log(`Current environment: ${ENV}`);
     },
   ],
 })
-export class AppModule {
+export class AppModule implements OnModuleInit {
   @InjectConnection() private connection: Connection;
 
   async onModuleInit() {

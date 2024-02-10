@@ -39,10 +39,10 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   lightPriceRate: number;
 
-  @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
+  @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
   currentRenter: Renter;
 
-  @Prop({ type: Types.ObjectId, ref: 'BillRoom', default: null })
+  @Prop({ type: Types.ObjectId, ref: BillRoom.name, default: null })
   bills: BillRoom[];
 
   @Prop({ required: true, default: Date.now() })

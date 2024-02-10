@@ -1,11 +1,20 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import { Renter } from '../../renter/schemas/renter.schema';
+import { Room } from 'src/room/schemas/room.schema';
+import { Bill } from './bill.schema';
 
 export type BillRoomDocument = BillRoom & Document;
 @Schema()
 export class BillRoom extends Document {
+
     _id: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
+    room: Room
+
+    @Prop({ type: Types.ObjectId, ref: 'Bill', required: true })
+    bill: Bill
 
     // Water
     @Prop({ required: true })
@@ -27,8 +36,13 @@ export class BillRoom extends Document {
     @Prop({ required: true })
     lightTotalPrice: number;
 
+    // total
     @Prop({ required: true })
     totalPrice: number;
+
+    // Paider
+    @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
+    paider: Renter
 
     @Prop({ default: null })
     paidEvidenceImage: string;

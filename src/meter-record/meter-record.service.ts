@@ -14,8 +14,6 @@ export class MeterRecordService {
     constructor(
         @InjectModel(MeterRecord.name)
         private readonly meterRecordModel: Model<MeterRecord>,
-        @InjectModel(MeterRecordItem.name)
-        private readonly meterRecordItemModel: Model<MeterRecordItem>,
         private readonly residenceService: ResidenceService,
     ) { }
 
