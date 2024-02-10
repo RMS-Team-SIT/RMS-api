@@ -25,7 +25,7 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/signup')
   @Public()
@@ -79,7 +79,10 @@ export class UserController {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
-    return this.userService.updatePassword(req.params.id, updateUserPasswordDto);
+    return this.userService.updatePassword(
+      req.params.id,
+      updateUserPasswordDto,
+    );
   }
 
   @Delete('/:id')

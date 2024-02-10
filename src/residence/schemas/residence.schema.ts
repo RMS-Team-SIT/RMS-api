@@ -53,7 +53,10 @@ export class Residence extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: Payment.name }], default: [] })
   payments: Payment[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: MeterRecord.name }], default: [] })
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: MeterRecord.name }],
+    default: [],
+  })
   meterRecord: MeterRecord[];
 
   @Prop({ required: true, default: Date.now() })

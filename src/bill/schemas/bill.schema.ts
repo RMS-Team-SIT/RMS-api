@@ -6,11 +6,10 @@ import { BillRoom, BillRoomSchema } from './bill-room.schema';
 export type BillDocument = Bill & Document;
 @Schema()
 export class Bill extends Document {
-
   _id: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'BillRoom' }], default: [] })
-  billRooms: BillRoom[]
+  billRooms: BillRoom[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

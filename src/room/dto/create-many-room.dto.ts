@@ -8,7 +8,6 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 export class CreateManyRoomDto {
-
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()

@@ -7,34 +7,35 @@ export type MeterRecordItemDocument = MeterRecordItem & Document;
 
 @Schema()
 export class MeterRecordItem extends Document {
-    _id: string;
+  _id: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
-    room: Room;
+  @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
+  room: Room;
 
-    @Prop({ type: Number, required: false, default: 0 })
-    currentWaterMeter: number;
+  @Prop({ type: Number, required: false, default: 0 })
+  currentWaterMeter: number;
 
-    @Prop({ type: Number, required: false, default: 0 })
-    previousWaterMeter: number;
+  @Prop({ type: Number, required: false, default: 0 })
+  previousWaterMeter: number;
 
-    @Prop({ type: Number, required: false, default: 0 })
-    previousElectricMeter: number;
+  @Prop({ type: Number, required: false, default: 0 })
+  previousElectricMeter: number;
 
-    @Prop({ type: Number, required: true })
-    currentElectricMeter: number;
+  @Prop({ type: Number, required: true })
+  currentElectricMeter: number;
 
-    @Prop({ type: Number, required: true })
-    totalWaterMeterUsage: number;
+  @Prop({ type: Number, required: true })
+  totalWaterMeterUsage: number;
 
-    @Prop({ type: Number, required: true })
-    totalElectricMeterUsage: number;
+  @Prop({ type: Number, required: true })
+  totalElectricMeterUsage: number;
 
-    @Prop({ required: true, default: Date.now() })
-    created_at: Date;
+  @Prop({ required: true, default: Date.now() })
+  created_at: Date;
 
-    @Prop({ required: true, default: Date.now() })
-    updated_at: Date;
+  @Prop({ required: true, default: Date.now() })
+  updated_at: Date;
 }
 
-export const MeterRecordItemSchema = SchemaFactory.createForClass(MeterRecordItem);
+export const MeterRecordItemSchema =
+  SchemaFactory.createForClass(MeterRecordItem);

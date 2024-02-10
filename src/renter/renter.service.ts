@@ -1,197 +1,208 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { Renter } from "./schemas/renter.schema";
-import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
-import { CreateRenterDto } from "./dto/create-renter.dto";
-import { validateObjectIdFormat } from "src/utils/mongo.utils";
-import { ResidenceService } from "src/residence/residence.service";
-import { UpdateRenterDto } from "./dto/update-renter.dto";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Renter } from './schemas/renter.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateRenterDto } from './dto/create-renter.dto';
+import { validateObjectIdFormat } from 'src/utils/mongo.utils';
+import { ResidenceService } from 'src/residence/residence.service';
+import { UpdateRenterDto } from './dto/update-renter.dto';
 
 @Injectable()
 export class RenterService {
-    constructor(
-        @InjectModel(Renter.name)
-        private readonly renterModel: Model<Renter>,
-        private readonly residenceService: ResidenceService,
-    ) { }
+  constructor(
+    @InjectModel(Renter.name)
+    private readonly renterModel: Model<Renter>,
+    private readonly residenceService: ResidenceService,
+  ) {}
 
+  private async checkRenterUsernameExist(
+    username: string,
+    residenceId: string,
+    renterId?: string,
+  ): Promise<void> {
+    const filter = { username, residence: residenceId };
 
-    private async checkRenterUsernameExist(
-        username: string,
-        residenceId: string,
-        renterId?: string
-    ): Promise<void> {
-        const filter = { username, residence: residenceId };
-
-        if (renterId) {
-            filter['_id'] = { $ne: renterId };
-        }
-
-        const renter = await this.renterModel.findOne(filter).exec();
-
-        if (renter) {
-            throw new BadRequestException('Renter username is exist');
-        }
+    if (renterId) {
+      filter['_id'] = { $ne: renterId };
     }
 
-    async createRenter(
-        residenceId: string,
-        createRenterDto: CreateRenterDto,
-    ): Promise<Renter> {
-        validateObjectIdFormat(residenceId, 'Residence');
+    const renter = await this.renterModel.findOne(filter).exec();
 
-        // check residence is exist
-        await this.residenceService.findOne(residenceId);
+    if (renter) {
+      throw new BadRequestException('Renter username is exist');
+    }
+  }
 
-        // check renter username is exist
-        await this.checkRenterUsernameExist(createRenterDto.username, residenceId);
+  async createRenter(
+    residenceId: string,
+    createRenterDto: CreateRenterDto,
+  ): Promise<Renter> {
+    validateObjectIdFormat(residenceId, 'Residence');
 
-        const createdRenter = await new this.renterModel({
-            ...createRenterDto,
-            residence: residenceId,
-        }).save();
+    // check residence is exist
+    await this.residenceService.findOne(residenceId);
 
-        // Save renter to residence
-        await this.residenceService.addRenterToResidence(residenceId, createdRenter._id);
+    // check renter username is exist
+    await this.checkRenterUsernameExist(createRenterDto.username, residenceId);
 
-        return createdRenter;
+    const createdRenter = await new this.renterModel({
+      ...createRenterDto,
+      residence: residenceId,
+    }).save();
+
+    // Save renter to residence
+    await this.residenceService.addRenterToResidence(
+      residenceId,
+      createdRenter._id,
+    );
+
+    return createdRenter;
+  }
+
+  async findAllRenterInResidence(residenceId: string): Promise<Renter[]> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    return this.renterModel
+      .find({
+        residence: residenceId,
+      })
+      .populate({
+        path: 'room',
+        select: {
+          _id: 1,
+          name: 1,
+        },
+      })
+      .exec();
+  }
+
+  async findOneRenter(renterId: string, isActive?: boolean): Promise<Renter> {
+    validateObjectIdFormat(renterId, 'Renter');
+
+    const filter = { _id: renterId };
+    if (isActive) {
+      filter['isActive'] = true;
     }
 
-    async findAllRenterInResidence(residenceId: string): Promise<Renter[]> {
-        validateObjectIdFormat(residenceId, 'Residence');
+    const renter = await this.renterModel
+      .findOne(filter)
+      .populate({
+        path: 'room',
+        select: {
+          _id: 1,
+          name: 1,
+        },
+      })
+      .exec();
 
-        return this.renterModel
-            .find({
-                residence: residenceId,
-            })
-            .populate({
-                path: 'room',
-                select: {
-                    _id: 1,
-                    name: 1,
-                }
-            })
-            .exec()
+    if (!renter) {
+      throw new NotFoundException('Renter not found');
     }
 
-    async findOneRenter(renterId: string, isActive?: boolean): Promise<Renter> {
-        validateObjectIdFormat(renterId, 'Renter');
+    return renter;
+  }
 
-        const filter = { _id: renterId };
-        if (isActive) {
-            filter['isActive'] = true;
-        }
+  async updateRenter(
+    residenceId: string,
+    renterId: string,
+    updateRenterDto: UpdateRenterDto,
+  ): Promise<Renter> {
+    validateObjectIdFormat(renterId, 'Renter');
+    validateObjectIdFormat(residenceId, 'Residence');
 
-        const renter = await this
-            .renterModel
-            .findOne(filter)
-            .populate({
-                path: 'room',
-                select: {
-                    _id: 1,
-                    name: 1,
-                }
-            })
-            .exec();
+    // check residence is exist
+    await this.residenceService.findOne(residenceId);
 
-        if (!renter) {
-            throw new NotFoundException('Renter not found');
-        }
+    // check renter is exist
+    const renter = await this.findOneRenter(renterId);
 
-        return renter;
+    // Check renter is active or not
+    if (!renter.isActive) {
+      throw new BadRequestException(
+        'Renter is inactive. Please reactive renter first.',
+      );
     }
 
-    async updateRenter(
-        residenceId: string,
-        renterId: string,
-        updateRenterDto: UpdateRenterDto,
-    ): Promise<Renter> {
+    // check renter username is exist in this residence except this renter
+    this.checkRenterUsernameExist(
+      updateRenterDto.username,
+      residenceId,
+      renterId,
+    );
 
-        validateObjectIdFormat(renterId, 'Renter');
-        validateObjectIdFormat(residenceId, 'Residence');
+    // update renter
+    const updatedRenter = await this.renterModel
+      .findByIdAndUpdate(
+        renterId,
+        {
+          ...updateRenterDto,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
+    return updatedRenter;
+  }
 
-        // check residence is exist
-        await this.residenceService.findOne(residenceId);
+  async deleteRenter(
+    renterId: string,
+    deleteType: 'soft' | 'hard',
+  ): Promise<Renter> {
+    const renter = await this.findOneRenter(renterId);
 
-        // check renter is exist
-        const renter = await this.findOneRenter(renterId);
-
-        // Check renter is active or not
-        if (!renter.isActive) {
-            throw new BadRequestException('Renter is inactive. Please reactive renter first.');
-        }
-
-        // check renter username is exist in this residence except this renter
-        this.checkRenterUsernameExist(updateRenterDto.username,
-            residenceId,
-            renterId);
-
-        // update renter
-        const updatedRenter = await this.renterModel
-            .findByIdAndUpdate(
-                renterId,
-                {
-                    ...updateRenterDto,
-                    updated_at: Date.now(),
-                },
-                { new: true },
-            )
-            .exec();
-        return updatedRenter;
+    if (renter.room) {
+      throw new BadRequestException(
+        'Renter is in room. Please remove renter from room first.',
+      );
     }
 
-    async deleteRenter(renterId: string, deleteType: 'soft' | 'hard'): Promise<Renter> {
-        const renter = await this.findOneRenter(renterId);
+    // delete renter
+    if (deleteType === 'soft') {
+      return this.renterModel.findByIdAndUpdate(renterId, {
+        isActive: false,
+      });
+    } else {
+      // delete renter in residence
+      await this.residenceService.removeRenterFromResidence(
+        renter.residence._id,
+        renterId,
+      );
 
-        if (renter.room) {
-            throw new BadRequestException(
-                'Renter is in room. Please remove renter from room first.',
-            );
-        }
-
-        // delete renter
-        if (deleteType === 'soft') {
-            return this.renterModel.findByIdAndUpdate(renterId, {
-                isActive: false,
-            })
-        } else {
-            // delete renter in residence
-            await this.residenceService.removeRenterFromResidence(renter.residence._id, renterId);
-
-            return this.renterModel.findByIdAndDelete(renterId).exec();
-        }
+      return this.renterModel.findByIdAndDelete(renterId).exec();
     }
+  }
 
-    async reactiveRenter(renterId: string): Promise<Renter> {
-        validateObjectIdFormat(renterId, 'Renter');
+  async reactiveRenter(renterId: string): Promise<Renter> {
+    validateObjectIdFormat(renterId, 'Renter');
 
-        await this.findOneRenter(renterId);
+    await this.findOneRenter(renterId);
 
-        // reactive renter
-        return this.renterModel.findByIdAndUpdate(renterId, {
-            isActive: true,
-        }).exec()
-    }
+    // reactive renter
+    return this.renterModel
+      .findByIdAndUpdate(renterId, {
+        isActive: true,
+      })
+      .exec();
+  }
 
-    async addRoomToRenter(renterId: string, roomId: string): Promise<Renter> {
-        // add room to renter
-        return this.renterModel
-            .findByIdAndUpdate(
-                renterId,
-                { room: roomId, updated_at: Date.now() },
-                { new: true },
-            )
-            .exec();
-    }
+  async addRoomToRenter(renterId: string, roomId: string): Promise<Renter> {
+    // add room to renter
+    return this.renterModel
+      .findByIdAndUpdate(
+        renterId,
+        { room: roomId, updated_at: Date.now() },
+        { new: true },
+      )
+      .exec();
+  }
 
-    async removeRoomFromRenter(renterId: string | Renter): Promise<Renter> {
-        return this.renterModel
-            .findByIdAndUpdate(
-                renterId,
-                { room: null },
-                { new: true },
-            )
-            .exec();
-    }
-
+  async removeRoomFromRenter(renterId: string | Renter): Promise<Renter> {
+    return this.renterModel
+      .findByIdAndUpdate(renterId, { room: null }, { new: true })
+      .exec();
+  }
 }

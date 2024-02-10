@@ -18,7 +18,6 @@ function configureSwagger(app: NestExpressApplication) {
   SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
 }
 
-
 async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -64,6 +63,5 @@ async function bootstrap() {
     process.exit(1);
   }
 }
-
 
 bootstrap();

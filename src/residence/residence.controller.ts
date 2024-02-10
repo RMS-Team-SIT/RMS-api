@@ -26,7 +26,7 @@ import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
 @ApiBearerAuth()
 @Controller('residence')
 export class ResidenceController {
-  constructor(private readonly residenceService: ResidenceService) { }
+  constructor(private readonly residenceService: ResidenceService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

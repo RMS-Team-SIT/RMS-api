@@ -16,4 +16,4 @@ import { ResidenceController } from './residence.controller';
   providers: [ResidenceService],
   exports: [ResidenceService],
 })
-export class ResidenceModule { }
+export class ResidenceModule {}

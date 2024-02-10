@@ -72,7 +72,6 @@ export class AppModule implements OnModuleInit {
     }
   }
 
-
   private async initBankData() {
     const bankCollection = this.connection.collection('banks');
     const bankCount = await bankCollection.countDocuments();

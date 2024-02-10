@@ -16,10 +16,12 @@ export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
-  ) {
-  }
+  ) {}
 
-  async checkOwnerPermission(userId: string, residenceId: string): Promise<void> {
+  async checkOwnerPermission(
+    userId: string,
+    residenceId: string,
+  ): Promise<void> {
     const residence = await this.residenceModel.findById(residenceId).exec();
     if (!residence) {
       throw new NotFoundException('Residence not found');
@@ -46,13 +48,13 @@ export class ResidenceService {
     return this.residenceModel
       .find({ owner: userId })
       .select({
-        __v: 0
+        __v: 0,
       })
       .populate({
         path: 'owner',
         select: {
           _id: 1,
-        }
+        },
       })
       .populate('renters')
       .populate('rooms')
@@ -77,7 +79,7 @@ export class ResidenceService {
         path: 'owner',
         select: {
           _id: 1,
-        }
+        },
       })
       .populate('renters')
       .populate({
@@ -92,12 +94,18 @@ export class ResidenceService {
       .populate('payments', { __v: 0, residence: 0 })
       .populate({
         path: 'payments',
-        populate: { path: 'bank', select: { _id: 1, thai_name: 1, bank: 1, color: 1, nice_name: 1 } },
+        populate: {
+          path: 'bank',
+          select: { _id: 1, thai_name: 1, bank: 1, color: 1, nice_name: 1 },
+        },
       })
       .populate('meterRecord', { __v: 0, residence: 0 })
       .populate({
         path: 'meterRecord',
-        populate: { path: 'meterRecordItems', select: { __v: 0, meterRecord: 0 } },
+        populate: {
+          path: 'meterRecordItems',
+          select: { __v: 0, meterRecord: 0 },
+        },
       })
       .sort({ 'meterRecord.record_date': -1 })
       .exec();
@@ -124,8 +132,10 @@ export class ResidenceService {
       .exec();
   }
 
-
-  async addRenterToResidence(residenceId: string, renterId: string): Promise<Residence> {
+  async addRenterToResidence(
+    residenceId: string,
+    renterId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(renterId, 'Renter');
 
@@ -138,7 +148,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async removeRenterFromResidence(residenceId: string, renterId: string): Promise<Residence> {
+  async removeRenterFromResidence(
+    residenceId: string,
+    renterId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(renterId, 'Renter');
 
@@ -151,8 +164,10 @@ export class ResidenceService {
       .exec();
   }
 
-
-  async addRoomToResidence(residenceId: string, roomId: string): Promise<Residence> {
+  async addRoomToResidence(
+    residenceId: string,
+    roomId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(roomId, 'Room');
 
@@ -165,7 +180,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async addRoomsToResidence(residenceId: string, roomIds: string[]): Promise<Residence> {
+  async addRoomsToResidence(
+    residenceId: string,
+    roomIds: string[],
+  ): Promise<Residence> {
     return this.residenceModel
       .findOneAndUpdate(
         { _id: residenceId },
@@ -175,7 +193,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async removeRoomFromResidence(residenceId: string, roomId: string): Promise<Residence> {
+  async removeRoomFromResidence(
+    residenceId: string,
+    roomId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(roomId, 'Room');
 
@@ -188,7 +209,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async addPaymentToResidence(residenceId: string, paymentId: string): Promise<Residence> {
+  async addPaymentToResidence(
+    residenceId: string,
+    paymentId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(paymentId, 'Payment');
 
@@ -201,7 +225,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async addMeterRecordToResidence(residenceId: string, meterRecordId: string): Promise<Residence> {
+  async addMeterRecordToResidence(
+    residenceId: string,
+    meterRecordId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(meterRecordId, 'MeterRecord');
 

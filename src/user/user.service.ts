@@ -100,7 +100,6 @@ export class UserService {
       console.log('email verified can not be changed');
       delete updateUserDto.email;
     } else {
-
       if (updateUserDto.email) {
         // TODO: check email is duplicate
         const duplicateEmail = await this.userModel

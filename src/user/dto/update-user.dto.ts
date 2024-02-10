@@ -5,7 +5,6 @@ import { PASSWORD_RULE } from './password.rule';
 import { Exclude } from 'class-transformer';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
-
   @ApiProperty()
   @Exclude()
   password: string;

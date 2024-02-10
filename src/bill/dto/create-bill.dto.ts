@@ -1,3 +1,1 @@
-export class CreateBillDto {
-    
-}
+export class CreateBillDto {}
