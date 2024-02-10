@@ -27,7 +27,6 @@ export class BillRoom extends Document {
     @Prop({ required: true })
     lightTotalPrice: number;
 
-
     @Prop({ required: true })
     totalPrice: number;
 
