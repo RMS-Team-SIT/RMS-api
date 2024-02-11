@@ -28,7 +28,6 @@ export class BillService {
     // Find meterRecord
     const meterRecord = await this.meterRecordService.getMeterRecordByIdAndResidenceId(createBillDto.meterRecord, residenceId);
 
-
     // Lock meterRecord 
     await this.meterRecordService.lockMeterRecord(meterRecord._id);
 

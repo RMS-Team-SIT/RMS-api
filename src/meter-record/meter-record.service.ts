@@ -100,6 +100,9 @@ export class MeterRecordService {
     // Check meter record exists
     await this.getMeterRecordByIdAndResidenceId(meterRecordId, residenceId);
 
+    // Check is meter recordLocked
+    await this.checkMeterRecordLocked(meterRecordId);
+
     // Update meter record
     const updatedMeterRecord = await this.meterRecordModel.findByIdAndUpdate(
       meterRecordId,
@@ -110,12 +113,16 @@ export class MeterRecordService {
     return updatedMeterRecord;
   }
 
+  /*
+    If you created bill for this meter.
+    you will not able to update this meterRecord
+  */
   async lockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
     // Check meter record exists
-    // const meterRecord = await this.getMeterRecordById(meterRecordId);
-    // if (meterRecord.isLocked) {
-    //   throw new BadRequestException('Meter record already locked');
-    // }
+    const meterRecord = await this.getMeterRecordById(meterRecordId);
+    if (meterRecord.isLocked) {
+      throw new BadRequestException('Meter record already locked');
+    }
 
     return await this.meterRecordModel.findByIdAndUpdate(
       meterRecordId,
@@ -126,16 +133,24 @@ export class MeterRecordService {
 
   async unlockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
     // Check meter record exists
-    // const meterRecord = await this.getMeterRecordById(meterRecordId);
-    // if (!meterRecord.isLocked) {
-    //   throw new BadRequestException('Meter record already unlocked');
-    // }
+    const meterRecord = await this.getMeterRecordById(meterRecordId);
+    if (!meterRecord.isLocked) {
+      throw new BadRequestException('Meter record already unlocked');
+    }
 
     return await this.meterRecordModel.findByIdAndUpdate(
       meterRecordId,
       { isLocked: false },
       { new: true },
     );
+  }
+
+  async checkMeterRecordLocked(meterRecordId: string): Promise<void> {
+    // Check meter record exists
+    const meterRecord = await this.getMeterRecordById(meterRecordId);
+    if (!meterRecord.isLocked) {
+      throw new BadRequestException('Meter record is locked');
+    }
   }
 
 }
