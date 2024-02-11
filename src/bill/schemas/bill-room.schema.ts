@@ -3,6 +3,8 @@ import { Document, Types } from 'mongoose';
 import { Renter } from '../../renter/schemas/renter.schema';
 import { Room } from 'src/room/schemas/room.schema';
 import { Bill } from './bill.schema';
+import { MeterRecordItem } from 'src/meter-record/schemas/meter-record-item.schema';
+import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 
 export type BillRoomDocument = BillRoom & Document;
 @Schema()
@@ -15,12 +17,18 @@ export class BillRoom extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Bill', required: true })
   bill: Bill;
 
+  @Prop({ type: Types.ObjectId, ref: 'MeterRecord', required: true })
+  meterRecord: MeterRecord;
+
+  @Prop({ type: Types.ObjectId, ref: 'MeterRecord.MeterRecordItems', required: true })
+  meterRecordItem: MeterRecordItem;
+
   // Water
   @Prop({ required: true })
   waterPriceRate: number;
 
   @Prop({ required: true })
-  waterMeter: number;
+  totalWaterMeterUsage: number;
 
   @Prop({ required: true })
   waterTotalPrice: number;
@@ -30,7 +38,11 @@ export class BillRoom extends Document {
   lightPriceRate: number;
 
   @Prop({ required: true })
-  electricMeter: number;
+  totalElectricMeterUsage: number;
+
+  // RentalPrice
+  @Prop({ required: true })
+  roomRentalPrice: number;
 
   @Prop({ required: true })
   lightTotalPrice: number;
@@ -49,7 +61,7 @@ export class BillRoom extends Document {
   @Prop({ default: false, required: true })
   isPaid: boolean;
 
-  @Prop({ default: null, required: true })
+  @Prop({ default: null })
   paidDate: Date;
 
   @Prop({ required: true, default: Date.now() })

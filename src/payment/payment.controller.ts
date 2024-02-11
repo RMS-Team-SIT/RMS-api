@@ -9,7 +9,7 @@ import { UpdateResidencePaymentDto } from './dto/update-residence-payment.dto';
 @ApiTags('Payment')
 @ApiBearerAuth()
 export class PaymentController {
-  constructor(private readonly paymentService: PaymentService) {}
+  constructor(private readonly paymentService: PaymentService) { }
 
   @Post('')
   async createPayment(

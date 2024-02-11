@@ -20,7 +20,7 @@ export class RoomService {
     private roomModel: Model<Room>,
     private readonly residenceService: ResidenceService,
     private readonly renterService: RenterService,
-  ) {}
+  ) { }
 
   private async checkRoomNameExist(
     name: string,
@@ -262,4 +262,24 @@ export class RoomService {
     // Delete room
     return this.roomModel.findByIdAndDelete(roomId).exec();
   }
+
+  // Room
+  async addBillRoomToRoom(
+    residenceId: string,
+    roomId: string,
+    billRoomId: string,
+  ): Promise<Room> {
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(billRoomId, 'BillRoom');
+
+    return this.roomModel
+      .findOneAndUpdate(
+        { _id: roomId },
+        { $push: { bills: billRoomId } },
+        { new: true },
+      )
+      .exec();
+  }
+
 }

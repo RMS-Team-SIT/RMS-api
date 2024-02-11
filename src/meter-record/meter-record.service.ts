@@ -15,7 +15,7 @@ export class MeterRecordService {
     @InjectModel(MeterRecord.name)
     private readonly meterRecordModel: Model<MeterRecord>,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   async createMeterRecord(
     residenceId: string,
@@ -45,9 +45,15 @@ export class MeterRecordService {
   }
 
   async getMeterRecordById(meterRecordId: string): Promise<MeterRecord> {
-    const meterRecord = this.meterRecordModel
+    const meterRecord = await this.meterRecordModel
       .findById(meterRecordId)
-      .populate('rooms')
+      .populate({
+        path: 'meterRecordItems.room',
+        select: {
+          _id: 1,
+          name: 1,
+        },
+      })
       .exec();
     if (!meterRecord) {
       throw new BadRequestException('Meter record not found');
@@ -59,7 +65,10 @@ export class MeterRecordService {
     meterRecordId: string,
     residenceId: string,
   ): Promise<MeterRecord> {
-    const meterRecord = this.meterRecordModel
+    validateObjectIdFormat(meterRecordId);
+    validateObjectIdFormat(residenceId);
+
+    const meterRecord = await this.meterRecordModel
       .findOne({
         _id: meterRecordId,
         residence: residenceId,
@@ -72,9 +81,11 @@ export class MeterRecordService {
         },
       })
       .exec();
+
     if (!meterRecord) {
       throw new BadRequestException('Meter record not found');
     }
+
     return meterRecord;
   }
 
@@ -98,4 +109,33 @@ export class MeterRecordService {
 
     return updatedMeterRecord;
   }
+
+  async lockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
+    // Check meter record exists
+    // const meterRecord = await this.getMeterRecordById(meterRecordId);
+    // if (meterRecord.isLocked) {
+    //   throw new BadRequestException('Meter record already locked');
+    // }
+
+    return await this.meterRecordModel.findByIdAndUpdate(
+      meterRecordId,
+      { isLocked: true },
+      { new: true },
+    );
+  }
+
+  async unlockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
+    // Check meter record exists
+    // const meterRecord = await this.getMeterRecordById(meterRecordId);
+    // if (!meterRecord.isLocked) {
+    //   throw new BadRequestException('Meter record already unlocked');
+    // }
+
+    return await this.meterRecordModel.findByIdAndUpdate(
+      meterRecordId,
+      { isLocked: false },
+      { new: true },
+    );
+  }
+
 }

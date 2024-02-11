@@ -6,7 +6,7 @@ export function validateObjectIdFormat(
   fieldName?: string,
 ): boolean {
   if (!Types.ObjectId.isValid(objectId)) {
-    throw new BadRequestException(`${fieldName || 'Object'} is invalid format`);
+    throw new BadRequestException(`${fieldName || objectId} is invalid format`);
   }
   return true;
 }

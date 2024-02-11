@@ -42,7 +42,7 @@ export class Room extends Document {
   @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
   currentRenter: Renter;
 
-  @Prop({ type: Types.ObjectId, ref: BillRoom.name, default: null })
+  @Prop({ type: [{ type: Types.ObjectId, ref: BillRoom.name }], default: null })
   bills: BillRoom[];
 
   @Prop({ required: true, default: Date.now() })

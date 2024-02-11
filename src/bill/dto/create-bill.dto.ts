@@ -10,5 +10,5 @@ export class CreateBillDto {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
-    meter_record: string;
+    meterRecord: string;
 }
