@@ -56,7 +56,7 @@ export class RoomService {
     const residence = await this.residenceService.findOne(residenceId);
 
     // Check room name is exist
-    await this.checkRoomNameExist(createRoomDto.name, residenceId);
+    // await this.checkRoomNameExist(createRoomDto.name, residenceId);
 
     // check is renter exist, renter active, not in other room
     if (createRoomDto.currentRenter) {
@@ -193,7 +193,7 @@ export class RoomService {
     const residence = await this.residenceService.findOne(residenceId);
 
     // check room name is exist except this room
-    await this.checkRoomNameExist(updateRoomDto.name, residenceId, roomId);
+    // await this.checkRoomNameExist(updateRoomDto.name, residenceId, roomId);
 
     // check if rantal update
     if (updateRoomDto.currentRenter) {
