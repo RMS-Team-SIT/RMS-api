@@ -24,11 +24,29 @@ export class MeterRecordService {
     // Check residence exists
     await this.residenceService.findOne(residenceId);
 
+    // lock all meter record in residence
+    await this.lockAllMeterRecordInResidence(residenceId);
+
+    const latestRecord = await this.getLastMeterRecordByResidence(residenceId);
+    if (latestRecord) {
+      console.log('latestRecord', latestRecord.record_date);
+
+      // Convert dates to Date objects for proper comparison
+      const latestRecordDate = new Date(latestRecord.record_date);
+      const newRecordDate = new Date(createMeterRecordDto.record_date);
+
+      // Check if the latest meter record is newer than the new meter record
+      if (latestRecordDate > newRecordDate) {
+        throw new BadRequestException('Cannot create meter record with date older than the latest meter record');
+      }
+    }
+
     // create a new meter record
     const createdMeterRecord = await new this.meterRecordModel({
       residence: residenceId,
       ...createMeterRecordDto,
       meterRecordItems: createMeterRecordDto.meterRecordItems,
+      isLocked: false,
     }).save();
 
     // Add the created meter record to the residence
@@ -42,6 +60,13 @@ export class MeterRecordService {
 
   async getMeterRecordByResidence(residenceId: string): Promise<MeterRecord[]> {
     return this.meterRecordModel.find({ residence: residenceId }).exec();
+  }
+
+  async getLastMeterRecordByResidence(residenceId: string): Promise<MeterRecord> {
+    return this.meterRecordModel
+      .findOne({ residence: residenceId })
+      .sort({ record_date: -1 })
+      .exec();
   }
 
   async getMeterRecordById(meterRecordId: string): Promise<MeterRecord> {
@@ -131,6 +156,29 @@ export class MeterRecordService {
     );
   }
 
+  async lockAllMeterRecordInResidence(residenceId: string): Promise<MeterRecord[]> {
+    // Check residence exists
+    await this.residenceService.findOne(residenceId);
+
+    // Get all meter record in residence
+    const meterRecords = await this.getMeterRecordByResidence(residenceId);
+
+    // Lock all meter record
+    const updatedMeterRecords = await Promise.all(
+      meterRecords.map(async (meterRecord) => {
+        if (!meterRecord.isLocked) {
+          return await this.meterRecordModel.findByIdAndUpdate(
+            meterRecord._id,
+            { isLocked: true },
+            { new: true },
+          );
+        }
+      }),
+    );
+
+    return updatedMeterRecords;
+  }
+
   async unlockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
     // Check meter record exists
     const meterRecord = await this.getMeterRecordById(meterRecordId);
@@ -148,7 +196,7 @@ export class MeterRecordService {
   async checkMeterRecordLocked(meterRecordId: string): Promise<void> {
     // Check meter record exists
     const meterRecord = await this.getMeterRecordById(meterRecordId);
-    if (!meterRecord.isLocked) {
+    if (meterRecord.isLocked) {
       throw new BadRequestException('Meter record is locked');
     }
   }

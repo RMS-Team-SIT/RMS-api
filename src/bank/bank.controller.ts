@@ -8,7 +8,6 @@ import { Public } from 'src/auth/decorator/public.decorator';
 @ApiTags('bank')
 @Controller('bank')
 @SkipThrottle()
-@Public()
 @ApiBearerAuth()
 export class BankController {
   constructor(private readonly bankService: BankService) {}

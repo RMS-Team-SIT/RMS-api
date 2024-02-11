@@ -5,7 +5,7 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { randomToken } from 'src/utils/random.utils';
 
 @Controller('mail')
-// @ApiTags('mail')
+@ApiTags('Mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 

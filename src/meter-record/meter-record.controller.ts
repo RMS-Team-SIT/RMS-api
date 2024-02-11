@@ -13,7 +13,7 @@ export class MeterRecordController {
   constructor(
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   @Post('')
   async createMeterRecord(
@@ -29,6 +29,11 @@ export class MeterRecordController {
   @Get('')
   async getMeterRecord(@Param('residenceId') residenceId: string) {
     return this.meterRecordService.getMeterRecordByResidence(residenceId);
+  }
+
+  @Get('/latest')
+  async getLatestMeterRecord(@Param('residenceId') residenceId: string) {
+    return this.meterRecordService.getLastMeterRecordByResidence(residenceId);
   }
 
   @Get('/:meterRecordId')
