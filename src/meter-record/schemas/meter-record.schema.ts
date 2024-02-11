@@ -19,7 +19,7 @@ export class MeterRecord extends Document {
   record_date: Date;
 
   @Prop({ type: [MeterRecordItemSchema], default: [] })
-  meterRecordItems: MeterRecordItem[];
+  meterRecordItems: MeterRecordItem[];  
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

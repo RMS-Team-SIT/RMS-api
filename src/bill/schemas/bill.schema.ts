@@ -8,6 +8,9 @@ export type BillDocument = Bill & Document;
 export class Bill extends Document {
   _id: string;
 
+  @Prop({ required: true, default: Date.now() })
+  record_date: Date;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'BillRoom' }], default: [] })
   billRooms: BillRoom[];
 
