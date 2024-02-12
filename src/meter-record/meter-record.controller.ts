@@ -5,6 +5,7 @@ import { CreateMeterRecordDto } from './dto/create-meter-record.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateMeterRecord } from './dto/update-meter-record.dto';
+import { MeterRecord } from './schemas/meter-record.schema';
 
 @Controller('/residence/:residenceId/meter-record')
 @ApiTags('Meter Record')
@@ -33,7 +34,10 @@ export class MeterRecordController {
 
   @Get('/latest')
   async getLatestMeterRecord(@Param('residenceId') residenceId: string) {
-    return this.meterRecordService.getLastMeterRecordByResidence(residenceId);
+    const meterRecord = await this.meterRecordService.getLastMeterRecordByResidence(residenceId);
+    console.log('meterRecord', meterRecord);
+
+    return { latestdMeterRecord: meterRecord };
   }
 
   @Get('/:meterRecordId')

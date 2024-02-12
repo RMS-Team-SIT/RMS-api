@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
@@ -63,10 +63,11 @@ export class MeterRecordService {
   }
 
   async getLastMeterRecordByResidence(residenceId: string): Promise<MeterRecord> {
-    return this.meterRecordModel
+    const meterRecord = await this.meterRecordModel
       .findOne({ residence: residenceId })
       .sort({ record_date: -1 })
       .exec();
+    return meterRecord;
   }
 
   async getMeterRecordById(meterRecordId: string): Promise<MeterRecord> {
