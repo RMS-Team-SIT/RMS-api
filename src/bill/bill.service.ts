@@ -108,6 +108,9 @@ export class BillService {
           }
         }
       })
+      .sort({
+        'created_at': -1 // Sort by record_date in meterRecord in descending order
+      })
       .exec();
   }
 
@@ -127,6 +130,9 @@ export class BillService {
             path: 'room'
           }
         }
+      })
+      .sort({
+        "meterRecord.record_date": -1 // Sort by record_date in meterRecord in descending order
       })
       .exec();
   }
