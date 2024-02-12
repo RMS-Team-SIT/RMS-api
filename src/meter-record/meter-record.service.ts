@@ -29,7 +29,7 @@ export class MeterRecordService {
 
     const latestRecord = await this.getLastMeterRecordByResidence(residenceId);
     if (latestRecord) {
-      console.log('latestRecord', latestRecord.record_date);
+      // console.log('latestRecord', latestRecord.record_date);
 
       // Convert dates to Date objects for proper comparison
       const latestRecordDate = new Date(latestRecord.record_date);
