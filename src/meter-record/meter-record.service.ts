@@ -157,7 +157,7 @@ export class MeterRecordService {
       meterRecordId,
       { isLocked: true },
       { new: true },
-    );
+    ).exec();
   }
 
   async lockAllMeterRecordInResidence(residenceId: string): Promise<MeterRecord[]> {
@@ -194,7 +194,7 @@ export class MeterRecordService {
       meterRecordId,
       { isLocked: false },
       { new: true },
-    );
+    ).exec();
   }
 
   async checkMeterRecordLocked(meterRecordId: string): Promise<void> {
@@ -203,6 +203,21 @@ export class MeterRecordService {
     if (meterRecord.isLocked) {
       throw new BadRequestException('Meter record is locked');
     }
+  }
+
+  async addBillToMeterRecord(meterRecordId: string, billId: string) {
+    // Check meter record exists
+    await this.getMeterRecordById(meterRecordId);
+
+    const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
+      _id: meterRecordId
+    }, {
+      $set: {
+        bill: billId
+      }
+    }).exec();
+
+    return updatedMeterRecord;
   }
 
 }

@@ -5,6 +5,7 @@ import {
   MeterRecordItemSchema,
 } from './meter-record-item.schema';
 import { Residence } from 'src/residence/schemas/residence.schema';
+import { Bill } from 'src/bill/schemas/bill.schema';
 
 export type MeterRecordDocument = MeterRecord & Document;
 
@@ -14,6 +15,9 @@ export class MeterRecord extends Document {
 
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
+
+  @Prop({ type: Types.ObjectId, ref: 'Bill', required: true })
+  bill: Bill;
 
   @Prop({ required: true, default: Date.now() })
   record_date: Date;

@@ -45,6 +45,9 @@ export class BillService {
     // Add bill to residence
     await this.residenceService.addBillToResidence(residenceId, createdBill._id);
 
+    // Add bill to meterRecord
+    await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
+
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
       const room = await this.roomService.findOneRoom(residenceId, meterRecordItem.room._id);
@@ -109,7 +112,6 @@ export class BillService {
       .populate('meterRecord')
       .exec();
   }
-
 
   async addBillRoomToBill(billId: string, billRoomId: string) {
     return this.billModel.findByIdAndUpdate(billId, {
