@@ -10,6 +10,7 @@ import { Announcement, AnnouncementSchema } from './anouncement.schema';
 import { Renter } from '../../renter/schemas/renter.schema';
 import { Payment } from '../../payment/schemas/payment.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
+import { Bill } from 'src/bill/schemas/bill.schema';
 
 export type ResidenceDocument = Residence & Document;
 
@@ -58,6 +59,12 @@ export class Residence extends Document {
     default: [],
   })
   meterRecord: MeterRecord[];
+
+  @Prop({
+    type: [{ type: Types.ObjectId, ref: Bill.name }],
+    default: [],
+  })
+  bills: Bill[];
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

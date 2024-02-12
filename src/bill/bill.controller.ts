@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BillService } from './bill.service';
 import { Public } from 'src/auth/decorator/public.decorator';
@@ -20,6 +20,19 @@ export class BillController {
         @Body() createBillDto: CreateBillDto
     ) {
         return this.billService.createBill(residenceId, createBillDto);
+    }
+
+    @Get('')
+    async getBillByResidence(@Param('residenceId') residenceId: string) {
+        return this.billService.getBillByResidence(residenceId);
+    }
+
+    @Get('/:billId')
+    async getBillById(
+        @Param('residenceId') residenceId: string,
+        @Param('billId') billId: string
+    ) {
+        return this.billService.getBillById(residenceId, billId);
     }
 
 }

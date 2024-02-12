@@ -16,7 +16,7 @@ export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
-  ) {}
+  ) { }
 
   async checkOwnerPermission(
     userId: string,
@@ -107,6 +107,7 @@ export class ResidenceService {
           select: { __v: 0, meterRecord: 0 },
         },
       })
+      .populate('bills', { __v: 0, residence: 0 })
       .sort({ 'meterRecord.record_date': -1 })
       .exec();
 
@@ -236,6 +237,19 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $push: { meterRecord: meterRecordId } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async addBillToResidence(residenceId: string, billId: string): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(billId, 'Bill');
+
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { bills: billId } },
         { new: true },
       )
       .exec();

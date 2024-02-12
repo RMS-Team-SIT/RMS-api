@@ -59,7 +59,10 @@ export class MeterRecordService {
   }
 
   async getMeterRecordByResidence(residenceId: string): Promise<MeterRecord[]> {
-    return this.meterRecordModel.find({ residence: residenceId }).exec();
+    return this.meterRecordModel
+      .find({ residence: residenceId })
+      .sort({ record_date: -1 })
+      .exec();
   }
 
   async getLastMeterRecordByResidence(residenceId: string): Promise<MeterRecord> {

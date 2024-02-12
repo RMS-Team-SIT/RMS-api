@@ -37,10 +37,13 @@ export class BillService {
 
     // Create bill
     const createdBill = await new this.billModel({
+      residence: residenceId,
       ...createBillDto
     }).save();
     console.log('createdBill:', createdBill._id);
 
+    // Add bill to residence
+    await this.residenceService.addBillToResidence(residenceId, createdBill._id);
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
@@ -87,6 +90,26 @@ export class BillService {
 
     return createdBill;
   }
+
+  async getBillByResidence(residenceId: string): Promise<Bill[]> {
+    return this.billModel
+      .find({ residence: residenceId })
+      .populate('billRooms')
+      .populate('meterRecord')
+      .exec();
+  }
+
+  async getBillById(residenceId: string, billId: string): Promise<Bill> {
+    return this.billModel
+      .findOne({
+        _id: billId,
+        residence: residenceId
+      })
+      .populate('billRooms')
+      .populate('meterRecord')
+      .exec();
+  }
+
 
   async addBillRoomToBill(billId: string, billRoomId: string) {
     return this.billModel.findByIdAndUpdate(billId, {
