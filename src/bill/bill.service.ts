@@ -99,6 +99,15 @@ export class BillService {
       .find({ residence: residenceId })
       .populate('billRooms')
       .populate('meterRecord')
+      .populate({
+        path: 'meterRecord',
+        populate: {
+          path: 'meterRecordItems',
+          populate: {
+            path: 'room'
+          }
+        }
+      })
       .exec();
   }
 
@@ -110,6 +119,15 @@ export class BillService {
       })
       .populate('billRooms')
       .populate('meterRecord')
+      .populate({
+        path: 'meterRecord',
+        populate: {
+          path: 'meterRecordItems',
+          populate: {
+            path: 'room'
+          }
+        }
+      })
       .exec();
   }
 

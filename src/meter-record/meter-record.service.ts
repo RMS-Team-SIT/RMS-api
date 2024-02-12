@@ -61,6 +61,7 @@ export class MeterRecordService {
   async getMeterRecordByResidence(residenceId: string): Promise<MeterRecord[]> {
     return this.meterRecordModel
       .find({ residence: residenceId })
+      .populate('meterRecordItems.room')
       .sort({ record_date: -1 })
       .exec();
   }

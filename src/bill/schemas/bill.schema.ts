@@ -14,9 +14,6 @@ export class Bill extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
 
-  @Prop({ required: true, default: Date.now() })
-  record_date: Date;
-
   @Prop({ type: Types.ObjectId, ref: 'MeterRecord', required: true })
   meterRecord: MeterRecord;
 
