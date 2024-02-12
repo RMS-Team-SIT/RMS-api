@@ -46,7 +46,7 @@ export class BillService {
     await this.residenceService.addBillToResidence(residenceId, createdBill._id);
 
     // Add bill to meterRecord
-    await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
+    // await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {

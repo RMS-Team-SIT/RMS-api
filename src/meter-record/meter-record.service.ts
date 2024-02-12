@@ -205,19 +205,19 @@ export class MeterRecordService {
     }
   }
 
-  async addBillToMeterRecord(meterRecordId: string, billId: string) {
-    // Check meter record exists
-    await this.getMeterRecordById(meterRecordId);
+  // async addBillToMeterRecord(meterRecordId: string, billId: string) {
+  //   // Check meter record exists
+  //   await this.getMeterRecordById(meterRecordId);
 
-    const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
-      _id: meterRecordId
-    }, {
-      $set: {
-        bill: billId
-      }
-    }).exec();
+  //   const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
+  //     _id: meterRecordId
+  //   }, {
+  //     $set: {
+  //       bill: billId
+  //     }
+  //   }).exec();
 
-    return updatedMeterRecord;
-  }
+  //   return updatedMeterRecord;
+  // }
 
 }
