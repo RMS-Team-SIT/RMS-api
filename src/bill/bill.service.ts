@@ -31,10 +31,6 @@ export class BillService {
     // Lock meterRecord 
     await this.meterRecordService.lockMeterRecord(meterRecord._id);
 
-    // Create bill for every room in meterRecord
-    const meterRecordItems = meterRecord.meterRecordItems;
-    console.log('creating for rooms:', meterRecordItems.map(i => i.room));
-
     // Create bill
     const createdBill = await new this.billModel({
       residence: residenceId,
@@ -47,6 +43,10 @@ export class BillService {
 
     // Add bill to meterRecord
     // await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
+
+    // Create bill for every room in meterRecord
+    const meterRecordItems = meterRecord.meterRecordItems;
+    console.log('creating for rooms:', meterRecordItems.map(i => i.room));
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
@@ -76,6 +76,10 @@ export class BillService {
         roomRentalPrice,
         lightTotalPrice,
         totalPrice,
+        currentWaterMeter: meterRecordItem.currentWaterMeter,
+        previousWaterMeter: meterRecordItem.previousWaterMeter,
+        previousElectricMeter: meterRecordItem.previousElectricMeter,
+        currentElectricMeter: meterRecordItem.currentElectricMeter,
       }
       console.log('billRoomData', billRoomData);
 

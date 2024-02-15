@@ -24,6 +24,12 @@ export class BillRoom extends Document {
   meterRecordItem: MeterRecordItem;
 
   // Water
+  @Prop({ type: Number, required: false, default: 0 })
+  currentWaterMeter: number;
+
+  @Prop({ type: Number, required: false, default: 0 })
+  previousWaterMeter: number;
+
   @Prop({ required: true })
   waterPriceRate: number;
 
@@ -34,6 +40,12 @@ export class BillRoom extends Document {
   waterTotalPrice: number;
 
   // Light/Electric are the same
+  @Prop({ type: Number, required: false, default: 0 })
+  previousElectricMeter: number;
+
+  @Prop({ type: Number, required: true })
+  currentElectricMeter: number;
+
   @Prop({ required: true })
   lightPriceRate: number;
 
