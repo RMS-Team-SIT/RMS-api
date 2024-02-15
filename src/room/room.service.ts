@@ -169,7 +169,15 @@ export class RoomService {
 
     const room = await this.roomModel
       .findOne({ _id: roomId, residence: residenceId })
-      .populate("bills")
+      .populate({
+        path: "billRooms",
+        populate: {
+          path: "meterRecord",
+          select: {
+            record_date: 1
+          },
+        }
+      })
       .populate("currentRenter")
       .exec();
 
@@ -278,7 +286,7 @@ export class RoomService {
     return this.roomModel
       .findOneAndUpdate(
         { _id: roomId },
-        { $push: { bills: billRoomId } },
+        { $push: { billRooms: billRoomId } },
         { new: true },
       )
       .exec();

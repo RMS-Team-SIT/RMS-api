@@ -153,9 +153,6 @@ export class MeterRecordService {
   async lockMeterRecord(meterRecordId: string): Promise<MeterRecord> {
     // Check meter record exists
     const meterRecord = await this.getMeterRecordById(meterRecordId);
-    if (meterRecord.isLocked) {
-      throw new BadRequestException('Meter record already locked');
-    }
 
     return await this.meterRecordModel.findByIdAndUpdate(
       meterRecordId,

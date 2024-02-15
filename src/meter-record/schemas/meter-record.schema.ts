@@ -16,7 +16,7 @@ export class MeterRecord extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
 
-  @Prop({ type: Types.ObjectId, ref: 'Bill', required: true, default: null })
+  @Prop({ type: Types.ObjectId, ref: 'Bill', default: null })
   bill: Bill;
 
   @Prop({ required: true, default: Date.now() })
