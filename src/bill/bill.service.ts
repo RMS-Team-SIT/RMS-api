@@ -30,23 +30,23 @@ export class BillService {
 
     // Lock meterRecord 
     await this.meterRecordService.lockMeterRecord(meterRecord._id);
+    // Set isBillGenerated to true
+    await this.meterRecordService.setBillGenerated(meterRecord._id);
 
     // Create bill
     const createdBill = await new this.billModel({
       residence: residenceId,
       ...createBillDto
     }).save();
-    console.log('createdBill:', createdBill._id);
 
     // Add bill to residence
     await this.residenceService.addBillToResidence(residenceId, createdBill._id);
 
     // Add bill to meterRecord
-    // await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
+    await this.meterRecordService.addBillToMeterRecord(meterRecord._id, createdBill._id);
 
     // Create bill for every room in meterRecord
     const meterRecordItems = meterRecord.meterRecordItems;
-    console.log('creating for rooms:', meterRecordItems.map(i => i.room));
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
@@ -81,18 +81,14 @@ export class BillService {
         previousElectricMeter: meterRecordItem.previousElectricMeter,
         currentElectricMeter: meterRecordItem.currentElectricMeter,
       }
-      console.log('billRoomData', billRoomData);
 
       const createdBillRoom = await new this.billRoomModel({ ...billRoomData }).save();
-      console.log('Created Bill Room', createdBillRoom);
 
       // Add BillRoom to room
       await this.roomService.addBillRoomToRoom(residenceId, room._id, createdBillRoom._id);
-      console.log('adding billroom to room:', room._id, createdBillRoom._id);
 
       // Add BillRoom to Bill
       await this.addBillRoomToBill(createdBill._id, createdBillRoom._id);
-      console.log('adding billroom to bill:', room._id, createdBillRoom._id);
     });
 
     return createdBill;

@@ -16,14 +16,23 @@ export class MeterRecord extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
 
+  @Prop({ type: Types.ObjectId, ref: 'Bill', required: true, default: null })
+  bill: Bill;
+
   @Prop({ required: true, default: Date.now() })
   record_date: Date;
 
   @Prop({ type: [MeterRecordItemSchema], default: [] })
   meterRecordItems: MeterRecordItem[];
 
+  // isLocked means that the record is not allowed to be updated. 
+  // Case 1: When the bill is generated, the record is locked.
+  // Case 2: When create a new record, all the previous record is locked.
   @Prop({ required: true, default: true })
   isLocked: boolean;
+
+  @Prop({ required: true, default: false })
+  isBillGenerated: boolean;
 
   @Prop({ required: true, default: false })
   isFirstInitRecord: boolean;

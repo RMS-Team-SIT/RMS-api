@@ -209,19 +209,33 @@ export class MeterRecordService {
     }
   }
 
-  // async addBillToMeterRecord(meterRecordId: string, billId: string) {
-  //   // Check meter record exists
-  //   await this.getMeterRecordById(meterRecordId);
+  async setBillGenerated(meterRecordId: string): Promise<MeterRecord> {
+    // Check meter record exists
+    const meterRecord = await this.getMeterRecordById(meterRecordId);;
+    // if (meterRecord.isBillGenerated) {
+    //   throw new BadRequestException('Bill already generated');
+    // }
 
-  //   const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
-  //     _id: meterRecordId
-  //   }, {
-  //     $set: {
-  //       bill: billId
-  //     }
-  //   }).exec();
+    return await this.meterRecordModel.findByIdAndUpdate(
+      meterRecordId,
+      { isBillGenerated: true },
+      { new: true },
+    ).exec();
+  }
 
-  //   return updatedMeterRecord;
-  // }
+  async addBillToMeterRecord(meterRecordId: string, billId: string) {
+    // Check meter record exists
+    await this.getMeterRecordById(meterRecordId);
+
+    const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
+      _id: meterRecordId
+    }, {
+      $set: {
+        bill: billId
+      }
+    }).exec();
+
+    return updatedMeterRecord;
+  }
 
 }
