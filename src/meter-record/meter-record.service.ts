@@ -24,12 +24,14 @@ export class MeterRecordService {
     // Check residence exists
     await this.residenceService.findOne(residenceId);
 
-    // lock all meter record in residence
+    // lock all meter record in residence.
     await this.lockAllMeterRecordInResidence(residenceId);
 
+    let isFirstInitRecord = true;
     const latestRecord = await this.getLastMeterRecordByResidence(residenceId);
+
     if (latestRecord) {
-      // console.log('latestRecord', latestRecord.record_date);
+      isFirstInitRecord = false;
 
       // Convert dates to Date objects for proper comparison
       const latestRecordDate = new Date(latestRecord.record_date);
@@ -47,6 +49,7 @@ export class MeterRecordService {
       ...createMeterRecordDto,
       meterRecordItems: createMeterRecordDto.meterRecordItems,
       isLocked: false,
+      isFirstInitRecord,
     }).save();
 
     // Add the created meter record to the residence

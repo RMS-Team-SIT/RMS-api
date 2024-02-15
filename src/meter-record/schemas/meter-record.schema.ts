@@ -16,9 +16,6 @@ export class MeterRecord extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
 
-  // @Prop({ type: Types.ObjectId, ref: 'Bill', default: null })
-  // bill: Bill;
-
   @Prop({ required: true, default: Date.now() })
   record_date: Date;
 
@@ -27,6 +24,9 @@ export class MeterRecord extends Document {
 
   @Prop({ required: true, default: true })
   isLocked: boolean;
+
+  @Prop({ required: true, default: false })
+  isFirstInitRecord: boolean;
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

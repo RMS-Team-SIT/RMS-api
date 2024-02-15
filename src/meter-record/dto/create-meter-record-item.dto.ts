@@ -15,13 +15,13 @@ export class CreateMeterRecordItemDto {
 
   @ApiProperty()
   @IsNumber()
-  @IsOptional()
+  @IsOptional() // For the first record, Other case this field is not required.
   @Min(0)
   previousWaterMeter: number;
 
   @ApiProperty()
   @IsNumber()
-  @IsOptional()
+  @IsOptional() // For the first record, Other case this field is not required.
   @Min(0)
   previousElectricMeter: number;
 
