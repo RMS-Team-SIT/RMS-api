@@ -169,6 +169,8 @@ export class RoomService {
 
     const room = await this.roomModel
       .findOne({ _id: roomId, residence: residenceId })
+      .populate("bills")
+      .populate("currentRenter")
       .exec();
 
     if (!room) {
