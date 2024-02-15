@@ -78,8 +78,8 @@ export class RoomService {
     if (createRoomDto.isUseDefaultWaterPriceRate) {
       createRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
     }
-    if (createRoomDto.isUseDefaultLightPriceRate) {
-      createRoomDto.lightPriceRate = residence.defaultLightPriceRate;
+    if (createRoomDto.isUseDefaultElectricPriceRate) {
+      createRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
     }
 
     // Create room
@@ -134,11 +134,11 @@ export class RoomService {
           floor: floor,
           waterPriceRate: createManyRoomDto.waterPriceRate,
           roomRentalPrice: createManyRoomDto.roomRentalPrice,
-          lightPriceRate: createManyRoomDto.lightPriceRate,
+          electricPriceRate: createManyRoomDto.electricPriceRate,
           isUseDefaultWaterPriceRate:
             createManyRoomDto.isUseDefaultWaterPriceRate,
-          isUseDefaultLightPriceRate:
-            createManyRoomDto.isUseDefaultLightPriceRate,
+          isUseDefaultElectricPriceRate:
+            createManyRoomDto.isUseDefaultElectricPriceRate,
           isActive: true,
         };
         rooms.push(room);
@@ -237,8 +237,8 @@ export class RoomService {
     if (updateRoomDto.isUseDefaultWaterPriceRate) {
       updateRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
     }
-    if (updateRoomDto.isUseDefaultLightPriceRate) {
-      updateRoomDto.lightPriceRate = residence.defaultLightPriceRate;
+    if (updateRoomDto.isUseDefaultElectricPriceRate) {
+      updateRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
     }
 
     // update room

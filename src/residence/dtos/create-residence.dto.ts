@@ -42,7 +42,7 @@ export class CreateResidenceDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  defaultLightPriceRate: number;
+  defaultElectricPriceRate: number;
 
   @ApiProperty()
   @IsOptional()

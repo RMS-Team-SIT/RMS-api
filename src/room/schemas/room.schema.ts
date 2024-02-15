@@ -28,7 +28,7 @@ export class Room extends Document {
   isUseDefaultWaterPriceRate: boolean;
 
   @Prop({ required: true, default: false })
-  isUseDefaultLightPriceRate: boolean;
+  isUseDefaultElectricPriceRate: boolean;
 
   @Prop({ required: true, default: true })
   isActive: boolean;
@@ -37,7 +37,7 @@ export class Room extends Document {
   waterPriceRate: number;
 
   @Prop({ required: true, default: 0 })
-  lightPriceRate: number;
+  electricPriceRate: number;
 
   @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
   currentRenter: Renter;

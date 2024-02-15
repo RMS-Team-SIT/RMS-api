@@ -39,7 +39,7 @@ export class BillRoom extends Document {
   @Prop({ required: true })
   waterTotalPrice: number;
 
-  // Light/Electric are the same
+  // Electric/Electric are the same
   @Prop({ type: Number, required: false, default: 0 })
   previousElectricMeter: number;
 
@@ -47,7 +47,7 @@ export class BillRoom extends Document {
   currentElectricMeter: number;
 
   @Prop({ required: true })
-  lightPriceRate: number;
+  electricPriceRate: number;
 
   @Prop({ required: true })
   totalElectricMeterUsage: number;
@@ -57,7 +57,7 @@ export class BillRoom extends Document {
   roomRentalPrice: number;
 
   @Prop({ required: true })
-  lightTotalPrice: number;
+  electricTotalPrice: number;
 
   // total
   @Prop({ required: true })

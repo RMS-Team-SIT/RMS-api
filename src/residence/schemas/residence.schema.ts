@@ -43,7 +43,7 @@ export class Residence extends Document {
   defaultWaterPriceRate: number;
 
   @Prop({ required: true })
-  defaultLightPriceRate: number;
+  defaultElectricPriceRate: number;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Room.name }], default: [] })
   rooms: Room[];

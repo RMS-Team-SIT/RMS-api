@@ -45,7 +45,7 @@ export class CreateRoomDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  lightPriceRate: number;
+  electricPriceRate: number;
 
   @ApiProperty()
   @IsBoolean()
@@ -55,7 +55,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsBoolean()
   @IsOptional()
-  isUseDefaultLightPriceRate: boolean;
+  isUseDefaultElectricPriceRate: boolean;
 
   @ApiProperty()
   @IsString()

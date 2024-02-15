@@ -37,7 +37,7 @@ export class CreateManyRoomDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  lightPriceRate: number;
+  electricPriceRate: number;
 
   @ApiProperty()
   @IsBoolean()
@@ -47,5 +47,5 @@ export class CreateManyRoomDto {
   @ApiProperty()
   @IsBoolean()
   @IsOptional()
-  isUseDefaultLightPriceRate: boolean;
+  isUseDefaultElectricPriceRate: boolean;
 }

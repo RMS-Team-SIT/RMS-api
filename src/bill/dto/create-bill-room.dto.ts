@@ -4,9 +4,9 @@ export class CreateBillRoomDto {
   waterPriceRate: number;
   waterMeter: number;
   waterTotalPrice: number;
-  lightPriceRate: number;
+  electricPriceRate: number;
   electricMeter: number;
-  lightTotalPrice: number;
+  electricTotalPrice: number;
   totalPrice: number;
   paider: string;
   paidEvidenceImage: string;

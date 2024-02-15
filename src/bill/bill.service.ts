@@ -52,16 +52,16 @@ export class BillService {
     meterRecordItems.forEach(async (meterRecordItem) => {
       const room = await this.roomService.findOneRoom(residenceId, meterRecordItem.room._id);
 
-      // Get water, light and rentalPrice
+      // Get water, electric and rentalPrice
       const waterPriceRate = room.isUseDefaultWaterPriceRate ? residence.defaultWaterPriceRate : room.waterPriceRate;
-      const lightPriceRate = room.isUseDefaultLightPriceRate ? residence.defaultLightPriceRate : room.lightPriceRate;
+      const electricPriceRate = room.isUseDefaultElectricPriceRate ? residence.defaultElectricPriceRate : room.electricPriceRate;
       const roomRentalPrice = room.roomRentalPrice;
 
       // Calculate bill price
       const waterTotalPrice = waterPriceRate * meterRecordItem.totalWaterMeterUsage;
-      const lightTotalPrice = lightPriceRate * meterRecordItem.totalElectricMeterUsage;
+      const electricTotalPrice = electricPriceRate * meterRecordItem.totalElectricMeterUsage;
 
-      const totalPrice = roomRentalPrice + waterTotalPrice + lightTotalPrice;
+      const totalPrice = roomRentalPrice + waterTotalPrice + electricTotalPrice;
 
       const billRoomData = {
         room: room._id,
@@ -71,10 +71,10 @@ export class BillService {
         waterPriceRate,
         totalWaterMeterUsage: meterRecordItem.totalWaterMeterUsage,
         waterTotalPrice,
-        lightPriceRate,
+        electricPriceRate,
         totalElectricMeterUsage: meterRecordItem.totalElectricMeterUsage,
         roomRentalPrice,
-        lightTotalPrice,
+        electricTotalPrice,
         totalPrice,
         currentWaterMeter: meterRecordItem.currentWaterMeter,
         previousWaterMeter: meterRecordItem.previousWaterMeter,
