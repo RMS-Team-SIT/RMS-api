@@ -26,7 +26,7 @@ import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
 @ApiBearerAuth()
 @Controller('residence')
 export class ResidenceController {
-  constructor(private readonly residenceService: ResidenceService) {}
+  constructor(private readonly residenceService: ResidenceService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -83,7 +83,7 @@ export class ResidenceController {
 
   private async checkResidenceOwnership(userId: string, residence: Residence) {
     if (!residence || residence.owner._id.toString() !== userId.toString()) {
-      throw new ForbiddenException();
+      throw new ForbiddenException({ message: 'You are not the owner of this residence' });
     }
   }
 }

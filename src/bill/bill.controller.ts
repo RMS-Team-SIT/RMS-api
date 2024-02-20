@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { BillService } from './bill.service';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { CreateBillDto } from './dto/create-bill.dto';
+import { UpdateBillDto } from './dto/update-bill.dto';
 
 @ApiTags('Bill')
 @Controller('/residence/:residenceId/bill')
@@ -33,6 +34,15 @@ export class BillController {
         @Param('billId') billId: string
     ) {
         return this.billService.getBillById(residenceId, billId);
+    }
+
+    @Put('/:billId/')
+    async payBill(
+        @Param('residenceId') residenceId: string,
+        @Param('billId') billId: string,
+        @Body() updateBillDto: UpdateBillDto
+    ) {
+        return this.billService.updateBill(residenceId, billId, updateBillDto);
     }
 
 }

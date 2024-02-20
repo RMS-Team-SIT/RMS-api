@@ -8,6 +8,7 @@ import { RoomService } from 'src/room/room.service';
 import { MeterRecordService } from 'src/meter-record/meter-record.service';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { ResidenceService } from 'src/residence/residence.service';
+import { UpdateBillDto } from './dto/update-bill.dto';
 
 @Injectable()
 export class BillService {
@@ -144,4 +145,8 @@ export class BillService {
       }
     })
   };
+
+  async updateBill(residenceId: string, billId: string, updateBillDto: UpdateBillDto) {
+    return null;
+  }
 }
