@@ -44,7 +44,7 @@ export class User extends Document {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, default: [UserRole.LANDLORD] })
+  @Prop({ required: true, default: [UserRole.USER] })
   role: UserRole[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Notification' }], default: [] })
