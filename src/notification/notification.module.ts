@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Notification, NotificationSchema } from "./schemas/notification.schema";
 import { NotificationService } from "./notification.service";
+import { NotificationController } from "./notification.controller";
 
 @Module({
     imports: [
@@ -11,6 +12,6 @@ import { NotificationService } from "./notification.service";
     ],
     exports: [NotificationService],
     providers: [NotificationService],
-    controllers: [],
+    controllers: [NotificationController],
 })
 export class NotificationModule { }

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 import { Notification } from "./schemas/notification.schema";
 import { CreateNotificationDto } from "./dto/create-notification.dto";
 
@@ -27,7 +27,7 @@ export class NotificationService {
     }
 
     async findByTo(to: string): Promise<Notification[]> {
-        const notifications = await this.notificationModel.find({ to: to }).exec();
+        const notifications = await this.notificationModel.find({ to }).exec();
         return notifications;
     }
 }

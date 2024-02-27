@@ -82,23 +82,26 @@ export class UserService {
 
     // send notification to user
     const userNotification = {
-      to: createdUser._id,
+      to: createdUser._id.toString(),
       title: 'You have registered successfully!',
       content: `You have registered with email: ${user.email} successfully. Please verify your email to activate your account.`,
       isSentEmail: true,
       isRead: false
     };
+    console.log(userNotification);
     await this.notificationService.create(userNotification);
 
     // send notification to admin
     const admins = await this.findAdmin();
     const adminNotifications = admins.map(admin => ({
-      to: admin._id,
+      to: admin._id.toString(),
       title: 'New user registered',
       content: `New user registered with email: ${createUserDto.email}. Please review and approve KYC of this user.`,
       isSentEmail: true,
       isRead: false
     }));
+    console.log(adminNotifications);
+    
     await this.notificationService.createMany(adminNotifications);
 
     return createdUser.save();

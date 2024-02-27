@@ -23,6 +23,8 @@ export class NotificationController {
         @Req() req
     ) {
         const currentUser = req.user.id;
+        console.log(currentUser);
+        
         return await this.notificationService.findByTo(currentUser);
     }
 }
