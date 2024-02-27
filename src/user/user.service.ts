@@ -13,6 +13,7 @@ import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UserRole } from '../auth/enum/user-role.enum';
+import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 
 @Injectable()
 export class UserService {
@@ -292,5 +293,29 @@ export class UserService {
       to: user.email,
       token: user.emailVerificationToken,
     });
+  }
+
+  // Admin only
+  async approveKYC(userId: string): Promise<User> {
+    validateObjectIdFormat(userId, 'User ID');
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        { isApprovedKYC: true, updated_at: Date.now() },
+        { new: true },
+      )
+      .select({
+        password: 0,
+        resetPasswordToken: 0,
+        resetPasswordExpires: 0,
+        emailVerificationToken: 0,
+      })
+      .exec();
+    return updatedUser;
   }
 }

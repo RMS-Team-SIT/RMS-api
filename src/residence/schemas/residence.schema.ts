@@ -36,6 +36,12 @@ export class Residence extends Document {
   @Prop({ type: ResidenceContactSchema, default: undefined })
   contact: ResidenceContact;
 
+  @Prop({ default: null })
+  residenceBusinessLicense: string;
+
+  @Prop({ default: false })
+  isApproved: boolean;
+
   @Prop({ default: '' })
   address: string;
 
