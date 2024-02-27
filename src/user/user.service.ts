@@ -296,7 +296,7 @@ export class UserService {
   }
 
   // Admin only
-  async approveKYC(userId: string): Promise<User> {
+  async changeApproveKYCStatus(userId: string, kycStatus: boolean): Promise<User> {
     validateObjectIdFormat(userId, 'User ID');
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
@@ -306,7 +306,10 @@ export class UserService {
     const updatedUser = await this.userModel
       .findByIdAndUpdate(
         userId,
-        { isApprovedKYC: true, updated_at: Date.now() },
+        {
+          isApprovedKYC: kycStatus,
+          updated_at: Date.now()
+        },
         { new: true },
       )
       .select({

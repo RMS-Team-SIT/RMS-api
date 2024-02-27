@@ -254,4 +254,43 @@ export class ResidenceService {
       )
       .exec();
   }
+
+  // Admin only
+  async findAll(): Promise<Residence[]> {
+    return this.residenceModel
+      .find()
+      .select({
+        __v: 0,
+      })
+      .populate({
+        path: 'owner',
+        select: {
+          _id: 1,
+        },
+      })
+      .populate('renters')
+      .populate('rooms')
+      .populate({
+        path: 'rooms',
+        populate: { path: 'currentRenter' },
+      })
+      .exec();
+  }
+
+  async changeApproveResidenceStatus(residenceId: string, approveStatus: boolean): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    return this.residenceModel
+      .findByIdAndUpdate(
+        residenceId,
+        {
+          isApproved: approveStatus,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
+  }
+
+
 }
