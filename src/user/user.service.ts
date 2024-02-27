@@ -12,6 +12,7 @@ import { randomToken } from 'src/utils/random.utils';
 import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { UserRole } from './role/enum/user-role.enum';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     return this.userModel
@@ -50,42 +51,26 @@ export class UserService {
     return this.userModel.findOne({ email }).exec();
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const isDuplicateEmail = await this.userModel.findOne({
-      email: createUserDto.email,
-    });
-    if (isDuplicateEmail) {
-      const errors = { username: 'Email must be unique.' };
-      throw new HttpException(
-        { message: 'Input data validation failed', errors },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+  async create(createUserDto: CreateUserDto, isNewAdmin = false): Promise<User> {
+    await this.validateUniqueField('email', createUserDto.email, 'Email must be unique.');
+    await this.validateUniqueField('phone', createUserDto.phone, 'Phone must be unique.');
 
-    const isDuplicatePhone = await this.userModel.findOne({
-      phone: createUserDto.phone,
-    });
-    if (isDuplicatePhone) {
-      const errors = { username: 'Phone must be unique.' };
-      throw new HttpException(
-        { message: 'Input data validation failed', errors },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const createdUser = new this.userModel({
+    const user = {
       ...createUserDto,
+      role: isNewAdmin ? UserRole.ADMIN : UserRole.LANDLORD,
       password: await hashPassword(createUserDto.password),
-      isEmailVerified: false,
-      emailVerificationToken: randomToken(),
-    });
+      isEmailVerified: isNewAdmin ? true : false,
+      emailVerificationToken: isNewAdmin ? null : randomToken(),
+      isApprovedKYC: isNewAdmin ? true : false,
+    }
 
-    // send email verification
-    const sendMailResult = await this.mailService.sendVerification({
-      to: createdUser.email,
-      token: createdUser.emailVerificationToken,
-    });
-    console.log(sendMailResult);
+    const createdUser = new this.userModel(user);
+
+    // send email verification for non-admin
+    if (!isNewAdmin) {
+      await this.sendEmailVerification(createdUser);
+    }
+
     return createdUser.save();
   }
 
@@ -289,5 +274,23 @@ export class UserService {
     return {
       message: 'Email verified successfully',
     };
+  }
+
+  private async validateUniqueField(field: string, value: string, errorMessage: string): Promise<void> {
+    const isDuplicate = await this.userModel.findOne({ [field]: value });
+    if (isDuplicate) {
+      const errors = { [field]: errorMessage };
+      throw new HttpException(
+        { message: 'Input data validation failed', errors },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async sendEmailVerification(user: User): Promise<void> {
+    await this.mailService.sendVerification({
+      to: user.email,
+      token: user.emailVerificationToken,
+    });
   }
 }

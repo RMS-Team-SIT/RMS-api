@@ -25,7 +25,14 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
+
+  @Post('/create-admin')
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
+  createAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto, true);
+  }
 
   @Post('/signup')
   @Public()

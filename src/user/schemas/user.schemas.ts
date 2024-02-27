@@ -33,6 +33,12 @@ export class User extends Document {
   isEmailVerified: boolean;
 
   @Prop({ default: null })
+  idcardNumber: string;
+
+  @Prop({ default: false })
+  isApprovedKYC: boolean;
+
+  @Prop({ default: null })
   emailVerificationToken: string;
 
   @Prop({ required: true })
