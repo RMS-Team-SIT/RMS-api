@@ -57,7 +57,7 @@ export class UserService {
 
     const user = {
       ...createUserDto,
-      role: isNewAdmin ? UserRole.ADMIN : UserRole.LANDLORD,
+      role: [isNewAdmin ? UserRole.ADMIN : UserRole.LANDLORD],
       password: await hashPassword(createUserDto.password),
       isEmailVerified: isNewAdmin ? true : false,
       emailVerificationToken: isNewAdmin ? null : randomToken(),

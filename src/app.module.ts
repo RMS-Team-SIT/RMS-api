@@ -20,6 +20,7 @@ import { RoomModule } from './room/room.module';
 import { BillModule } from './bill/bill.module';
 import { NotificationModule } from './notification/notification.module';
 import { AdminModule } from './admin/admin.module';
+import { RolesGuard } from './user/role/guard/user-role.guard';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -57,6 +58,10 @@ console.log(`Current environment: ${ENV}`);
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     {
       provide: APP_GUARD,

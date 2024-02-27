@@ -10,6 +10,7 @@ import {
   HttpStatus,
   HttpException,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +21,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
+import { RolesGuard } from './role/guard/user-role.guard';
+import { UserRole } from './role/enum/user-role.enum';
+import { Roles } from './role/decorator/user-role.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -42,7 +46,7 @@ export class UserController {
   }
 
   @Get()
-  @Public()
+  @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
