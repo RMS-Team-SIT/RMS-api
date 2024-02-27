@@ -31,6 +31,9 @@ export class Renter extends Document {
   password: string;
 
   @Prop({ required: true })
+  email: string;
+
+  @Prop({ required: true })
   phone: string;
 
   @Prop({ default: null })

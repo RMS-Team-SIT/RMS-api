@@ -35,6 +35,11 @@ export class CreateRenterDto {
   @ApiProperty()
   password: string;
 
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
+  email: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
