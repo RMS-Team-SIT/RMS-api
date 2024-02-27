@@ -12,7 +12,7 @@ import { randomToken } from 'src/utils/random.utils';
 import { MailService } from 'src/mail/mail.service';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import { UserRole } from './role/enum/user-role.enum';
+import { UserRole } from '../auth/enum/user-role.enum';
 
 @Injectable()
 export class UserService {

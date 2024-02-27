@@ -21,9 +21,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
-import { RolesGuard } from './role/guard/user-role.guard';
-import { UserRole } from './role/enum/user-role.enum';
-import { Roles } from './role/decorator/user-role.decorator';
+import { RolesGuard } from '../auth/guard/user-role.guard';
+import { UserRole } from '../auth/enum/user-role.enum';
+import { Roles } from '../auth/decorator/user-role.decorator';
 
 @ApiTags('users')
 @ApiBearerAuth()
