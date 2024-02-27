@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private usersService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signIn(signInDto: SignInDto): Promise<any> {
     const user = await this.usersService.findByEmail(signInDto.email);
@@ -20,10 +20,11 @@ export class AuthService {
       throw new UnauthorizedException({ message: 'Invalid credentials' });
     }
 
-    const payload = { sub: user._id.toString(), id: user._id.toString() };
+    const payload = { sub: user._id.toString(), id: user._id.toString(), role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload),
       payload,
+      role: user.role,
     };
   }
 }

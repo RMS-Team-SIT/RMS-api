@@ -1,4 +1,4 @@
-import { Controller, Get } from "@nestjs/common";
+import { Controller, Get, Req } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { NotificationService } from "./notification.service";
 import { Roles } from "src/auth/decorator/user-role.decorator";
@@ -18,5 +18,11 @@ export class NotificationController {
         return await this.notificationService.findAll();
     }
 
-    
+    @Get('my')
+    async findByTo(
+        @Req() req
+    ) {
+        const currentUser = req.user.id;
+        return await this.notificationService.findByTo(currentUser);
+    }
 }

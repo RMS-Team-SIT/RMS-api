@@ -16,8 +16,18 @@ export class NotificationService {
         return await createdNotification.save();
     }
 
+    async createMany(createNotificationDto: CreateNotificationDto[]) {
+        const createdNotification = await this.notificationModel.insertMany(createNotificationDto);
+        return createdNotification;
+    }
+
     async findAll(): Promise<Notification[]> {
         const notifications = await this.notificationModel.find().exec();
+        return notifications;
+    }
+
+    async findByTo(to: string): Promise<Notification[]> {
+        const notifications = await this.notificationModel.find({ to: to }).exec();
         return notifications;
     }
 }

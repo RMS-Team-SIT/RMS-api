@@ -16,7 +16,7 @@ export class CreateNotificationDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    body: string;
+    content: string;
 
     @ApiProperty()
     @IsNotEmpty()

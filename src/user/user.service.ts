@@ -14,6 +14,7 @@ import { ForgetPasswordDto } from './dto/forget-password.dto';
 import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UserRole } from '../auth/enum/user-role.enum';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class UserService {
@@ -21,6 +22,7 @@ export class UserService {
     @InjectModel(User.name)
     private userModel: Model<User>,
     private readonly mailService: MailService,
+    private readonly notificationService: NotificationService,
   ) { }
 
   async findAll(): Promise<User[]> {
@@ -48,6 +50,12 @@ export class UserService {
       .exec();
   }
 
+  async findAdmin(): Promise<User[]> {
+    return this.userModel
+      .find({ role: UserRole.ADMIN })
+      .exec();
+  }
+
   async findByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email }).exec();
   }
@@ -71,6 +79,27 @@ export class UserService {
     if (!isNewAdmin) {
       await this.sendEmailVerification(createdUser);
     }
+
+    // send notification to user
+    const userNotification = {
+      to: createdUser._id,
+      title: 'You have registered successfully!',
+      content: `You have registered with email: ${user.email} successfully. Please verify your email to activate your account.`,
+      isSentEmail: true,
+      isRead: false
+    };
+    await this.notificationService.create(userNotification);
+
+    // send notification to admin
+    const admins = await this.findAdmin();
+    const adminNotifications = admins.map(admin => ({
+      to: admin._id,
+      title: 'New user registered',
+      content: `New user registered with email: ${createUserDto.email}. Please review and approve KYC of this user.`,
+      isSentEmail: true,
+      isRead: false
+    }));
+    await this.notificationService.createMany(adminNotifications);
 
     return createdUser.save();
   }

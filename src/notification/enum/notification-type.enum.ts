@@ -1,3 +1,6 @@
-export enum NotificationType { 
-    
+export enum NotificationType {
+
+    // FOR ADMIN
+    // FOR LANDLORD
+    // FOR RENTER
 }

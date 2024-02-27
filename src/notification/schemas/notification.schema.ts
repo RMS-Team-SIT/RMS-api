@@ -9,13 +9,13 @@ export class Notification {
     _id: string;
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-    to: User;
+    to: User[];
 
     @Prop({ required: true })
     title: string;
 
     @Prop({ required: true })
-    body: string;
+    content: string;
 
     @Prop({ default: false })
     isRead: boolean;

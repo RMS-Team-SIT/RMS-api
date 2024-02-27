@@ -40,6 +40,7 @@ export class ResidenceService {
     const createdResidence = new this.residenceModel({
       ...createResidenceDto,
       owner: userId,
+      isApproved: false,
     });
     return createdResidence.save();
   }
