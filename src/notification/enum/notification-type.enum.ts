@@ -1,6 +1,9 @@
 export enum NotificationType {
 
     // FOR ADMIN
-    // FOR LANDLORD
+    ADMIN_PLEASE_REVIEW_KYC = 'ADMIN_PLEASE_REVIEW_KYC',
+    // FOR USER
+    USER_PLEASE_VERIFY_EMAIL = 'USER_PLEASE_VERIFY_EMAIL',
+
     // FOR RENTER
 }

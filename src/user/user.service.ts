@@ -40,6 +40,7 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     return this.userModel
       .findById(id)
+      .populate('notifications')
       .select({
         password: 0,
         __v: 0,
@@ -74,7 +75,8 @@ export class UserService {
     }
 
     const createdUser = new this.userModel(user);
-
+    createdUser.save();
+    
     // send email verification for non-admin
     if (!isNewAdmin) {
       await this.sendEmailVerification(createdUser);
@@ -83,28 +85,29 @@ export class UserService {
     // send notification to user
     const userNotification = {
       to: createdUser._id.toString(),
-      title: 'You have registered successfully!',
-      content: `You have registered with email: ${user.email} successfully. Please verify your email to activate your account.`,
+      title: 'สมัครสมาชิกสำเร็จ',
+      content: `สมัครสมาชิกสำเร็จ กรุณายืนยันอีเมลของท่าน`,
       isSentEmail: true,
       isRead: false
     };
-    console.log(userNotification);
-    await this.notificationService.create(userNotification);
+    const createdNotification = await this.notificationService.create(userNotification);
+    await this.addNotificationToUser(createdUser._id.toString(), createdNotification._id.toString());
 
-    // send notification to admin
+    // send notification to admins
     const admins = await this.findAdmin();
-    const adminNotifications = admins.map(admin => ({
-      to: admin._id.toString(),
-      title: 'New user registered',
-      content: `New user registered with email: ${createUserDto.email}. Please review and approve KYC of this user.`,
-      isSentEmail: true,
-      isRead: false
-    }));
-    console.log(adminNotifications);
-    
-    await this.notificationService.createMany(adminNotifications);
+    admins.forEach(async admin => {
+      const adminNotification = {
+        to: admin._id.toString(),
+        title: 'มีการสร้างบัญชีผู้ใช้ใหม่',
+        content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
+        isSentEmail: true,
+        isRead: false
+      };
+      const createdNotification = await this.notificationService.create(adminNotification);
+      await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
+    });
 
-    return createdUser.save();
+    return createdUser;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
@@ -352,5 +355,13 @@ export class UserService {
       })
       .exec();
     return updatedUser;
+  }
+
+  private async addNotificationToUser(userId: string, notificationId: string): Promise<User> {
+    console.log('addNotificationToUser', userId, notificationId);
+    
+    return await this.userModel.findOneAndUpdate({ _id: userId }, {
+      $push: { notifications: notificationId }
+    }).exec();
   }
 }
