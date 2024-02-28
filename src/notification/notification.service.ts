@@ -18,8 +18,8 @@ export class NotificationService {
 
         if (createNotificationDto.isSentEmail) {
             // Send email
-            const { to, title, content } = createNotificationDto;
-            await this.mailService.sendNotification({ to, title, content });
+            const { toEmail, title, content } = createNotificationDto;
+            await this.mailService.sendNotification({ to: toEmail, title, content });
         }
 
         return await createdNotification.save();

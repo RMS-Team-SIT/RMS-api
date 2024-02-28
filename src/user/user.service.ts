@@ -411,12 +411,13 @@ export class UserService {
     const userNotification = {
       to: userId,
       toEmail: user.email,
-      title: 'คุณได้รับการอนุมัติการใช้งานสำเร็จ',
-      content: `คุณได้รับการอนุมัติการใช้งานสำเร็จ กรุณาเข้าสู่ระบบเพื่อใช้งานบริการของเรา`,
+      title: 'คุณได้รับการอนุมัติการใช้งาน',
+      content: `กรุณาเข้าสู่ระบบเพื่อใช้งานบริการของเรา`,
       isSentEmail: true,
       isRead: false
     };
-    await this.notificationService.create(userNotification);
+    const createdNotification = await this.notificationService.create(userNotification);
+    await this.addNotificationToUser(userId, createdNotification._id.toString());
     return updatedUser;
   }
 

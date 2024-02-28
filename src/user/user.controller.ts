@@ -180,4 +180,14 @@ export class UserController {
   ): Promise<object> {
     return this.userService.uploadIdCardNumber(userId, uploadIdCardDto);
   }
+
+  @Roles(UserRole.ADMIN)
+  @Get('approve-kyc/:userId')
+  @HttpCode(HttpStatus.OK)
+  async approveKYC(
+    @Req() req,
+    @Param('userId') userId: string
+  ): Promise<object> {
+    return this.userService.approveKYCStatus(userId);
+  }
 }
