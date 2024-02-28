@@ -20,6 +20,7 @@ import { RoomModule } from './room/room.module';
 import { BillModule } from './bill/bill.module';
 import { NotificationModule } from './notification/notification.module';
 import { RolesGuard } from './auth/guard/user-role.guard';
+import { AdminModule } from './admin/admin.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -51,6 +52,7 @@ console.log(`Current environment: ${ENV}`);
     MeterRecordModule,
     BillModule,
     NotificationModule,
+    AdminModule,
   ],
   providers: [
     {

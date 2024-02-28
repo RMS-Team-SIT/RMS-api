@@ -24,6 +24,7 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { RolesGuard } from '../auth/guard/user-role.guard';
 import { UserRole } from '../auth/enum/user-role.enum';
 import { Roles } from '../auth/decorator/user-role.decorator';
+import { UploadIdCardDto } from './dto/upload-idcard.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -148,5 +149,35 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async verifyEmail(@Param('token') token: string): Promise<object> {
     return this.userService.verifyEmail(token);
+  }
+
+  @Get('resend-verify-email/:userId')
+  @HttpCode(HttpStatus.OK)
+  async resendVerifyEmail(
+    @Req() req,
+    @Param('userId') userId: string
+  ): Promise<object> {
+    console.log(userId);
+    return this.userService.resendVerifyEmail(userId);
+  }
+
+  @Get('accept-policy/:userId')
+  @HttpCode(HttpStatus.OK)
+  async acceptPolicy(
+    @Req() req,
+    @Param('userId') userId: string
+  ): Promise<object> {
+    console.log(userId);
+    return this.userService.acceptPolicy(userId);
+  }
+
+  @Post('/:userId/upload-id-card')
+  @HttpCode(HttpStatus.OK)
+  async uploadIdCardNumber(
+    @Req() req,
+    @Param('userId') userId: string,
+    @Body() uploadIdCardDto: UploadIdCardDto
+  ): Promise<object> {
+    return this.userService.uploadIdCardNumber(userId, uploadIdCardDto);
   }
 }

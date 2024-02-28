@@ -74,8 +74,8 @@ export class MailService {
       .sendMail({
         to, // list of receivers
         from: process.env.SENDER_EMAIL,
-        subject: 'New Notification', // Subject line
-        text: `New notification ${title} : ${content}`, // plaintext body
+        subject: 'มีการแจ้งเตือนใหม่สำหรับ RMS', // Subject line
+        text: `แจ้งเตือนใหม่สำหรับคุณ \n${title}\n${content}`, // plaintext body
       })
       .then(() => {
         console.info('Email sent successfully');

@@ -15,6 +15,7 @@ import { UpdateUserPasswordDto } from './dto/update-user-password.dto';
 import { UserRole } from '../auth/enum/user-role.enum';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { NotificationService } from 'src/notification/notification.service';
+import { UploadIdCardDto } from './dto/upload-idcard.dto';
 
 @Injectable()
 export class UserService {
@@ -40,7 +41,10 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     return this.userModel
       .findById(id)
-      .populate('notifications')
+      .populate({
+        path: 'notifications',
+        options: { sort: { created_at: -1 } }
+      })
       .select({
         password: 0,
         __v: 0,
@@ -76,36 +80,38 @@ export class UserService {
 
     const createdUser = new this.userModel(user);
     createdUser.save();
-    
+
     // send email verification for non-admin
     if (!isNewAdmin) {
       await this.sendEmailVerification(createdUser);
-    }
 
-    // send notification to user
-    const userNotification = {
-      to: createdUser._id.toString(),
-      title: 'สมัครสมาชิกสำเร็จ',
-      content: `สมัครสมาชิกสำเร็จ กรุณายืนยันอีเมลของท่าน`,
-      isSentEmail: true,
-      isRead: false
-    };
-    const createdNotification = await this.notificationService.create(userNotification);
-    await this.addNotificationToUser(createdUser._id.toString(), createdNotification._id.toString());
-
-    // send notification to admins
-    const admins = await this.findAdmin();
-    admins.forEach(async admin => {
-      const adminNotification = {
-        to: admin._id.toString(),
-        title: 'มีการสร้างบัญชีผู้ใช้ใหม่',
-        content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
+      // send notification to user
+      const userNotification = {
+        to: createdUser._id.toString(),
+        toEmail: createdUser.email,
+        title: 'สมัครสมาชิกสำเร็จ',
+        content: `สมัครสมาชิกสำเร็จ กรุณายืนยันอีเมลของท่าน`,
         isSentEmail: true,
         isRead: false
       };
-      const createdNotification = await this.notificationService.create(adminNotification);
-      await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
-    });
+      const createdNotification = await this.notificationService.create(userNotification);
+      await this.addNotificationToUser(createdUser._id.toString(), createdNotification._id.toString());
+
+      // send notification to admins
+      const admins = await this.findAdmin();
+      admins.forEach(async admin => {
+        const adminNotification = {
+          to: admin._id.toString(),
+          toEmail: admin.email,
+          title: 'มีการสร้างบัญชีผู้ใช้ใหม่',
+          content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
+          isSentEmail: true,
+          isRead: false
+        };
+        const createdNotification = await this.notificationService.create(adminNotification);
+        await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
+      });
+    }
 
     return createdUser;
   }
@@ -312,6 +318,59 @@ export class UserService {
     };
   }
 
+  async resendVerifyEmail(userId: string): Promise<object> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    if (user.isEmailVerified) {
+      throw new HttpException('Email is already verified', HttpStatus.BAD_REQUEST);
+    }
+    await this.sendEmailVerification(user);
+    return {
+      message: 'Email verification sent successfully',
+    };
+  }
+
+  async acceptPolicy(userId: string): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        {
+          isAcceptedPolicy: true,
+          updated_at: Date.now()
+        },
+        { new: true },
+      )
+      .exec();
+
+    return updatedUser;
+  }
+
+  async uploadIdCardNumber(userId: string, uploadIdCardDto: UploadIdCardDto): Promise<User> {
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
+    console.log('uploadIdCardDto', uploadIdCardDto);
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(
+        userId,
+        {
+          idcardNumber: uploadIdCardDto.idCardNumber,
+          updated_at: Date.now()
+        },
+        { new: true },
+      )
+      .exec();
+    return updatedUser;
+  }
+
   private async validateUniqueField(field: string, value: string, errorMessage: string): Promise<void> {
     const isDuplicate = await this.userModel.findOne({ [field]: value });
     if (isDuplicate) {
@@ -331,7 +390,7 @@ export class UserService {
   }
 
   // Admin only
-  async changeApproveKYCStatus(userId: string, kycStatus: boolean): Promise<User> {
+  async approveKYCStatus(userId: string): Promise<User> {
     validateObjectIdFormat(userId, 'User ID');
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
@@ -342,24 +401,28 @@ export class UserService {
       .findByIdAndUpdate(
         userId,
         {
-          isApprovedKYC: kycStatus,
+          isApprovedKYC: true,
           updated_at: Date.now()
         },
         { new: true },
       )
-      .select({
-        password: 0,
-        resetPasswordToken: 0,
-        resetPasswordExpires: 0,
-        emailVerificationToken: 0,
-      })
       .exec();
+
+    const userNotification = {
+      to: userId,
+      toEmail: user.email,
+      title: 'คุณได้รับการอนุมัติการใช้งานสำเร็จ',
+      content: `คุณได้รับการอนุมัติการใช้งานสำเร็จ กรุณาเข้าสู่ระบบเพื่อใช้งานบริการของเรา`,
+      isSentEmail: true,
+      isRead: false
+    };
+    await this.notificationService.create(userNotification);
     return updatedUser;
   }
 
   private async addNotificationToUser(userId: string, notificationId: string): Promise<User> {
     console.log('addNotificationToUser', userId, notificationId);
-    
+
     return await this.userModel.findOneAndUpdate({ _id: userId }, {
       $push: { notifications: notificationId }
     }).exec();
