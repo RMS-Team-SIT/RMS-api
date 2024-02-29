@@ -1,9 +1,22 @@
 [
   {
-    "firstname": "สิริวัฒก์",
-    "lastname": "ใจ",
+    "firstname": "Admin",
+    "lastname": "RMS",
+    "phone": "0851104455",
+    "profileImage": null,
+    "resetPasswordToken": null,
+    "resetPasswordExpires": null,
     "email": "siriwatjaiyungyuen@gmail.com",
-    "password": "Wasd#1234",
-    "phone": "0987654321"
+    "isEmailVerified": true,
+    "idcardNumber": null,
+    "isApprovedKYC": true,
+    "isAcceptedPolicy": true,
+    "emailVerificationToken": null,
+    "password": "$2b$05$vm6HdaMmd5B8LBjaGt1jQOwsy3M4ZCqPtcxUSU32OGdltOIT8NMIG",
+    "role": ["admin"],
+    "notifications": [],
+    "created_at": "2024-02-29T13:20:39.302Z",
+    "updated_at": "2024-02-29T13:20:39.302Z",
+    "objId": "65e08502d0bb6ef5ee4428ed"
   }
 ]

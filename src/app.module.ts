@@ -14,6 +14,7 @@ import { ResidenceModule } from './residence/residence.module';
 import { Connection, Types } from 'mongoose';
 import { BankModule } from './bank/bank.module';
 import * as BankData from './data/bank_cleaned.json';
+import * as AdminData from './data/admin_data.json';
 import { MeterRecordModule } from './meter-record/meter-record.module';
 import { PaymentModule } from './payment/payment.module';
 import { RoomModule } from './room/room.module';
@@ -21,6 +22,7 @@ import { BillModule } from './bill/bill.module';
 import { NotificationModule } from './notification/notification.module';
 import { RolesGuard } from './auth/guard/user-role.guard';
 import { AdminModule } from './admin/admin.module';
+import { UserRole } from './auth/enum/user-role.enum';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -76,6 +78,7 @@ export class AppModule implements OnModuleInit {
     try {
       console.log('AppModule initialized');
       await this.initBankData();
+      await this.initAdminData()
     } catch (error) {
       console.error('Error initializing AppModule:', error);
     }
@@ -95,6 +98,22 @@ export class AppModule implements OnModuleInit {
       console.log('Bank data initialized successfully.');
     } else {
       console.log('Bank data already exists.');
+    }
+  }
+  private async initAdminData() {
+    const userCollection = this.connection.collection('users');
+    const adminCount = await userCollection.countDocuments({ role: UserRole.ADMIN });
+
+    if (adminCount === 0) {
+      console.log('Initializing admin data from JSON file...');
+      for (const admin of AdminData) {
+        console.log('Inserting admin:', admin.email);
+        const objId = new Types.ObjectId(admin.objId);
+        await userCollection.insertOne({ _id: objId, ...admin });
+      }
+      console.log('Admin data initialized successfully.');
+    } else {
+      console.log('Admin exists.');
     }
   }
 }

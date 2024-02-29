@@ -67,7 +67,7 @@ export class UserService {
   }
 
   async overallStats(): Promise<ResponseUserOverallStatsDto> {
-    const totalUsers = await this.userModel.countDocuments({ role: UserRole.USER }).exec();
+    const totalUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
     const totalAdmins = await this.userModel.countDocuments({ role: UserRole.ADMIN }).exec();
     const totalApprovedUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
     const totalPendingUsers = await this.userModel.countDocuments({
