@@ -6,9 +6,11 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateResidenceContactDto } from './create-residence-contact.dto';
+import { Type } from 'class-transformer';
 
 export class CreateResidenceDto {
   @ApiProperty()
@@ -45,6 +47,8 @@ export class CreateResidenceDto {
   defaultElectricPriceRate: number;
 
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
+  @Type(() => CreateResidenceContactDto)
+  @ValidateNested({ each: true })
   contact: CreateResidenceContactDto;
 }

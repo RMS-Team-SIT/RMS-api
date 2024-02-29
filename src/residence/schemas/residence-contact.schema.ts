@@ -7,16 +7,19 @@ export type ResidenceContactDocument = ResidenceContact & Document;
 export class ResidenceContact extends Document {
   _id: string;
 
+  @Prop({ required: true })
+  contactName: string;
+
   @Prop({ default: '' })
   facebook: string;
 
   @Prop({ default: '' })
   line: string;
 
-  @Prop({ default: '' })
+  @Prop({ required: true })
   phone: string;
 
-  @Prop({ default: '' })
+  @Prop({ required: true })
   email: string;
 
   @Prop({ required: true, default: Date.now() })

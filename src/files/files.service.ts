@@ -20,14 +20,24 @@ export class FilesService {
 
     const pages = pdfDoc.getPages();
     pages.forEach((page) => {
-      const { width, height } = page.getSize()
+      const { width, height } = page.getSize();
+      const fontSize = Math.max(width, height) * 0.05; // Adjust the multiplier as needed
+      const textWidth = thaiFont.widthOfTextAtSize(process.env.WATERMARK_TEXT, fontSize);
+      const textHeight = thaiFont.heightAtSize(fontSize);
+
+      const x = 0;
+      const y = height / 2 + 300;
+
+      const angle = Math.atan(height / width); // Calculate angle for diagonal text
+      const customDegree = angle * (180 / Math.PI); // Convert radians to degrees
+
       page.drawText(process.env.WATERMARK_TEXT, {
-        x: 5,
-        y: height / 2 + 300,
-        size: 40,
+        x,
+        y,
+        size: fontSize,
         font: thaiFont,
         color: rgb(0.95, 0.1, 0.1),
-        rotate: degrees(-45),
+        rotate: degrees(-customDegree),
       });
     });
     // output the watermarked PDF to public/upload

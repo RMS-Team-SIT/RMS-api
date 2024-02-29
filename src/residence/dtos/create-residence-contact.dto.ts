@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsNotEmpty,
   IsOptional,
   IsPhoneNumber,
   IsString,
@@ -20,15 +21,21 @@ export class CreateResidenceContactDto {
   line: string;
 
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MaxLength(200)
   @IsPhoneNumber('TH')
   phone: string;
 
   @ApiProperty()
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   @MaxLength(200)
   email: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(200)
+  contactName: string;
 }
