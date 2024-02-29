@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signin.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { SignInRoomUserDto } from './dto/signin-room-user.dto';
+import { SignInRenterDto } from './dto/signin-renter.dto';
 import { Public } from './decorator/public.decorator';
 
 @ApiTags('auth')
@@ -18,8 +18,8 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/:residenceId/signin-renter')
-  signInRenter(@Body() signInDto: SignInDto) {
+  @Post('/signin-renter')
+  signInRenter(@Body() signInRenterDto: SignInRenterDto) {
     // return this.authService.signInRenter(signInDto);
   }
 }
