@@ -3,7 +3,7 @@ import * as path from 'path';
 import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
 import * as fs from 'fs';
 import { customFileName } from 'src/utils/custom-filename.util';
-import * as fontkit from 'fontkit';
+import fontkit from '@pdf-lib/fontkit'
 
 @Injectable()
 export class FilesService {
