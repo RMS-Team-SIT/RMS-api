@@ -122,14 +122,20 @@ export class RoomService {
       );
 
     const rooms = [];
+    const startRoomForEachFloor = await this.findLastRoomNumberInEachFloor(residenceId);
     for (let floor = 1; floor <= numberOfFloor; floor++) {
+      // start room number for each floor eg 101, 201, 301
+      const startRoom = startRoomForEachFloor[floor]
+        ? parseInt(startRoomForEachFloor[floor]) + 1
+        : floor * 100 + 1;
+      const endRoom = startRoom + numberOfRoomEachFloor[floor - 1] - 1;
       for (
-        let roomNumber = 1;
-        roomNumber <= numberOfRoomEachFloor[floor - 1];
-        roomNumber++
+        let currentRoomNumber = startRoom;
+        currentRoomNumber <= endRoom;
+        currentRoomNumber++
       ) {
         const room = {
-          name: `${floor}${roomNumber.toString().padStart(2, '0')}`,
+          name: `${currentRoomNumber.toString().padStart(2, '0')}`,
           residence: residenceId,
           floor: floor,
           waterPriceRate: createManyRoomDto.waterPriceRate,
@@ -141,6 +147,7 @@ export class RoomService {
             createManyRoomDto.isUseDefaultElectricPriceRate,
           isActive: true,
         };
+        console.log(room);
         rooms.push(room);
       }
     }
@@ -186,6 +193,24 @@ export class RoomService {
     }
 
     return room;
+  }
+
+  async findLastRoomNumberInEachFloor(residenceId: string): Promise<any> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    const rooms = await this.roomModel
+      .find({ residence: residenceId })
+      .select({ floor: 1, name: 1 })
+      .exec();
+
+    const lastRoomNumberInEachFloor = rooms.reduce((acc, room) => {
+      if (!acc[room.floor] || acc[room.floor] < room.name) {
+        acc[room.floor] = room.name;
+      }
+      return acc;
+    }, {});
+
+    return lastRoomNumberInEachFloor;
   }
 
   async updateRoom(

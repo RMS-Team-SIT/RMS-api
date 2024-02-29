@@ -96,6 +96,7 @@ export class ResidenceService {
       .populate({
         path: 'rooms',
         populate: { path: 'currentRenter' },
+        options: { sort: { floor: 1, name: 1 } },
       })
       .populate('payments', { __v: 0, residence: 0 })
       .populate({
