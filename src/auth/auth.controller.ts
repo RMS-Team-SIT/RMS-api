@@ -16,4 +16,10 @@ export class AuthController {
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
   }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('/:residenceId/signin-renter')
+  signInRenter(@Body() signInDto: SignInDto) {
+    // return this.authService.signInRenter(signInDto);
+  }
 }
