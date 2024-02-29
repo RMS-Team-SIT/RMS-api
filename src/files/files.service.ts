@@ -10,7 +10,7 @@ export class FilesService {
   constructor() {
     // Register fontkit with PDFDocument
   }
-  async addWatermarkToPdf(file: Express.Multer.File): Promise<string> {
+  async addWatermarkToPdf(file: Express.Multer.File): Promise<{ fileName: string, filePath: string }> {
     const pdfDoc = await PDFDocument.load(file.buffer)
     const pathToThaiFont = path.join(__dirname, '..', '..', 'public', 'fonts', 'Maitree', 'Maitree-Regular.ttf')
     const fontBytes = fs.readFileSync(pathToThaiFont);
@@ -36,6 +36,6 @@ export class FilesService {
 
     const pdfBytes = await pdfDoc.save()
     fs.writeFileSync(outputPath, pdfBytes);
-    return outputPath;
+    return { fileName, filePath: outputPath };
   }
 }
