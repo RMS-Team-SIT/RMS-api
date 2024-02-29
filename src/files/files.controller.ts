@@ -1,11 +1,13 @@
-import { Controller, Post, UploadedFile, UploadedFiles } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { FilesService } from './files.service';
 import { ApiImageFile, ApiPdfFile } from './decorators/api-file.decorator';
 import { ApiImageFiles, ApiPdfFiles } from './decorators/api-files.decorator';
 import { ParseFile } from './pipes/file-validation.pipe';
 import { SkipThrottle } from '@nestjs/throttler';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { fileMimetypeFilter } from './filters/file-mimetype.filter';
 
 @Controller('files')
 @ApiBearerAuth()
@@ -13,7 +15,7 @@ import { SkipThrottle } from '@nestjs/throttler';
 @SkipThrottle()
 @Public() //<- For testing only (remove this line in production)
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(private readonly filesService: FilesService) { }
 
   @Post('upload-image')
   @ApiImageFile('image', true)
@@ -51,6 +53,32 @@ export class FilesController {
       message: 'File uploaded successfully',
       fileName: file.filename,
       filePath: file.path,
+    };
+  }
+
+  @Post('upload-pdf-watermark')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['pdf'],
+      properties: {
+        'pdf': {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('pdf', {
+    fileFilter: fileMimetypeFilter('pdf'),
+  }))
+  async addWatermark(@UploadedFile(ParseFile) file: Express.Multer.File) {
+    const watermarkedPdf = await this.filesService.addWatermarkToPdf(file);
+    return {
+      message: 'Watermark added successfully',
+      fileName: file.filename,
+      filePath: watermarkedPdf,
     };
   }
 
