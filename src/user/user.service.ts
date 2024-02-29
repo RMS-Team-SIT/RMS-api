@@ -70,7 +70,13 @@ export class UserService {
     const totalUsers = await this.userModel.countDocuments({ role: UserRole.USER }).exec();
     const totalAdmins = await this.userModel.countDocuments({ role: UserRole.ADMIN }).exec();
     const totalApprovedUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
-    const totalPendingUsers = await this.userModel.countDocuments({ isApprovedKYC: false, role: UserRole.USER }).exec();
+    const totalPendingUsers = await this.userModel.countDocuments({
+      isApprovedKYC: false,
+      idcardNumber: { $ne: null },
+      isAcceptedPolicy: true,
+      isEmailVerified: true,
+      role: UserRole.USER
+    }).exec();
 
     return {
       totalAdmins,
@@ -78,6 +84,18 @@ export class UserService {
       totalApprovedUsers,
       totalPendingUsers,
     };
+  }
+
+  async findPendingKYC(): Promise<User[]> {
+    return this.userModel
+      .find({
+        isApprovedKYC: false,
+        idcardNumber: { $ne: null },
+        isAcceptedPolicy: true,
+        isEmailVerified: true,
+        role: UserRole.USER
+      })
+      .exec();
   }
 
   async create(createUserDto: CreateUserDto, isNewAdmin = false): Promise<User> {
@@ -111,21 +129,6 @@ export class UserService {
       };
       const createdNotification = await this.notificationService.create(userNotification);
       await this.addNotificationToUser(createdUser._id.toString(), createdNotification._id.toString());
-
-      // send notification to admins
-      const admins = await this.findAdmin();
-      admins.forEach(async admin => {
-        const adminNotification = {
-          to: admin._id.toString(),
-          toEmail: admin.email,
-          title: 'มีการสร้างบัญชีผู้ใช้ใหม่',
-          content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
-          isSentEmail: true,
-          isRead: false
-        };
-        const createdNotification = await this.notificationService.create(adminNotification);
-        await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
-      });
     }
 
     return createdUser;
@@ -383,6 +386,20 @@ export class UserService {
         { new: true },
       )
       .exec();
+    // send notification to admins
+    const admins = await this.findAdmin();
+    admins.forEach(async admin => {
+      const adminNotification = {
+        to: admin._id.toString(),
+        toEmail: admin.email,
+        title: 'มีการสร้างบัญชีผู้ใช้ใหม่และรอการอนุมัติ',
+        content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
+        isSentEmail: true,
+        isRead: false
+      };
+      const createdNotification = await this.notificationService.create(adminNotification);
+      await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
+    });
     return updatedUser;
   }
 

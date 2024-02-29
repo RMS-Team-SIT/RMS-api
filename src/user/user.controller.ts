@@ -54,6 +54,13 @@ export class UserController {
     return this.userService.overallStats();
   }
 
+  @Get('/pending-kyc')
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.ADMIN)
+  async getPendingKYC(): Promise<User[]> {
+    return this.userService.findPendingKYC();
+  }
+
   @Get()
   @Roles(UserRole.ADMIN)
   @HttpCode(HttpStatus.OK)
