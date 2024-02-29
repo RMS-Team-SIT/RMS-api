@@ -21,6 +21,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Renter } from '../renter/schemas/renter.schema';
 import { CreateRenterDto } from '../renter/dto/create-renter.dto';
 import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
+import { Roles } from 'src/auth/decorator/user-role.decorator';
+import { UserRole } from 'src/auth/enum/user-role.enum';
+import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -71,6 +74,14 @@ export class ResidenceController {
     return await this.residenceService.update(id, updateResidenceDto);
   }
 
+  @Get('/overall-stats')
+  @Roles(UserRole.ADMIN)
+  async overallStats(
+    @Req() req,
+  ): Promise<ResponseResidenceOverallStatsDto> {
+    return await this.residenceService.overAllStats();
+  }
+
   // @Delete(':residenceId')
   // async delete(@Req() req, @Param('id') id: string): Promise<Residence> {
   //   const userId = req.user.id;
@@ -86,4 +97,6 @@ export class ResidenceController {
       throw new ForbiddenException({ message: 'You are not the owner of this residence' });
     }
   }
+
+
 }

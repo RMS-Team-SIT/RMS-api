@@ -10,6 +10,7 @@ import { Residence } from './schemas/residence.schema';
 import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
+import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 
 @Injectable()
 export class ResidenceService {
@@ -30,6 +31,10 @@ export class ResidenceService {
     if (residence.owner.toString() != userId.toString()) {
       throw new UnauthorizedException('You are not owner of this residence');
     }
+  }
+
+  async overAllStats(): Promise<ResponseResidenceOverallStatsDto> {
+    return null;
   }
 
   // Residence

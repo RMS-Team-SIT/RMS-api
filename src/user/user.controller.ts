@@ -25,6 +25,7 @@ import { RolesGuard } from '../auth/guard/user-role.guard';
 import { UserRole } from '../auth/enum/user-role.enum';
 import { Roles } from '../auth/decorator/user-role.decorator';
 import { UploadIdCardDto } from './dto/upload-idcard.dto';
+import { ResponseUserOverallStatsDto } from './dto/response-user-overallstats.dto';
 
 @ApiTags('users')
 @ApiBearerAuth()
@@ -44,6 +45,13 @@ export class UserController {
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
+  }
+
+  @Get('/overall-stats')
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.ADMIN)
+  async getOverallStats(): Promise<ResponseUserOverallStatsDto> {
+    return this.userService.overallStats();
   }
 
   @Get()

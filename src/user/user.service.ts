@@ -16,6 +16,7 @@ import { UserRole } from '../auth/enum/user-role.enum';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { NotificationService } from 'src/notification/notification.service';
 import { UploadIdCardDto } from './dto/upload-idcard.dto';
+import { ResponseUserOverallStatsDto } from './dto/response-user-overallstats.dto';
 
 @Injectable()
 export class UserService {
@@ -63,6 +64,20 @@ export class UserService {
 
   async findByEmail(email: string): Promise<User> {
     return this.userModel.findOne({ email }).exec();
+  }
+
+  async overallStats(): Promise<ResponseUserOverallStatsDto> {
+    const totalUsers = await this.userModel.countDocuments({ role: UserRole.USER }).exec();
+    const totalAdmins = await this.userModel.countDocuments({ role: UserRole.ADMIN }).exec();
+    const totalApprovedUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
+    const totalPendingUsers = await this.userModel.countDocuments({ isApprovedKYC: false, role: UserRole.USER }).exec();
+
+    return {
+      totalAdmins,
+      totalUsers,
+      totalApprovedUsers,
+      totalPendingUsers,
+    };
   }
 
   async create(createUserDto: CreateUserDto, isNewAdmin = false): Promise<User> {

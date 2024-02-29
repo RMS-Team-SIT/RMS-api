@@ -16,8 +16,8 @@ export class MailService {
       .sendMail({
         to, // list of receivers
         from: process.env.SENDER_EMAIL,
-        subject: 'Password reset for RMS account', // Subject line
-        text: `Please use the following link to reset your password: ${process.env.CLIENT_URL}/reset-password/${resetToken}\n\nPlease ignore this email if you did not request a password reset.\n\n\nRMS Team`, // plaintext body
+        subject: 'รีเซทรหัสผ่านสำหรับ RMS', // Subject line
+        text: `โปรดใช้ลิงก์ต่อไปนี้เพื่อรีเซ็ตรหัสผ่านของคุณ: ${process.env.CLIENT_URL}/reset-password/${resetToken}\n\nโปรดเพิกเฉยต่ออีเมลนี้หากคุณไม่ได้ขอรีเซ็ตรหัสผ่าน\n\n\nทีมงาน RMS`, // plaintext body
       })
       .then(() => {
         console.info('Email sent successfully');
@@ -44,8 +44,8 @@ export class MailService {
       .sendMail({
         to, // list of receivers
         from: process.env.SENDER_EMAIL,
-        subject: 'Account verification for RMS account',
-        text: `Please use the following link to verify your account: ${process.env.CLIENT_URL}/verify/${token}\n\nPlease ignore this email if you did not create account.\n\n\nRMS Team`, // plaintext body
+        subject: 'ยืนยันบัญชีของคุณใน RMS',
+        text: `โปรดใช้ลิงก์ต่อไปนี้เพื่อยืนยันบัญชีของคุณ: ${process.env.CLIENT_URL}/verify/${token}\n\nโปรดอย่าสนใจอีเมลนี้หากคุณไม่ได้สร้างบัญชี\n\n\nทีมงาน RMS`,
       })
       .then(() => {
         console.info('Email sent successfully');
