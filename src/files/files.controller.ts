@@ -76,7 +76,7 @@ export class FilesController {
   async addWatermark(@UploadedFile(ParseFile) file: Express.Multer.File) {
     const { filePath, fileName } = await this.filesService.addWatermarkToPdf(file);
     return {
-      message: 'Watermark added successfully',
+      message: 'Upload pdf file with watermark successfully',
       fileName,
       filePath
     };
