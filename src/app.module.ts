@@ -23,6 +23,7 @@ import { NotificationModule } from './notification/notification.module';
 import { RolesGuard } from './auth/guard/user-role.guard';
 import { AdminModule } from './admin/admin.module';
 import { UserRole } from './auth/enum/user-role.enum';
+import { RenterModule } from './renter/renter.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -55,6 +56,7 @@ console.log(`Current environment: ${ENV}`);
     BillModule,
     NotificationModule,
     AdminModule,
+    RenterModule,
   ],
   providers: [
     {

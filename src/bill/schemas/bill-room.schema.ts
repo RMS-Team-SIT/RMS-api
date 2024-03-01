@@ -64,7 +64,7 @@ export class BillRoom extends Document {
   totalPrice: number;
 
   // Paider
-  @Prop({ type: Types.ObjectId, ref: Renter.name, default: null })
+  @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
   paider: Renter;
 
   @Prop({ default: null })

@@ -10,6 +10,9 @@ import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorator/public.decorator';
 import { UserService } from 'src/user/user.service';
+import { Roles } from '../decorator/user-role.decorator';
+import { UserRole } from '../enum/user-role.enum';
+import { RenterService } from 'src/renter/renter.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -17,6 +20,7 @@ export class AuthGuard implements CanActivate {
     private jwtService: JwtService,
     private reflector: Reflector,
     private readonly userService: UserService,
+    private readonly renterService: RenterService,
   ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -24,27 +28,43 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const token = this.getTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      const { id } = payload;
 
-      const user = await this.userService.findOne(id);
-      if (!user) {
-        throw new UnauthorizedException();
+      const { id, role } = payload;
+
+      if (role === UserRole.RENTER) {
+
+        const renter = await this.renterService.findOneRenter(id);
+        if (!renter) {
+          throw new UnauthorizedException();
+        }
+        request['user'] = { id, roles: role, renter };
+
       }
+      else {
 
-      request['user'] = { id, roles: user.role };
+        const user = await this.userService.findOne(id);
+        if (!user) {
+          throw new UnauthorizedException();
+        }
+        request['user'] = { id, roles: user.role };
+
+      }
     } catch {
       throw new UnauthorizedException();
     }

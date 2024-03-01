@@ -9,7 +9,7 @@ import { Public } from './decorator/public.decorator';
 @Public()
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')
@@ -20,6 +20,6 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('/signin-renter')
   signInRenter(@Body() signInRenterDto: SignInRenterDto) {
-    // return this.authService.signInRenter(signInDto);
+    return this.authService.signInRenter(signInRenterDto);
   }
 }

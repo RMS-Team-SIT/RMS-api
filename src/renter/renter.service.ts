@@ -17,7 +17,7 @@ export class RenterService {
     @InjectModel(Renter.name)
     private readonly renterModel: Model<Renter>,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   private async checkRenterUsernameExist(
     username: string,
@@ -61,6 +61,28 @@ export class RenterService {
     );
 
     return createdRenter;
+  }
+
+  async signInRenter(
+    residenceId: string,
+    username: string,
+    password: string,
+  ): Promise<Renter> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    const renter = await this.renterModel
+      .findOne({
+        residence: residenceId,
+        username,
+        password,
+      })
+      .exec();
+
+    if (!renter) {
+      throw new NotFoundException('Renter not found');
+    }
+
+    return renter;
   }
 
   async findAllRenterInResidence(residenceId: string): Promise<Renter[]> {

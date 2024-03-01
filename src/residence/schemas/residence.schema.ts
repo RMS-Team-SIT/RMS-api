@@ -54,7 +54,7 @@ export class Residence extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: Room.name }], default: [] })
   rooms: Room[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: Renter.name }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Renter' }], default: [] })
   renters: Renter[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Payment.name }], default: [] })
