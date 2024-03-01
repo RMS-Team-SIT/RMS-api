@@ -11,6 +11,8 @@ import { Renter } from '../../renter/schemas/renter.schema';
 import { Payment } from '../../payment/schemas/payment.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { Bill } from 'src/bill/schemas/bill.schema';
+import { ResidenceInfo, ResidenceInfoSchema } from './residence-info.schema';
+import { Facility } from '../../facility/schemas/facility.schema';
 
 export type ResidenceDocument = Residence & Document;
 
@@ -27,13 +29,22 @@ export class Residence extends Document {
   @Prop({ default: null })
   description: string;
 
+  @Prop({ type: ResidenceInfoSchema, default: null })
+  info: ResidenceInfo;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Facility.name }], default: [] })
+  facilities: Facility[];
+
   @Prop({ default: [] })
   images: string[];
+
+  @Prop({ default: [] })
+  locationImages: string[];
 
   @Prop({ type: [AnnouncementSchema], default: [] })
   announcements: Announcement[];
 
-  @Prop({ type: ResidenceContactSchema, default: undefined })
+  @Prop({ type: ResidenceContactSchema, required: true })
   contact: ResidenceContact;
 
   @Prop({ default: null })

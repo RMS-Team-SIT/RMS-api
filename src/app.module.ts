@@ -15,6 +15,7 @@ import { Connection, Types } from 'mongoose';
 import { BankModule } from './bank/bank.module';
 import * as BankData from './data/bank_cleaned.json';
 import * as AdminData from './data/admin_data.json';
+import * as FacilityData from './data/facility_data.json';
 import { MeterRecordModule } from './meter-record/meter-record.module';
 import { PaymentModule } from './payment/payment.module';
 import { RoomModule } from './room/room.module';
@@ -24,6 +25,7 @@ import { RolesGuard } from './auth/guard/user-role.guard';
 import { AdminModule } from './admin/admin.module';
 import { UserRole } from './auth/enum/user-role.enum';
 import { RenterModule } from './renter/renter.module';
+import { FacilityModule } from './facility/facility.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -57,6 +59,7 @@ console.log(`Current environment: ${ENV}`);
     NotificationModule,
     AdminModule,
     RenterModule,
+    FacilityModule,
   ],
   providers: [
     {
@@ -80,7 +83,8 @@ export class AppModule implements OnModuleInit {
     try {
       console.log('AppModule initialized');
       await this.initBankData();
-      await this.initAdminData()
+      await this.initAdminData();
+      await this.initFacilityData();
     } catch (error) {
       console.error('Error initializing AppModule:', error);
     }
@@ -95,7 +99,7 @@ export class AppModule implements OnModuleInit {
       for (const bank of BankData) {
         console.log('Inserting bank:', bank.bank);
         const objId = new Types.ObjectId(bank.objId);
-        await bankCollection.insertOne({ _id: objId, ...bank });
+        await bankCollection.insertOne({ _id: objId, ...bank, created_at: new Date(), updated_at: new Date()});
       }
       console.log('Bank data initialized successfully.');
     } else {
@@ -116,6 +120,22 @@ export class AppModule implements OnModuleInit {
       console.log('Admin data initialized successfully.');
     } else {
       console.log('Admin exists.');
+    }
+  }
+  private async initFacilityData() {
+    const collection = this.connection.collection('facilities');
+    const count = await collection.countDocuments();
+
+    if (count === 0) {
+      console.log('Initializing facilities data from JSON file...');
+      for (const facility of FacilityData) {
+        console.log('Inserting facilities:', facility.name);
+        const objId = new Types.ObjectId(facility.objId);
+        await collection.insertOne({ _id: objId, ...facility, created_at: new Date(), updated_at: new Date() });
+      }
+      console.log('facilities data initialized successfully.');
+    } else {
+      console.log('facilities data already exists.');
     }
   }
 }
