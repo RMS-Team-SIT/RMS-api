@@ -24,6 +24,7 @@ import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
 import { Roles } from 'src/auth/decorator/user-role.decorator';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
+import { Public } from 'src/auth/decorator/public.decorator';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -55,6 +56,12 @@ export class ResidenceController {
   @Get(':residenceId')
   async findOne(@Param('residenceId') id: string): Promise<Residence> {
     return await this.residenceService.findOne(id);
+  }
+
+  @Get(':residenceId/public')
+  @Public()
+  async findOnePublic(@Param('residenceId') id: string): Promise<Residence> {
+    return await this.residenceService.findOnePublic(id);
   }
 
   @Put(':residenceId')

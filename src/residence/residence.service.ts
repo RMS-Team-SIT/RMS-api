@@ -125,6 +125,21 @@ export class ResidenceService {
     return residence;
   }
 
+  async findOnePublic(residenceId: string): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    const residence = await this.residenceModel
+      .findById(residenceId)
+      .select({
+        name: 1,
+      })
+      .exec();
+    if (!residence) {
+      throw new NotFoundException('Residence not found');
+    }
+    return residence;
+  }
+
   async update(id: string, dto: UpdateResidenceDto): Promise<Residence> {
     validateObjectIdFormat(id, 'Residence');
 

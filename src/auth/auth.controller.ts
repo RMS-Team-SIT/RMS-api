@@ -18,7 +18,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('/signin-renter')
+  @Post('/renter-signin')
   signInRenter(@Body() signInRenterDto: SignInRenterDto) {
     return this.authService.signInRenter(signInRenterDto);
   }
