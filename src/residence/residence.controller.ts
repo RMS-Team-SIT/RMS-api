@@ -25,6 +25,7 @@ import { Roles } from 'src/auth/decorator/user-role.decorator';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
+import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -40,6 +41,16 @@ export class ResidenceController {
   ): Promise<Residence> {
     const userId = req.user.id;
     return await this.residenceService.create(userId, createResidenceDto);
+  }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async createFully(
+    @Body() createResidenceFullyDto: CreateResidenceFullyDto,
+    @Req() req,
+  ): Promise<Residence> {
+    const userId = req.user.id;
+    return await this.residenceService.createFully(userId, createResidenceFullyDto);
   }
 
   @Get('/my')

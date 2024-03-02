@@ -11,13 +11,14 @@ import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
+import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
 
 @Injectable()
 export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
-  ) {}
+  ) { }
 
   async checkOwnerPermission(
     userId: string,
@@ -48,6 +49,18 @@ export class ResidenceService {
       isApproved: false,
     });
     return createdResidence.save();
+  }
+
+  async createFully(
+    userId: string,
+    createResidenceFullyDto: CreateResidenceFullyDto,
+  ): Promise<Residence> {
+    const createdResidence = new this.residenceModel({
+      ...createResidenceFullyDto,
+      owner: userId,
+      isApproved: false,
+    });
+    return null;
   }
 
   async findMyResidence(userId: string): Promise<Residence[]> {

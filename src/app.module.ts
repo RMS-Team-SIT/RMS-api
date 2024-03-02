@@ -26,6 +26,9 @@ import { AdminModule } from './admin/admin.module';
 import { UserRole } from './auth/enum/user-role.enum';
 import { RenterModule } from './renter/renter.module';
 import { FacilityModule } from './facility/facility.module';
+import { FeesModule } from './fees/fees.module';
+import { RoomTypeController } from './room-type/room-type.controller';
+import { RoomTypeModule } from './room-type/room-type.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -60,6 +63,8 @@ console.log(`Current environment: ${ENV}`);
     AdminModule,
     RenterModule,
     FacilityModule,
+    FeesModule,
+    RoomTypeModule,
   ],
   providers: [
     {
@@ -75,6 +80,7 @@ console.log(`Current environment: ${ENV}`);
       useClass: ThrottlerGuard,
     },
   ],
+  controllers: [RoomTypeController],
 })
 export class AppModule implements OnModuleInit {
   @InjectConnection() private connection: Connection;

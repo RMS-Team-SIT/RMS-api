@@ -8,6 +8,13 @@ import {
 } from 'class-validator';
 
 export class CreateResidenceContactDto {
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(200)
+  contactName: string;
+
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -33,9 +40,4 @@ export class CreateResidenceContactDto {
   @MaxLength(200)
   email: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  @MaxLength(200)
-  contactName: string;
 }

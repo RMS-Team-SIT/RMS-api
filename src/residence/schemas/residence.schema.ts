@@ -13,6 +13,7 @@ import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { Bill } from 'src/bill/schemas/bill.schema';
 import { ResidenceInfo, ResidenceInfoSchema } from './residence-info.schema';
 import { Facility } from '../../facility/schemas/facility.schema';
+import { Fee } from '../../fees/schemas/fee.schema';
 
 export type ResidenceDocument = Residence & Document;
 
@@ -32,14 +33,14 @@ export class Residence extends Document {
   @Prop({ type: ResidenceInfoSchema, default: null })
   info: ResidenceInfo;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: Facility.name }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Facility' }], default: [] })
   facilities: Facility[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Fee' }], default: [] })
+  fees: Fee[];
 
   @Prop({ default: [] })
   images: string[];
-
-  @Prop({ default: [] })
-  locationImages: string[];
 
   @Prop({ type: [AnnouncementSchema], default: [] })
   announcements: Announcement[];
@@ -70,6 +71,9 @@ export class Residence extends Document {
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Payment.name }], default: [] })
   payments: Payment[];
+
+  @Prop({ default: '' })
+  paymentNotes: string;
 
   @Prop({
     type: [{ type: Types.ObjectId, ref: MeterRecord.name }],
