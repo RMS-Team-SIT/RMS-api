@@ -15,15 +15,8 @@ export class FilesService {
   ): Promise<{ fileName: string; filePath: string }> {
     const pdfDoc = await PDFDocument.load(file.buffer);
     // const pathToThaiFont = path.join(__dirname, '..', '..', 'public', 'fonts', 'Maitree', 'Maitree-Regular.ttf')
-    const pathToThaiFont = path.join(
-      __dirname,
-      '..',
-      '..',
-      'public',
-      'fonts',
-      'Sarabun',
-      'Sarabun-Regular.ttf',
-    );
+    const pathToThaiFont = path.join(__dirname, '..', 'fonts', 'Sarabun', 'Sarabun-Regular.ttf')
+
     const fontBytes = fs.readFileSync(pathToThaiFont);
     pdfDoc.registerFontkit(fontkit);
     const thaiFont = await pdfDoc.embedFont(fontBytes);
