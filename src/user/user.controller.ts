@@ -31,7 +31,7 @@ import { ResponseUserOverallStatsDto } from './dto/response-user-overallstats.dt
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Post('/create-admin')
   @Public()
@@ -170,7 +170,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async resendVerifyEmail(
     @Req() req,
-    @Param('userId') userId: string
+    @Param('userId') userId: string,
   ): Promise<object> {
     console.log(userId);
     return this.userService.resendVerifyEmail(userId);
@@ -180,7 +180,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async acceptPolicy(
     @Req() req,
-    @Param('userId') userId: string
+    @Param('userId') userId: string,
   ): Promise<object> {
     console.log(userId);
     return this.userService.acceptPolicy(userId);
@@ -191,7 +191,7 @@ export class UserController {
   async uploadIdCardNumber(
     @Req() req,
     @Param('userId') userId: string,
-    @Body() uploadIdCardDto: UploadIdCardDto
+    @Body() uploadIdCardDto: UploadIdCardDto,
   ): Promise<object> {
     return this.userService.uploadIdCardNumber(userId, uploadIdCardDto);
   }
@@ -201,7 +201,7 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async approveKYC(
     @Req() req,
-    @Param('userId') userId: string
+    @Param('userId') userId: string,
   ): Promise<object> {
     return this.userService.approveKYCStatus(userId);
   }

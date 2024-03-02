@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
@@ -15,7 +19,7 @@ export class MeterRecordService {
     @InjectModel(MeterRecord.name)
     private readonly meterRecordModel: Model<MeterRecord>,
     private readonly residenceService: ResidenceService,
-  ) { }
+  ) {}
 
   async createMeterRecord(
     residenceId: string,
@@ -39,7 +43,9 @@ export class MeterRecordService {
 
       // Check if the latest meter record is newer than the new meter record
       if (latestRecordDate > newRecordDate) {
-        throw new BadRequestException('Cannot create meter record with date older than the latest meter record');
+        throw new BadRequestException(
+          'Cannot create meter record with date older than the latest meter record',
+        );
       }
     }
 
@@ -69,7 +75,9 @@ export class MeterRecordService {
       .exec();
   }
 
-  async getLastMeterRecordByResidence(residenceId: string): Promise<MeterRecord> {
+  async getLastMeterRecordByResidence(
+    residenceId: string,
+  ): Promise<MeterRecord> {
     const meterRecord = await this.meterRecordModel
       .findOne({ residence: residenceId })
       .sort({ record_date: -1 })
@@ -154,14 +162,14 @@ export class MeterRecordService {
     // Check meter record exists
     const meterRecord = await this.getMeterRecordById(meterRecordId);
 
-    return await this.meterRecordModel.findByIdAndUpdate(
-      meterRecordId,
-      { isLocked: true },
-      { new: true },
-    ).exec();
+    return await this.meterRecordModel
+      .findByIdAndUpdate(meterRecordId, { isLocked: true }, { new: true })
+      .exec();
   }
 
-  async lockAllMeterRecordInResidence(residenceId: string): Promise<MeterRecord[]> {
+  async lockAllMeterRecordInResidence(
+    residenceId: string,
+  ): Promise<MeterRecord[]> {
     // Check residence exists
     await this.residenceService.findOne(residenceId);
 
@@ -191,11 +199,9 @@ export class MeterRecordService {
       throw new BadRequestException('Meter record already unlocked');
     }
 
-    return await this.meterRecordModel.findByIdAndUpdate(
-      meterRecordId,
-      { isLocked: false },
-      { new: true },
-    ).exec();
+    return await this.meterRecordModel
+      .findByIdAndUpdate(meterRecordId, { isLocked: false }, { new: true })
+      .exec();
   }
 
   async checkMeterRecordLocked(meterRecordId: string): Promise<void> {
@@ -208,31 +214,37 @@ export class MeterRecordService {
 
   async setBillGenerated(meterRecordId: string): Promise<MeterRecord> {
     // Check meter record exists
-    const meterRecord = await this.getMeterRecordById(meterRecordId);;
+    const meterRecord = await this.getMeterRecordById(meterRecordId);
     // if (meterRecord.isBillGenerated) {
     //   throw new BadRequestException('Bill already generated');
     // }
 
-    return await this.meterRecordModel.findByIdAndUpdate(
-      meterRecordId,
-      { isBillGenerated: true },
-      { new: true },
-    ).exec();
+    return await this.meterRecordModel
+      .findByIdAndUpdate(
+        meterRecordId,
+        { isBillGenerated: true },
+        { new: true },
+      )
+      .exec();
   }
 
   async addBillToMeterRecord(meterRecordId: string, billId: string) {
     // Check meter record exists
     await this.getMeterRecordById(meterRecordId);
 
-    const updatedMeterRecord = this.meterRecordModel.findOneAndUpdate({
-      _id: meterRecordId
-    }, {
-      $set: {
-        bill: billId
-      }
-    }).exec();
+    const updatedMeterRecord = this.meterRecordModel
+      .findOneAndUpdate(
+        {
+          _id: meterRecordId,
+        },
+        {
+          $set: {
+            bill: billId,
+          },
+        },
+      )
+      .exec();
 
     return updatedMeterRecord;
   }
-
 }

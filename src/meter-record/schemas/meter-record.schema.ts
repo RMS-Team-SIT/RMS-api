@@ -25,7 +25,7 @@ export class MeterRecord extends Document {
   @Prop({ type: [MeterRecordItemSchema], default: [] })
   meterRecordItems: MeterRecordItem[];
 
-  // isLocked means that the record is not allowed to be updated. 
+  // isLocked means that the record is not allowed to be updated.
   // Case 1: When the bill is generated, the record is locked.
   // Case 2: When create a new record, all the previous record is locked.
   @Prop({ required: true, default: true })

@@ -25,7 +25,7 @@ export class UserService {
     private userModel: Model<User>,
     private readonly mailService: MailService,
     private readonly notificationService: NotificationService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<User[]> {
     return this.userModel
@@ -44,7 +44,7 @@ export class UserService {
       .findById(id)
       .populate({
         path: 'notifications',
-        options: { sort: { created_at: -1 } }
+        options: { sort: { created_at: -1 } },
       })
       .select({
         password: 0,
@@ -57,9 +57,7 @@ export class UserService {
   }
 
   async findAdmin(): Promise<User[]> {
-    return this.userModel
-      .find({ role: UserRole.ADMIN })
-      .exec();
+    return this.userModel.find({ role: UserRole.ADMIN }).exec();
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -67,16 +65,24 @@ export class UserService {
   }
 
   async overallStats(): Promise<ResponseUserOverallStatsDto> {
-    const totalUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
-    const totalAdmins = await this.userModel.countDocuments({ role: UserRole.ADMIN }).exec();
-    const totalApprovedUsers = await this.userModel.countDocuments({ isApprovedKYC: true, role: UserRole.USER }).exec();
-    const totalPendingUsers = await this.userModel.countDocuments({
-      isApprovedKYC: false,
-      idcardNumber: { $ne: null },
-      isAcceptedPolicy: true,
-      isEmailVerified: true,
-      role: UserRole.USER
-    }).exec();
+    const totalUsers = await this.userModel
+      .countDocuments({ isApprovedKYC: true, role: UserRole.USER })
+      .exec();
+    const totalAdmins = await this.userModel
+      .countDocuments({ role: UserRole.ADMIN })
+      .exec();
+    const totalApprovedUsers = await this.userModel
+      .countDocuments({ isApprovedKYC: true, role: UserRole.USER })
+      .exec();
+    const totalPendingUsers = await this.userModel
+      .countDocuments({
+        isApprovedKYC: false,
+        idcardNumber: { $ne: null },
+        isAcceptedPolicy: true,
+        isEmailVerified: true,
+        role: UserRole.USER,
+      })
+      .exec();
 
     return {
       totalAdmins,
@@ -93,14 +99,25 @@ export class UserService {
         idcardNumber: { $ne: null },
         isAcceptedPolicy: true,
         isEmailVerified: true,
-        role: UserRole.USER
+        role: UserRole.USER,
       })
       .exec();
   }
 
-  async create(createUserDto: CreateUserDto, isNewAdmin = false): Promise<User> {
-    await this.validateUniqueField('email', createUserDto.email, 'Email must be unique.');
-    await this.validateUniqueField('phone', createUserDto.phone, 'Phone must be unique.');
+  async create(
+    createUserDto: CreateUserDto,
+    isNewAdmin = false,
+  ): Promise<User> {
+    await this.validateUniqueField(
+      'email',
+      createUserDto.email,
+      'Email must be unique.',
+    );
+    await this.validateUniqueField(
+      'phone',
+      createUserDto.phone,
+      'Phone must be unique.',
+    );
 
     const user = {
       ...createUserDto,
@@ -109,7 +126,7 @@ export class UserService {
       isEmailVerified: isNewAdmin ? true : false,
       emailVerificationToken: isNewAdmin ? null : randomToken(),
       isApprovedKYC: isNewAdmin ? true : false,
-    }
+    };
 
     const createdUser = new this.userModel(user);
     createdUser.save();
@@ -125,10 +142,14 @@ export class UserService {
         title: 'สมัครสมาชิกสำเร็จ',
         content: `สมัครสมาชิกสำเร็จ กรุณายืนยันอีเมลของท่าน`,
         isSentEmail: true,
-        isRead: false
+        isRead: false,
       };
-      const createdNotification = await this.notificationService.create(userNotification);
-      await this.addNotificationToUser(createdUser._id.toString(), createdNotification._id.toString());
+      const createdNotification =
+        await this.notificationService.create(userNotification);
+      await this.addNotificationToUser(
+        createdUser._id.toString(),
+        createdNotification._id.toString(),
+      );
     }
 
     return createdUser;
@@ -342,7 +363,10 @@ export class UserService {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
     if (user.isEmailVerified) {
-      throw new HttpException('Email is already verified', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Email is already verified',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     await this.sendEmailVerification(user);
     return {
@@ -360,7 +384,7 @@ export class UserService {
         userId,
         {
           isAcceptedPolicy: true,
-          updated_at: Date.now()
+          updated_at: Date.now(),
         },
         { new: true },
       )
@@ -369,7 +393,10 @@ export class UserService {
     return updatedUser;
   }
 
-  async uploadIdCardNumber(userId: string, uploadIdCardDto: UploadIdCardDto): Promise<User> {
+  async uploadIdCardNumber(
+    userId: string,
+    uploadIdCardDto: UploadIdCardDto,
+  ): Promise<User> {
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
       throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
@@ -381,29 +408,37 @@ export class UserService {
         userId,
         {
           idcardNumber: uploadIdCardDto.idCardNumber,
-          updated_at: Date.now()
+          updated_at: Date.now(),
         },
         { new: true },
       )
       .exec();
     // send notification to admins
     const admins = await this.findAdmin();
-    admins.forEach(async admin => {
+    admins.forEach(async (admin) => {
       const adminNotification = {
         to: admin._id.toString(),
         toEmail: admin.email,
         title: 'มีการสร้างบัญชีผู้ใช้ใหม่และรอการอนุมัติ',
         content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
         isSentEmail: true,
-        isRead: false
+        isRead: false,
       };
-      const createdNotification = await this.notificationService.create(adminNotification);
-      await this.addNotificationToUser(admin._id.toString(), createdNotification._id.toString());
+      const createdNotification =
+        await this.notificationService.create(adminNotification);
+      await this.addNotificationToUser(
+        admin._id.toString(),
+        createdNotification._id.toString(),
+      );
     });
     return updatedUser;
   }
 
-  private async validateUniqueField(field: string, value: string, errorMessage: string): Promise<void> {
+  private async validateUniqueField(
+    field: string,
+    value: string,
+    errorMessage: string,
+  ): Promise<void> {
     const isDuplicate = await this.userModel.findOne({ [field]: value });
     if (isDuplicate) {
       const errors = { [field]: errorMessage };
@@ -434,7 +469,7 @@ export class UserService {
         userId,
         {
           isApprovedKYC: true,
-          updated_at: Date.now()
+          updated_at: Date.now(),
         },
         { new: true },
       )
@@ -446,18 +481,30 @@ export class UserService {
       title: 'คุณได้รับการอนุมัติการใช้งาน',
       content: `กรุณาเข้าสู่ระบบเพื่อใช้งานบริการของเรา`,
       isSentEmail: true,
-      isRead: false
+      isRead: false,
     };
-    const createdNotification = await this.notificationService.create(userNotification);
-    await this.addNotificationToUser(userId, createdNotification._id.toString());
+    const createdNotification =
+      await this.notificationService.create(userNotification);
+    await this.addNotificationToUser(
+      userId,
+      createdNotification._id.toString(),
+    );
     return updatedUser;
   }
 
-  private async addNotificationToUser(userId: string, notificationId: string): Promise<User> {
+  private async addNotificationToUser(
+    userId: string,
+    notificationId: string,
+  ): Promise<User> {
     console.log('addNotificationToUser', userId, notificationId);
 
-    return await this.userModel.findOneAndUpdate({ _id: userId }, {
-      $push: { notifications: notificationId }
-    }).exec();
+    return await this.userModel
+      .findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: { notifications: notificationId },
+        },
+      )
+      .exec();
   }
 }

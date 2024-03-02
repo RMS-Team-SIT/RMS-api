@@ -1,4 +1,10 @@
-import { Controller, Post, UploadedFile, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { FilesService } from './files.service';
@@ -15,7 +21,7 @@ import { fileMimetypeFilter } from './filters/file-mimetype.filter';
 @SkipThrottle()
 @Public() //<- For testing only (remove this line in production)
 export class FilesController {
-  constructor(private readonly filesService: FilesService) { }
+  constructor(private readonly filesService: FilesService) {}
 
   @Post('upload-image')
   @ApiImageFile('image', true)
@@ -63,22 +69,25 @@ export class FilesController {
       type: 'object',
       required: ['pdf'],
       properties: {
-        'pdf': {
+        pdf: {
           type: 'string',
           format: 'binary',
         },
       },
     },
   })
-  @UseInterceptors(FileInterceptor('pdf', {
-    fileFilter: fileMimetypeFilter('pdf'),
-  }))
+  @UseInterceptors(
+    FileInterceptor('pdf', {
+      fileFilter: fileMimetypeFilter('pdf'),
+    }),
+  )
   async addWatermark(@UploadedFile(ParseFile) file: Express.Multer.File) {
-    const { filePath, fileName } = await this.filesService.addWatermarkToPdf(file);
+    const { filePath, fileName } =
+      await this.filesService.addWatermarkToPdf(file);
     return {
       message: 'Upload pdf file with watermark successfully',
       fileName,
-      filePath
+      filePath,
     };
   }
 

@@ -20,7 +20,7 @@ export class RoomService {
     private roomModel: Model<Room>,
     private readonly residenceService: ResidenceService,
     private readonly renterService: RenterService,
-  ) { }
+  ) {}
 
   private async checkRoomNameExist(
     name: string,
@@ -122,7 +122,8 @@ export class RoomService {
       );
 
     const rooms = [];
-    const startRoomForEachFloor = await this.findLastRoomNumberInEachFloor(residenceId);
+    const startRoomForEachFloor =
+      await this.findLastRoomNumberInEachFloor(residenceId);
     for (let floor = 1; floor <= numberOfFloor; floor++) {
       // start room number for each floor eg 101, 201, 301
       const startRoom = startRoomForEachFloor[floor]
@@ -177,15 +178,15 @@ export class RoomService {
     const room = await this.roomModel
       .findOne({ _id: roomId, residence: residenceId })
       .populate({
-        path: "billRooms",
+        path: 'billRooms',
         populate: {
-          path: "meterRecord",
+          path: 'meterRecord',
           select: {
-            record_date: 1
+            record_date: 1,
           },
-        }
+        },
       })
-      .populate("currentRenter")
+      .populate('currentRenter')
       .exec();
 
     if (!room) {
@@ -316,5 +317,4 @@ export class RoomService {
       )
       .exec();
   }
-
 }

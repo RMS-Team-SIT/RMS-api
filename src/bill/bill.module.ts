@@ -22,4 +22,4 @@ import { MeterRecordModule } from 'src/meter-record/meter-record.module';
   controllers: [BillController],
   exports: [BillService],
 })
-export class BillModule { }
+export class BillModule {}

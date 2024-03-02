@@ -17,7 +17,7 @@ export class RenterService {
     @InjectModel(Renter.name)
     private readonly renterModel: Model<Renter>,
     private readonly residenceService: ResidenceService,
-  ) { }
+  ) {}
 
   private async checkRenterUsernameExist(
     username: string,

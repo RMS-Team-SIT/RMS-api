@@ -10,10 +10,20 @@ export class FilesService {
   constructor() {
     // Register fontkit with PDFDocument
   }
-  async addWatermarkToPdf(file: Express.Multer.File): Promise<{ fileName: string, filePath: string }> {
-    const pdfDoc = await PDFDocument.load(file.buffer)
+  async addWatermarkToPdf(
+    file: Express.Multer.File,
+  ): Promise<{ fileName: string; filePath: string }> {
+    const pdfDoc = await PDFDocument.load(file.buffer);
     // const pathToThaiFont = path.join(__dirname, '..', '..', 'public', 'fonts', 'Maitree', 'Maitree-Regular.ttf')
-    const pathToThaiFont = path.join(__dirname, '..', '..', 'public', 'fonts', 'Sarabun', 'Sarabun-Regular.ttf')
+    const pathToThaiFont = path.join(
+      __dirname,
+      '..',
+      '..',
+      'public',
+      'fonts',
+      'Sarabun',
+      'Sarabun-Regular.ttf',
+    );
     const fontBytes = fs.readFileSync(pathToThaiFont);
     pdfDoc.registerFontkit(fontkit);
     const thaiFont = await pdfDoc.embedFont(fontBytes);
@@ -22,7 +32,10 @@ export class FilesService {
     pages.forEach((page) => {
       const { width, height } = page.getSize();
       const fontSize = Math.max(width, height) * 0.05; // Adjust the multiplier as needed
-      const textWidth = thaiFont.widthOfTextAtSize(process.env.WATERMARK_TEXT, fontSize);
+      const textWidth = thaiFont.widthOfTextAtSize(
+        process.env.WATERMARK_TEXT,
+        fontSize,
+      );
       const textHeight = thaiFont.heightAtSize(fontSize);
 
       const x = 0;
@@ -42,10 +55,17 @@ export class FilesService {
     });
     // output the watermarked PDF to public/upload
     const fileName = customFileName(null, file, null);
-    const outputPath = path.join(__dirname, '..', '..', 'public', 'upload', fileName)
+    const outputPath = path.join(
+      __dirname,
+      '..',
+      '..',
+      'public',
+      'upload',
+      fileName,
+    );
     console.log('outputPath', outputPath);
 
-    const pdfBytes = await pdfDoc.save()
+    const pdfBytes = await pdfDoc.save();
     fs.writeFileSync(outputPath, pdfBytes);
     return { fileName, filePath: outputPath };
   }

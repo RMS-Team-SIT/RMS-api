@@ -17,7 +17,7 @@ export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
-  ) { }
+  ) {}
 
   async checkOwnerPermission(
     userId: string,
@@ -264,7 +264,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async addBillToResidence(residenceId: string, billId: string): Promise<Residence> {
+  async addBillToResidence(
+    residenceId: string,
+    billId: string,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(billId, 'Bill');
 
@@ -299,7 +302,10 @@ export class ResidenceService {
       .exec();
   }
 
-  async changeApproveResidenceStatus(residenceId: string, approveStatus: boolean): Promise<Residence> {
+  async changeApproveResidenceStatus(
+    residenceId: string,
+    approveStatus: boolean,
+  ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
 
     return this.residenceModel
@@ -313,6 +319,4 @@ export class ResidenceService {
       )
       .exec();
   }
-
-
 }

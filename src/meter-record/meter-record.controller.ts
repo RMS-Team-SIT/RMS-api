@@ -14,7 +14,7 @@ export class MeterRecordController {
   constructor(
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
-  ) { }
+  ) {}
 
   @Post('')
   async createMeterRecord(
@@ -34,7 +34,8 @@ export class MeterRecordController {
 
   @Get('/latest')
   async getLatestMeterRecord(@Param('residenceId') residenceId: string) {
-    const meterRecord = await this.meterRecordService.getLastMeterRecordByResidence(residenceId);
+    const meterRecord =
+      await this.meterRecordService.getLastMeterRecordByResidence(residenceId);
     console.log('meterRecord', meterRecord);
 
     return { latestdMeterRecord: meterRecord };

@@ -9,14 +9,11 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @SkipThrottle()
 @ApiBearerAuth()
 export class FacilityController {
-    constructor(
-        private readonly facilityService: FacilityService,
-    ) { }
+  constructor(private readonly facilityService: FacilityService) {}
 
-    @Get()
-    @Public()
-    async findAll() {
-        return this.facilityService.findAll();
-    }
-
+  @Get()
+  @Public()
+  async findAll() {
+    return this.facilityService.findAll();
+  }
 }

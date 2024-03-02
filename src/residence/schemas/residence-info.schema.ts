@@ -5,16 +5,13 @@ export type ResidenceInfoDocument = ResidenceInfo & Document;
 
 @Schema()
 export class ResidenceInfo extends Document {
-    _id: string;
+  _id: string;
 
-    
+  @Prop({ required: true, default: Date.now() })
+  created_at: Date;
 
-    @Prop({ required: true, default: Date.now() })
-    created_at: Date;
-
-    @Prop({ required: true, default: Date.now() })
-    updated_at: Date;
+  @Prop({ required: true, default: Date.now() })
+  updated_at: Date;
 }
 
-export const ResidenceInfoSchema =
-    SchemaFactory.createForClass(ResidenceInfo);
+export const ResidenceInfoSchema = SchemaFactory.createForClass(ResidenceInfo);

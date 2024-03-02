@@ -8,41 +8,38 @@ import { UpdateBillDto } from './dto/update-bill.dto';
 @ApiTags('Bill')
 @Controller('/residence/:residenceId/bill')
 // @ApiBearerAuth()
-@Public() // <- For testing remove this 
+@Public() // <- For testing remove this
 export class BillController {
-    constructor(
-        private readonly billService: BillService
-    ) { }
+  constructor(private readonly billService: BillService) {}
 
-    @Post('')
-    async createBill(
-        @Req() req,
-        @Param('residenceId') residenceId: string,
-        @Body() createBillDto: CreateBillDto
-    ) {
-        return this.billService.createBill(residenceId, createBillDto);
-    }
+  @Post('')
+  async createBill(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Body() createBillDto: CreateBillDto,
+  ) {
+    return this.billService.createBill(residenceId, createBillDto);
+  }
 
-    @Get('')
-    async getBillByResidence(@Param('residenceId') residenceId: string) {
-        return this.billService.getBillByResidence(residenceId);
-    }
+  @Get('')
+  async getBillByResidence(@Param('residenceId') residenceId: string) {
+    return this.billService.getBillByResidence(residenceId);
+  }
 
-    @Get('/:billId')
-    async getBillById(
-        @Param('residenceId') residenceId: string,
-        @Param('billId') billId: string
-    ) {
-        return this.billService.getBillById(residenceId, billId);
-    }
+  @Get('/:billId')
+  async getBillById(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+  ) {
+    return this.billService.getBillById(residenceId, billId);
+  }
 
-    @Put('/:billId/')
-    async payBill(
-        @Param('residenceId') residenceId: string,
-        @Param('billId') billId: string,
-        @Body() updateBillDto: UpdateBillDto
-    ) {
-        return this.billService.updateBill(residenceId, billId, updateBillDto);
-    }
-
+  @Put('/:billId/')
+  async payBill(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+    @Body() updateBillDto: UpdateBillDto,
+  ) {
+    return this.billService.updateBill(residenceId, billId, updateBillDto);
+  }
 }

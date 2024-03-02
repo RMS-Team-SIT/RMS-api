@@ -10,7 +10,6 @@ import { Request } from 'express';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from '../decorator/public.decorator';
 import { UserService } from 'src/user/user.service';
-import { Roles } from '../decorator/user-role.decorator';
 import { UserRole } from '../enum/user-role.enum';
 import { RenterService } from 'src/renter/renter.service';
 
@@ -21,7 +20,7 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
     private readonly userService: UserService,
     private readonly renterService: RenterService,
-  ) { }
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -48,22 +47,17 @@ export class AuthGuard implements CanActivate {
       const { id, role } = payload;
 
       if (role === UserRole.RENTER) {
-
         const renter = await this.renterService.findOneRenter(id);
         if (!renter) {
           throw new UnauthorizedException();
         }
         request['user'] = { id, roles: role, renter };
-
-      }
-      else {
-
+      } else {
         const user = await this.userService.findOne(id);
         if (!user) {
           throw new UnauthorizedException();
         }
         request['user'] = { id, roles: user.role };
-
       }
     } catch {
       throw new UnauthorizedException();

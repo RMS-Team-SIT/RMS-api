@@ -99,7 +99,12 @@ export class AppModule implements OnModuleInit {
       for (const bank of BankData) {
         console.log('Inserting bank:', bank.bank);
         const objId = new Types.ObjectId(bank.objId);
-        await bankCollection.insertOne({ _id: objId, ...bank, created_at: new Date(), updated_at: new Date()});
+        await bankCollection.insertOne({
+          _id: objId,
+          ...bank,
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
       }
       console.log('Bank data initialized successfully.');
     } else {
@@ -108,7 +113,9 @@ export class AppModule implements OnModuleInit {
   }
   private async initAdminData() {
     const userCollection = this.connection.collection('users');
-    const adminCount = await userCollection.countDocuments({ role: UserRole.ADMIN });
+    const adminCount = await userCollection.countDocuments({
+      role: UserRole.ADMIN,
+    });
 
     if (adminCount === 0) {
       console.log('Initializing admin data from JSON file...');
@@ -131,7 +138,12 @@ export class AppModule implements OnModuleInit {
       for (const facility of FacilityData) {
         console.log('Inserting facilities:', facility.name);
         const objId = new Types.ObjectId(facility.objId);
-        await collection.insertOne({ _id: objId, ...facility, created_at: new Date(), updated_at: new Date() });
+        await collection.insertOne({
+          _id: objId,
+          ...facility,
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
       }
       console.log('facilities data initialized successfully.');
     } else {

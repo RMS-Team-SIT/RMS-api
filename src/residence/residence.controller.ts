@@ -30,7 +30,7 @@ import { Public } from 'src/auth/decorator/public.decorator';
 @ApiBearerAuth()
 @Controller('residence')
 export class ResidenceController {
-  constructor(private readonly residenceService: ResidenceService) { }
+  constructor(private readonly residenceService: ResidenceService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -83,9 +83,7 @@ export class ResidenceController {
 
   @Get('/overall-stats')
   @Roles(UserRole.ADMIN)
-  async overallStats(
-    @Req() req,
-  ): Promise<ResponseResidenceOverallStatsDto> {
+  async overallStats(@Req() req): Promise<ResponseResidenceOverallStatsDto> {
     return await this.residenceService.overAllStats();
   }
 
@@ -101,9 +99,9 @@ export class ResidenceController {
 
   private async checkResidenceOwnership(userId: string, residence: Residence) {
     if (!residence || residence.owner._id.toString() !== userId.toString()) {
-      throw new ForbiddenException({ message: 'You are not the owner of this residence' });
+      throw new ForbiddenException({
+        message: 'You are not the owner of this residence',
+      });
     }
   }
-
-
 }

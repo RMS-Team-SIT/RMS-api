@@ -20,7 +20,11 @@ export class BillRoom extends Document {
   @Prop({ type: Types.ObjectId, ref: 'MeterRecord', required: true })
   meterRecord: MeterRecord;
 
-  @Prop({ type: Types.ObjectId, ref: 'MeterRecord.MeterRecordItems', required: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: 'MeterRecord.MeterRecordItems',
+    required: true,
+  })
   meterRecordItem: MeterRecordItem;
 
   // Water
