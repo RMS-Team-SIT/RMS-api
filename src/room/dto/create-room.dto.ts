@@ -1,4 +1,5 @@
 import {
+  IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
@@ -31,9 +32,13 @@ export class CreateRoomDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  waterPriceRate: number;
+  @IsString()
+  roomType: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsArray()
+  fee: string[];
 
   @ApiProperty()
   @IsNotEmpty()
@@ -41,21 +46,27 @@ export class CreateRoomDto {
   @Min(0)
   roomRentalPrice: number;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(0)
-  electricPriceRate: number;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @IsNumber()
+  // @Min(0)
+  // waterPriceRate: number;
 
-  @ApiProperty()
-  @IsBoolean()
-  @IsOptional()
-  isUseDefaultWaterPriceRate: boolean;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @IsNumber()
+  // @Min(0)
+  // electricPriceRate: number;
 
-  @ApiProperty()
-  @IsBoolean()
-  @IsOptional()
-  isUseDefaultElectricPriceRate: boolean;
+  // @ApiProperty()
+  // @IsBoolean()
+  // @IsOptional()
+  // isUseDefaultWaterPriceRate: boolean;
+
+  // @ApiProperty()
+  // @IsBoolean()
+  // @IsOptional()
+  // isUseDefaultElectricPriceRate: boolean;
 
   @ApiProperty()
   @IsString()

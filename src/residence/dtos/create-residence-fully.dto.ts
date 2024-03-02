@@ -11,6 +11,10 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { CreateResidenceContactDto } from './create-residence-contact.dto';
 import { Type } from 'class-transformer';
+import { CreateFeeDto } from 'src/fees/dto/create-fee.dto';
+import { CreateResidencePaymentDto } from 'src/payment/dto/create-residence-payment.dto';
+import { CreateRoomTypeDto } from 'src/room-type/dto/create-room-type.dto';
+import { CreateRoomDto } from 'src/room/dto/create-room.dto';
 
 export class CreateResidenceFullyDto {
     @ApiProperty()
@@ -58,4 +62,31 @@ export class CreateResidenceFullyDto {
     @ValidateNested({ each: true })
     facilities: string[];
 
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsArray()
+    @Type(() => CreateFeeDto)
+    @ValidateNested({ each: true })
+    fees: CreateFeeDto[];
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsArray()
+    @Type(() => CreateResidencePaymentDto)
+    @ValidateNested({ each: true })
+    payments: CreateResidencePaymentDto[];
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsArray()
+    @Type(() => CreateRoomTypeDto)
+    @ValidateNested({ each: true })
+    roomTypes: CreateRoomTypeDto[];
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsArray()
+    @Type(() => CreateRoomDto)
+    @ValidateNested({ each: true })
+    room: CreateRoomDto[];
 }

@@ -1,4 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { RoomType } from './schemas/room-type.schema';
+import { Model } from 'mongoose';
+import { CreateRoomTypeDto } from './dto/create-room-type.dto';
 
 @Injectable()
-export class RoomTypeService {}
+export class RoomTypeService {
+    constructor(
+        @InjectModel(RoomType.name)
+        private readonly roomTypeModel: Model<RoomType>,
+    ) { }
+
+    async create(residenceId: string, createRoomTypeDto: CreateRoomTypeDto): Promise<RoomType> {
+        const createdRoomType = new this.roomTypeModel({
+            residence: residenceId,
+            ...createRoomTypeDto
+        });
+        return createdRoomType.save();
+    }
+
+    async findAllByResidence(residenceId: string): Promise<RoomType[]> {
+        return this.roomTypeModel.find({ residence: residenceId }).exec();
+    }
+
+    async findOne(id: string): Promise<RoomType> {
+        return this.roomTypeModel.findById(id).exec();
+    }
+}
