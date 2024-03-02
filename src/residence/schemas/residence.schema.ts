@@ -30,8 +30,8 @@ export class Residence extends Document {
   @Prop({ default: null })
   description: string;
 
-  @Prop({ type: ResidenceInfoSchema, default: null })
-  info: ResidenceInfo;
+  // @Prop({ type: ResidenceInfoSchema, default: null })
+  // info: ResidenceInfo;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Facility' }], default: [] })
   facilities: Facility[];
@@ -50,9 +50,6 @@ export class Residence extends Document {
 
   @Prop({ default: null })
   residenceBusinessLicense: string;
-
-  @Prop({ default: false })
-  isApproved: boolean;
 
   @Prop({ default: '' })
   address: string;
@@ -86,6 +83,9 @@ export class Residence extends Document {
     default: [],
   })
   bills: Bill[];
+
+  @Prop({ default: false })
+  isApproved: boolean;
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

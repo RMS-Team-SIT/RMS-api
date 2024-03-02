@@ -30,4 +30,4 @@ export class RoomType extends Document {
     updated_at: Date;
 }
 
-export const FeeSchema = SchemaFactory.createForClass(RoomType);
+export const RoomTypeSchema = SchemaFactory.createForClass(RoomType);

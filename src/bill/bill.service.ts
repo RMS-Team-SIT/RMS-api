@@ -20,7 +20,7 @@ export class BillService {
     private readonly roomService: RoomService,
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   async createBill(residenceId: string, createBillDto: CreateBillDto) {
     const residence = await this.residenceService.findOne(residenceId);
@@ -66,12 +66,9 @@ export class BillService {
       );
 
       // Get water, electric and rentalPrice
-      const waterPriceRate = room.isUseDefaultWaterPriceRate
-        ? residence.defaultWaterPriceRate
-        : room.waterPriceRate;
-      const electricPriceRate = room.isUseDefaultElectricPriceRate
-        ? residence.defaultElectricPriceRate
-        : room.electricPriceRate;
+      const waterPriceRate = residence.defaultWaterPriceRate;
+      const electricPriceRate = residence.defaultElectricPriceRate;
+
       const roomRentalPrice = room.roomRentalPrice;
 
       // Calculate bill price

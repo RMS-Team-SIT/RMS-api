@@ -11,6 +11,7 @@ import { Fee, FeeSchema } from './schemas/fee.schema';
     ])
   ],
   providers: [FeesService],
-  controllers: [FeesController]
+  controllers: [FeesController],
+  exports: [FeesService]
 })
 export class FeesModule { }

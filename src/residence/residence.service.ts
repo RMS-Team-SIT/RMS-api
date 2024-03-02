@@ -55,11 +55,26 @@ export class ResidenceService {
     userId: string,
     createResidenceFullyDto: CreateResidenceFullyDto,
   ): Promise<Residence> {
-    const createdResidence = new this.residenceModel({
+
+    // Create Residence
+    const residenceModel = new this.residenceModel({
       ...createResidenceFullyDto,
       owner: userId,
       isApproved: false,
     });
+    const createdResidence = await residenceModel.save();
+    
+    const residenceId = createdResidence._id;
+
+    // Create fees
+
+    // Create Payments
+
+    // Create RoomTypes
+
+    // Create Rooms
+
+
     return null;
   }
 

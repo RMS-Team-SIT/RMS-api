@@ -75,12 +75,12 @@ export class RoomService {
     }
 
     // Set the default price rate if isUseDefaultPriceRate is true.
-    if (createRoomDto.isUseDefaultWaterPriceRate) {
-      createRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
-    }
-    if (createRoomDto.isUseDefaultElectricPriceRate) {
-      createRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
-    }
+    // if (createRoomDto.isUseDefaultWaterPriceRate) {
+    //   createRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
+    // }
+    // if (createRoomDto.isUseDefaultElectricPriceRate) {
+    //   createRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
+    // }
 
     // Create room
     const createdRoom = await new this.roomModel({
@@ -268,12 +268,12 @@ export class RoomService {
     }
 
     // Set the default price rate if isUseDefaultPriceRate is true.
-    if (updateRoomDto.isUseDefaultWaterPriceRate) {
-      updateRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
-    }
-    if (updateRoomDto.isUseDefaultElectricPriceRate) {
-      updateRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
-    }
+    // if (updateRoomDto.isUseDefaultWaterPriceRate) {
+    //   updateRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
+    // }
+    // if (updateRoomDto.isUseDefaultElectricPriceRate) {
+    //   updateRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
+    // }
 
     // update room
     return await this.roomModel

@@ -43,7 +43,7 @@ export class ResidenceController {
     return await this.residenceService.create(userId, createResidenceDto);
   }
 
-  @Post()
+  @Post('/fully')
   @HttpCode(HttpStatus.CREATED)
   async createFully(
     @Body() createResidenceFullyDto: CreateResidenceFullyDto,
