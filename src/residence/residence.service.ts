@@ -1,8 +1,10 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -12,12 +14,22 @@ import { UpdateResidenceDto } from './dtos/update-residence.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
+import { FeesService } from 'src/fees/fees.service';
+import { PaymentService } from 'src/payment/payment.service';
+import { RoomTypeService } from 'src/room-type/room-type.service';
+import { RoomService } from 'src/room/room.service';
 
 @Injectable()
 export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
+    private readonly feeService: FeesService,
+    @Inject(forwardRef(() => PaymentService))
+    private readonly paymentService: PaymentService,
+    private readonly roomTypeService: RoomTypeService,
+    @Inject(forwardRef(() => RoomService))
+    private readonly roomService: RoomService,
   ) { }
 
   async checkOwnerPermission(
@@ -57,25 +69,50 @@ export class ResidenceService {
   ): Promise<Residence> {
 
     // Create Residence
+    const {
+      name,
+      description,
+      address,
+      images,
+      defaultWaterPriceRate,
+      defaultElectricPriceRate,
+      contact,
+      facilities,
+      fees,
+      payments,
+      roomTypes,
+      rooms,
+    } = createResidenceFullyDto;
+
     const residenceModel = new this.residenceModel({
-      ...createResidenceFullyDto,
       owner: userId,
+      name,
+      description,
+      address,
+      images,
+      defaultWaterPriceRate,
+      defaultElectricPriceRate,
+      contact,
+      facilities,
       isApproved: false,
     });
     const createdResidence = await residenceModel.save();
-    
+
     const residenceId = createdResidence._id;
 
     // Create fees
+    const createdFees = await this.feeService.createMany(residenceId, fees);
 
     // Create Payments
+    const createdPayments = await this.paymentService.createMany(residenceId, payments);
 
     // Create RoomTypes
+    const createdRoomTypes = await this.roomTypeService.createMany(residenceId, roomTypes);
 
     // Create Rooms
+    const createdRooms = await this.roomService.createMany(residenceId, rooms);
 
-
-    return null;
+    return createdResidence;
   }
 
   async findMyResidence(userId: string): Promise<Residence[]> {

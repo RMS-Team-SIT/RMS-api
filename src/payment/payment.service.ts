@@ -1,7 +1,9 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
+  forwardRef,
 } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Payment } from './schemas/payment.schema';
@@ -18,8 +20,9 @@ export class PaymentService {
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
     private readonly bankService: BankService,
+    @Inject(forwardRef(() => ResidenceService))
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   async createPayment(
     residenceId: string,
@@ -48,6 +51,21 @@ export class PaymentService {
     );
 
     return createdPayment;
+  }
+
+  async createMany(
+    residenceId: string,
+    createResidencePaymentDto: CreateResidencePaymentDto[],
+  ): Promise<Payment[]> {
+
+    const createdFees = createResidencePaymentDto.map(dto => {
+      return new this.paymentModel({
+        residence: residenceId,
+        ...dto
+      });
+
+    });
+    return this.paymentModel.insertMany(createdFees);
   }
 
   async findAllPaymentInResidence(residenceId: string): Promise<Payment[]> {

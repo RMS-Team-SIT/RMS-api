@@ -19,6 +19,16 @@ export class RoomTypeService {
         return createdRoomType.save();
     }
 
+    async createMany(residenceId: string, createRoomTypeDtos: CreateRoomTypeDto[]): Promise<RoomType[]> {
+        const createdRoomTypes = createRoomTypeDtos.map(createRoomTypeDto => {
+            return new this.roomTypeModel({
+                residence: residenceId,
+                ...createRoomTypeDto
+            });
+        });
+        return this.roomTypeModel.insertMany(createdRoomTypes);
+    }
+
     async findAllByResidence(residenceId: string): Promise<RoomType[]> {
         return this.roomTypeModel.find({ residence: residenceId }).exec();
     }

@@ -33,7 +33,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  roomType: string;
+  type: string;
 
   @ApiProperty()
   @IsOptional()

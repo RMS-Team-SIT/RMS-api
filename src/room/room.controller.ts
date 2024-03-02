@@ -48,7 +48,7 @@ export class RoomController {
 
     await this.residenceService.checkOwnerPermission(userId, residenceId);
 
-    return await this.roomService.createManyRoom(residenceId, dto);
+    return await this.roomService.createManyRoomWizard(residenceId, dto);
   }
 
   @Get('')

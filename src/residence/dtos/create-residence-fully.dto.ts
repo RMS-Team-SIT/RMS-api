@@ -59,7 +59,6 @@ export class CreateResidenceFullyDto {
     @ApiProperty()
     @IsOptional()
     @IsArray()
-    @ValidateNested({ each: true })
     facilities: string[];
 
     @ApiProperty()
@@ -88,5 +87,5 @@ export class CreateResidenceFullyDto {
     @IsArray()
     @Type(() => CreateRoomDto)
     @ValidateNested({ each: true })
-    room: CreateRoomDto[];
+    rooms: CreateRoomDto[];
 }

@@ -20,7 +20,7 @@ export class RoomService {
     private roomModel: Model<Room>,
     private readonly residenceService: ResidenceService,
     private readonly renterService: RenterService,
-  ) {}
+  ) { }
 
   private async checkRoomNameExist(
     name: string,
@@ -106,7 +106,17 @@ export class RoomService {
     return createdRoom;
   }
 
-  async createManyRoom(
+  async createMany(residenceId: string, dto: CreateRoomDto[]): Promise<Room[]> {
+    const createRooms = dto.map(i => {
+      return new this.roomModel({
+        residence: residenceId,
+        ...i
+      });
+    });
+    return this.roomModel.insertMany(createRooms);
+  }
+
+  async createManyRoomWizard(
     residenceId: string,
     createManyRoomDto: CreateManyRoomDto,
   ): Promise<any> {
