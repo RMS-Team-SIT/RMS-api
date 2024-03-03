@@ -6,12 +6,6 @@ import { ObjectIdValidator } from 'src/validator/objectIdValidator';
 export class CreateResidencePaymentDto {
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
-  @Validate(ObjectIdValidator)
-  _id: string;
-
-  @ApiProperty()
   @IsNotEmpty()
   @IsEnum(PaymentType)
   type: string;
