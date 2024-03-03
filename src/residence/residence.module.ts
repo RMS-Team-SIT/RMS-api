@@ -4,15 +4,20 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Residence, ResidenceSchema } from './schemas/residence.schema';
 import { Renter, RenterSchema } from '../renter/schemas/renter.schema';
 import { ResidenceController } from './residence.controller';
-import { FeesModule } from 'src/fees/fees.module';
-import { RoomTypeModule } from 'src/room-type/room-type.module';
-import { RoomModule } from 'src/room/room.module';
+import { Fee, FeeSchema } from 'src/fees/schemas/fee.schema';
+import { Payment, PaymentSchema } from 'src/payment/schemas/payment.schema';
+import { RoomType, RoomTypeSchema } from 'src/room-type/schemas/room-type.schema';
+import { Room, RoomSchema } from 'src/room/schemas/room.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Residence.name, schema: ResidenceSchema },
       { name: Renter.name, schema: RenterSchema },
+      { name: Fee.name, schema: FeeSchema },
+      { name: Payment.name, schema: PaymentSchema },
+      { name: RoomType.name, schema: RoomTypeSchema },
+      { name: Room.name, schema: RoomSchema },
     ]),
   ],
   controllers: [ResidenceController],
