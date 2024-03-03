@@ -110,8 +110,6 @@ export class ResidenceController {
     return await this.residenceService.update(id, updateResidenceDto);
   }
 
-  
-
   // @Delete(':residenceId')
   // async delete(@Req() req, @Param('id') id: string): Promise<Residence> {
   //   const userId = req.user.id;

@@ -38,7 +38,7 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsOptional()
   @IsArray()
-  fee: string[];
+  fees: string[];
 
   @ApiProperty()
   @IsNotEmpty()

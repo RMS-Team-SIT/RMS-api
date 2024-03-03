@@ -291,6 +291,13 @@ export class ResidenceService {
         populate: { path: 'currentRenter' },
         options: { sort: { floor: 1, name: 1 } },
       })
+      .populate({
+        path: 'rooms',
+        populate: { path: 'type' },
+      })
+      .populate('facilities', { __v: 0, residence: 0 })
+      .populate('fees', { __v: 0, residence: 0 })
+      .populate('roomTypes', { __v: 0, residence: 0 })
       .populate('payments', { __v: 0, residence: 0 })
       .populate({
         path: 'payments',
