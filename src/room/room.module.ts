@@ -9,8 +9,8 @@ import { RenterModule } from 'src/renter/renter.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Room.name, schema: RoomSchema }]),
-    ResidenceModule,
     RenterModule,
+    ResidenceModule,
   ],
   controllers: [RoomController],
   providers: [RoomService],

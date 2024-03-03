@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import { SpelunkerModule } from 'nestjs-spelunker';
 
 function configureSwagger(app: NestExpressApplication) {
   const options = new DocumentBuilder()
@@ -21,7 +22,7 @@ function configureSwagger(app: NestExpressApplication) {
 async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
-
+    console.log(SpelunkerModule.explore(app));
     // enable cors
     app.enableCors({
       origin: '*',

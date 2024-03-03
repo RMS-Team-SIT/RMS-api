@@ -10,6 +10,7 @@ import { ResidenceModule } from 'src/residence/residence.module';
   imports: [
     MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
     BankModule,
+    ResidenceModule,
   ],
   controllers: [PaymentController],
   providers: [PaymentService],

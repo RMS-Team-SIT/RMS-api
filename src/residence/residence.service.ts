@@ -18,18 +18,25 @@ import { FeesService } from 'src/fees/fees.service';
 import { PaymentService } from 'src/payment/payment.service';
 import { RoomTypeService } from 'src/room-type/room-type.service';
 import { RoomService } from 'src/room/room.service';
+import { Fee } from 'src/fees/schemas/fee.schema';
+import { Payment } from 'src/payment/schemas/payment.schema';
+import { RoomType } from 'src/room-type/schemas/room-type.schema';
+import { Room } from 'src/room/schemas/room.schema';
 
 @Injectable()
 export class ResidenceService {
   constructor(
     @InjectModel(Residence.name)
     private readonly residenceModel: Model<Residence>,
-    private readonly feeService: FeesService,
-    @Inject(forwardRef(() => PaymentService))
-    private readonly paymentService: PaymentService,
-    private readonly roomTypeService: RoomTypeService,
-    @Inject(forwardRef(() => RoomService))
-    private readonly roomService: RoomService,
+    @InjectModel(Fee.name)
+    private readonly feeModel: Model<Fee>,
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<Payment>,
+    @InjectModel(RoomType.name)
+    private readonly roomTypeModel: Model<RoomType>,
+    @InjectModel(Room.name)
+    private readonly roomModel: Model<Room>,
+
   ) { }
 
   async checkOwnerPermission(
@@ -101,16 +108,56 @@ export class ResidenceService {
     const residenceId = createdResidence._id;
 
     // Create fees
-    const createdFees = await this.feeService.createMany(residenceId, fees);
+    // const createdFees = await this.feeService.createMany(residenceId, fees);
+    const tempFees = fees.map(dto => {
+      return new this.feeModel({
+        residence: residenceId,
+        ...dto
+      });
+    });
+    const createdFees = await this.feeModel.insertMany(tempFees);
 
     // Create Payments
-    const createdPayments = await this.paymentService.createMany(residenceId, payments);
+    // const createdPayments = await this.paymentService.createMany(residenceId, payments);
+    const tempPayments = payments.map(dto => {
+      return new this.paymentModel({
+        residence: residenceId,
+        ...dto
+      });
+    });
+    const createdPayments = await this.paymentModel.insertMany(tempPayments);
 
     // Create RoomTypes
-    const createdRoomTypes = await this.roomTypeService.createMany(residenceId, roomTypes);
+    // const createdRoomTypes = await this.roomTypeService.createMany(residenceId, roomTypes);
+    const tempRoomTypes = roomTypes.map(dto => {
+      return new this.roomTypeModel({
+        residence: residenceId,
+        ...dto
+      });
+    });
+    const createdRoomTypes = await this.roomTypeModel.insertMany(tempRoomTypes);
 
     // Create Rooms
-    const createdRooms = await this.roomService.createMany(residenceId, rooms);
+    // const createdRooms = await this.roomService.createMany(residenceId, rooms);
+    const tempRooms = rooms.map(dto => {
+      return new this.roomModel({
+        residence: residenceId,
+        ...dto
+      });
+    });
+    const createdRooms = await this.roomModel.insertMany(tempRooms);
+
+    // Add fees, payments, roomtypes, rooms  to residence
+    await this.residenceModel.findOneAndUpdate(
+      { _id: residenceId },
+      {
+        fees: createdFees.map(i => i._id),
+        payments: createdPayments.map(i => i._id),
+        roomTypes: createdRoomTypes.map(i => i._id),
+        rooms: createdRooms.map(i => i._id),
+      },
+      { new: true },
+    ).exec();
 
     return createdResidence;
   }

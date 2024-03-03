@@ -55,6 +55,7 @@ console.log(`Current environment: ${ENV}`);
     LineModule,
     FilesModule,
     MeterRecordModule,
+    RoomTypeModule,
     RoomModule,
     MeterRecordModule,
     BillModule,
@@ -64,7 +65,6 @@ console.log(`Current environment: ${ENV}`);
     PaymentModule,
     FacilityModule,
     FeesModule,
-    RoomTypeModule,
   ],
   providers: [
     {

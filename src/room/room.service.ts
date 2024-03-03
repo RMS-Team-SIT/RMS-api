@@ -12,14 +12,15 @@ import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { RenterService } from 'src/renter/renter.service';
 import { CreateManyRoomDto } from './dto/create-many-room.dto';
+import { Residence } from 'src/residence/schemas/residence.schema';
 
 @Injectable()
 export class RoomService {
   constructor(
     @InjectModel(Room.name)
     private roomModel: Model<Room>,
-    private readonly residenceService: ResidenceService,
     private readonly renterService: RenterService,
+    private readonly residenceService: ResidenceService,
   ) { }
 
   private async checkRoomNameExist(
@@ -121,7 +122,7 @@ export class RoomService {
     createManyRoomDto: CreateManyRoomDto,
   ): Promise<any> {
     // Check residence is exist
-    const residence = await this.residenceService.findOne(residenceId);
+    await this.residenceService.findOne(residenceId);
 
     const numberOfFloor = createManyRoomDto.numberOfFloor;
     const numberOfRoomEachFloor = createManyRoomDto.numberOfRoomEachFloor;

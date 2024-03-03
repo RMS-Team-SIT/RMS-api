@@ -13,15 +13,15 @@ import { CreateResidencePaymentDto } from './dto/create-residence-payment.dto';
 import { BankService } from 'src/bank/bank.service';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateResidencePaymentDto } from './dto/update-residence-payment.dto';
+import { Residence } from 'src/residence/schemas/residence.schema';
 
 @Injectable()
 export class PaymentService {
   constructor(
     @InjectModel(Payment.name)
     private readonly paymentModel: Model<Payment>,
-    private readonly bankService: BankService,
-    @Inject(forwardRef(() => ResidenceService))
     private readonly residenceService: ResidenceService,
+    private readonly bankService: BankService,
   ) { }
 
   async createPayment(
@@ -44,6 +44,8 @@ export class PaymentService {
       bank: createResidencePaymentDto.bankId,
       residence: residenceId,
     }).save();
+
+
 
     await this.residenceService.addPaymentToResidence(
       residenceId,
