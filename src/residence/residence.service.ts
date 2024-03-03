@@ -1,10 +1,7 @@
 import {
-  BadRequestException,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
-  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -14,10 +11,6 @@ import { UpdateResidenceDto } from './dtos/update-residence.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
-import { FeesService } from 'src/fees/fees.service';
-import { PaymentService } from 'src/payment/payment.service';
-import { RoomTypeService } from 'src/room-type/room-type.service';
-import { RoomService } from 'src/room/room.service';
 import { Fee } from 'src/fees/schemas/fee.schema';
 import { Payment } from 'src/payment/schemas/payment.schema';
 import { RoomType } from 'src/room-type/schemas/room-type.schema';
@@ -58,19 +51,44 @@ export class ResidenceService {
     }
   }
 
-  async overAllStats(): Promise<ResponseResidenceOverallStatsDto> {
-    const totalApprovedResidences = await this.residenceModel
-      .countDocuments({ isApproved: true })
-      .exec();
-      const totalPendingResidences = await this.residenceModel
-      .countDocuments({ isApproved: false })
-      .exec();
+  async overAllStats(): Promise<object> {
+    // const totalApprovedResidences = await this.residenceModel
+    //   .countDocuments({ isApproved: true })
+    //   .exec();
+    // const totalPendingResidences = await this.residenceModel
+    //   .countDocuments({ isApproved: false })
+    //   .exec();
 
     return {
-      totalApprovedResidences,
-      totalPendingResidences,
+      totalApprovedResidences:0,
+      totalPendingResidences:1,
     };
   }
+
+  async findPendingResidence(): Promise<Residence[]> {
+    return this.residenceModel
+      .find({ isApproved: false })
+      .populate("owner")
+      .exec();
+  }
+
+  async approveResidence(
+    residenceId: string,
+  ): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    return this.residenceModel
+      .findByIdAndUpdate(
+        residenceId,
+        {
+          isApproved: true,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
+  }
+
 
   // Residence
   async create(

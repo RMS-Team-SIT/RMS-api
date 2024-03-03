@@ -7,20 +7,15 @@ import {
   HttpStatus,
   Req,
   Put,
-  Delete,
   Param,
   ForbiddenException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ResidenceService } from './residence.service';
 import { Residence } from './schemas/residence.schema';
 import { CreateResidenceDto } from './dtos/create-residence.dto';
 import { UpdateResidenceDto } from './dtos/update-residence.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Renter } from '../renter/schemas/renter.schema';
-import { CreateRenterDto } from '../renter/dto/create-renter.dto';
-import { UpdateRenterDto } from '../renter/dto/update-renter.dto';
 import { Roles } from 'src/auth/decorator/user-role.decorator';
 import { UserRole } from 'src/auth/enum/user-role.enum';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
@@ -94,8 +89,25 @@ export class ResidenceController {
 
   @Get('/overall-stats')
   @Roles(UserRole.ADMIN)
-  async overallStats(): Promise<ResponseResidenceOverallStatsDto> {
+  async overallStats(): Promise<object> {
     return this.residenceService.overAllStats();
+  }
+
+  @Get('/pending-approve')
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.ADMIN)
+  async getPendingKYC(): Promise<Residence[]> {
+    return this.residenceService.findPendingResidence();
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Get('/approve/:residenceId')
+  @HttpCode(HttpStatus.OK)
+  async approveKYC(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+  ): Promise<object> {
+    return this.residenceService.approveResidence(residenceId);
   }
 
   // @Delete(':residenceId')
