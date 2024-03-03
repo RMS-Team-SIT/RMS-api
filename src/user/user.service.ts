@@ -492,7 +492,7 @@ export class UserService {
     return updatedUser;
   }
 
-  private async addNotificationToUser(
+  async addNotificationToUser(
     userId: string,
     notificationId: string,
   ): Promise<User> {

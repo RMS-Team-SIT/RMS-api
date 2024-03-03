@@ -22,6 +22,9 @@ import { Fee } from 'src/fees/schemas/fee.schema';
 import { Payment } from 'src/payment/schemas/payment.schema';
 import { RoomType } from 'src/room-type/schemas/room-type.schema';
 import { Room } from 'src/room/schemas/room.schema';
+import { NotificationService } from 'src/notification/notification.service';
+import { MailService } from 'src/mail/mail.service';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class ResidenceService {
@@ -36,7 +39,9 @@ export class ResidenceService {
     private readonly roomTypeModel: Model<RoomType>,
     @InjectModel(Room.name)
     private readonly roomModel: Model<Room>,
-
+    private readonly notificationService: NotificationService,
+    private readonly mailService: MailService,
+    private readonly userService: UserService,
   ) { }
 
   async checkOwnerPermission(
@@ -54,7 +59,17 @@ export class ResidenceService {
   }
 
   async overAllStats(): Promise<ResponseResidenceOverallStatsDto> {
-    return null;
+    const totalApprovedResidences = await this.residenceModel
+      .countDocuments({ isApproved: true })
+      .exec();
+      const totalPendingResidences = await this.residenceModel
+      .countDocuments({ isApproved: false })
+      .exec();
+
+    return {
+      totalApprovedResidences,
+      totalPendingResidences,
+    };
   }
 
   // Residence
@@ -158,6 +173,25 @@ export class ResidenceService {
       },
       { new: true },
     ).exec();
+
+    /// send notification to admins
+    const admins = await this.userService.findAdmin();
+    admins.forEach(async (admin) => {
+      const adminNotification = {
+        to: admin._id.toString(),
+        toEmail: admin.email,
+        title: 'มีการลงทะเบียนหอพักใหม่',
+        content: `มีการลงทะเบียนหอพักใหม่ชื่อ ${name} โปรดตรวจสอบและอนุมัติหอพักใหม่นี้`,
+        isSentEmail: true,
+        isRead: false,
+      };
+      const createdNotification =
+        await this.notificationService.create(adminNotification);
+      await this.userService.addNotificationToUser(
+        admin._id.toString(),
+        createdNotification._id.toString(),
+      );
+    });
 
     return createdResidence;
   }

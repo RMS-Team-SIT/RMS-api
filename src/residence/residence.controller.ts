@@ -31,7 +31,7 @@ import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
 @ApiBearerAuth()
 @Controller('residence')
 export class ResidenceController {
-  constructor(private readonly residenceService: ResidenceService) {}
+  constructor(private readonly residenceService: ResidenceService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -94,8 +94,8 @@ export class ResidenceController {
 
   @Get('/overall-stats')
   @Roles(UserRole.ADMIN)
-  async overallStats(@Req() req): Promise<ResponseResidenceOverallStatsDto> {
-    return await this.residenceService.overAllStats();
+  async overallStats(): Promise<ResponseResidenceOverallStatsDto> {
+    return this.residenceService.overAllStats();
   }
 
   // @Delete(':residenceId')
