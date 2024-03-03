@@ -12,10 +12,10 @@ export class Fee extends Document {
     residence: Residence;
 
     @Prop({ required: true })
-    feeName: string;
+    feename: string;
 
     @Prop({ default: '' })
-    feePrice: string;
+    feeprice: string;
 
     @Prop({ required: true, default: Date.now() })
     created_at: Date;
