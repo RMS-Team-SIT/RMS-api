@@ -185,7 +185,7 @@ export class RoomService {
   async findOneRoom(residenceId: string, roomId: string): Promise<Room> {
     validateObjectIdFormat(roomId, 'Room');
     validateObjectIdFormat(residenceId, 'Room');
-
+    
     const room = await this.roomModel
       .findOne({ _id: roomId, residence: residenceId })
       .populate({

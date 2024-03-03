@@ -115,7 +115,7 @@ export class ResidenceService {
     return residence;
 
   }
-  
+
   // Residence
   async create(
     userId: string,
@@ -166,7 +166,7 @@ export class ResidenceService {
     });
     const createdResidence = await residenceModel.save();
 
-    const residenceId = createdResidence._id;
+    const residenceId = createdResidence._id.toString();
 
     // Create fees
     // const createdFees = await this.feeService.createMany(residenceId, fees);
@@ -183,6 +183,7 @@ export class ResidenceService {
     const tempPayments = payments.map(dto => {
       return new this.paymentModel({
         residence: residenceId,
+        bank: dto.bankId,
         ...dto
       });
     });
@@ -212,10 +213,10 @@ export class ResidenceService {
     await this.residenceModel.findOneAndUpdate(
       { _id: residenceId },
       {
-        fees: createdFees.map(i => i._id),
-        payments: createdPayments.map(i => i._id),
-        roomTypes: createdRoomTypes.map(i => i._id),
-        rooms: createdRooms.map(i => i._id),
+        fees: createdFees.map(i => i._id.toString()),
+        payments: createdPayments.map(i => i._id.toString()),
+        roomTypes: createdRoomTypes.map(i => i._id.toString()),
+        rooms: createdRooms.map(i => i._id.toString()),
       },
       { new: true },
     ).exec();

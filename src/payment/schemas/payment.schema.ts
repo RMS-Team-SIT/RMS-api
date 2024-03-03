@@ -19,7 +19,7 @@ export class Payment extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
   residence: Residence;
 
-  @Prop({ type: Types.ObjectId, ref: 'Bank', required: false })
+  @Prop({ type: Types.ObjectId, ref: 'Bank', required: true })
   bank: Bank;
 
   @Prop({ required: true, default: PaymentType.BANK_TRANSFER })
