@@ -52,16 +52,16 @@ export class ResidenceService {
   }
 
   async overAllStats(): Promise<object> {
-    // const totalApprovedResidences = await this.residenceModel
-    //   .countDocuments({ isApproved: true })
-    //   .exec();
-    // const totalPendingResidences = await this.residenceModel
-    //   .countDocuments({ isApproved: false })
-    //   .exec();
+    const totalApprovedResidences = await this.residenceModel
+      .countDocuments({ isApproved: true })
+      .exec();
+    const totalPendingResidences = await this.residenceModel
+      .countDocuments({ isApproved: false })
+      .exec();
 
     return {
-      totalApprovedResidences:0,
-      totalPendingResidences:1,
+      totalApprovedResidences,
+      totalPendingResidences,
     };
   }
 
@@ -69,6 +69,16 @@ export class ResidenceService {
     return this.residenceModel
       .find({ isApproved: false })
       .populate("owner")
+      .populate("facilities")
+      .populate("fees")
+      .populate("payments")
+      .populate("roomTypes")
+      .populate("rooms")
+      .populate({
+        path: "rooms",
+        populate: { path: "type" },
+      })
+      .populate("renters")
       .exec();
   }
 
@@ -77,7 +87,7 @@ export class ResidenceService {
   ): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
 
-    return this.residenceModel
+    const residence = await this.residenceModel
       .findByIdAndUpdate(
         residenceId,
         {
@@ -86,10 +96,26 @@ export class ResidenceService {
         },
         { new: true },
       )
+      .populate("owner")
       .exec();
+    const userNotification = {
+      to: residence.owner._id.toString(),
+      toEmail: residence.owner.email,
+      title: 'หอพักของคุณได้รับการอนุมัติแล้ว ',
+      content: `หอพัก ${residence.name} ของคุณ ได้รับการอนุมัติแล้ว คุณสามารถเริ่มใช้งานระบบจัดการหอพักได้แล้ว`,
+      isSentEmail: true,
+      isRead: false,
+    };
+    const createdNotification =
+      await this.notificationService.create(userNotification);
+    await this.userService.addNotificationToUser(
+      residence.owner._id.toString(),
+      createdNotification._id.toString(),
+    );
+    return residence;
+
   }
-
-
+  
   // Residence
   async create(
     userId: string,
@@ -119,6 +145,7 @@ export class ResidenceService {
       contact,
       facilities,
       fees,
+      residenceBusinessLicense,
       payments,
       roomTypes,
       rooms,
@@ -134,6 +161,7 @@ export class ResidenceService {
       defaultElectricPriceRate,
       contact,
       facilities,
+      residenceBusinessLicense,
       isApproved: false,
     });
     const createdResidence = await residenceModel.save();
@@ -466,21 +494,21 @@ export class ResidenceService {
       .exec();
   }
 
-  async changeApproveResidenceStatus(
-    residenceId: string,
-    approveStatus: boolean,
-  ): Promise<Residence> {
-    validateObjectIdFormat(residenceId, 'Residence');
+  // async changeApproveResidenceStatus(
+  //   residenceId: string,
+  //   approveStatus: boolean,
+  // ): Promise<Residence> {
+  //   validateObjectIdFormat(residenceId, 'Residence');
 
-    return this.residenceModel
-      .findByIdAndUpdate(
-        residenceId,
-        {
-          isApproved: approveStatus,
-          updated_at: Date.now(),
-        },
-        { new: true },
-      )
-      .exec();
-  }
+  //   return this.residenceModel
+  //     .findByIdAndUpdate(
+  //       residenceId,
+  //       {
+  //         isApproved: approveStatus,
+  //         updated_at: Date.now(),
+  //       },
+  //       { new: true },
+  //     )
+  //     .exec();
+  // }
 }

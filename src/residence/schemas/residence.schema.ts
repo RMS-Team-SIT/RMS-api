@@ -11,9 +11,9 @@ import { Renter } from '../../renter/schemas/renter.schema';
 import { Payment } from '../../payment/schemas/payment.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { Bill } from 'src/bill/schemas/bill.schema';
-import { ResidenceInfo, ResidenceInfoSchema } from './residence-info.schema';
 import { Facility } from '../../facility/schemas/facility.schema';
 import { Fee } from '../../fees/schemas/fee.schema';
+import { RoomType } from 'src/room-type/schemas/room-type.schema';
 
 export type ResidenceDocument = Residence & Document;
 
@@ -29,9 +29,6 @@ export class Residence extends Document {
 
   @Prop({ default: null })
   description: string;
-
-  // @Prop({ type: ResidenceInfoSchema, default: null })
-  // info: ResidenceInfo;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Facility' }], default: [] })
   facilities: Facility[];
@@ -59,6 +56,9 @@ export class Residence extends Document {
 
   @Prop({ required: true })
   defaultElectricPriceRate: number;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'RoomType' }], default: [] })
+  roomTypes: RoomType[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Room.name }], default: [] })
   rooms: Room[];

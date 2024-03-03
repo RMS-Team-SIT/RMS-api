@@ -22,7 +22,6 @@ function configureSwagger(app: NestExpressApplication) {
 async function bootstrap() {
   try {
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
-    console.log(SpelunkerModule.explore(app));
     // enable cors
     app.enableCors({
       origin: '*',

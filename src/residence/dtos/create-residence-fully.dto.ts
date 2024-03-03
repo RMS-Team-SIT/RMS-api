@@ -40,6 +40,11 @@ export class CreateResidenceFullyDto {
 
     @ApiProperty()
     @IsNotEmpty()
+    @IsString()
+    residenceBusinessLicense: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
     @IsNumber()
     @Min(0)
     defaultWaterPriceRate: number;

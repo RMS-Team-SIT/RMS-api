@@ -48,6 +48,29 @@ export class ResidenceController {
     return await this.residenceService.createFully(userId, createResidenceFullyDto);
   }
 
+  @Get('/overall-stats')
+  @Roles(UserRole.ADMIN)
+  async overallStats(){
+    return this.residenceService.overAllStats();
+  }
+
+  @Get('/pending-approve')
+  @HttpCode(HttpStatus.OK)
+  @Roles(UserRole.ADMIN)
+  async getPending() {
+    return this.residenceService.findPendingResidence();
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Get('/approve/:residenceId')
+  @HttpCode(HttpStatus.OK)
+  async approve(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+  ): Promise<object> {
+    return this.residenceService.approveResidence(residenceId);
+  }
+
   @Get('/my')
   async findMyResidence(@Req() req): Promise<Residence[]> {
     const userId = req.user.id;
@@ -59,18 +82,18 @@ export class ResidenceController {
     }
   }
 
-  @Get(':residenceId')
+  @Get('/:residenceId')
   async findOne(@Param('residenceId') id: string): Promise<Residence> {
     return await this.residenceService.findOne(id);
   }
 
-  @Get(':residenceId/public')
+  @Get('/:residenceId/public')
   @Public()
   async findOnePublic(@Param('residenceId') id: string): Promise<Residence> {
     return await this.residenceService.findOnePublic(id);
   }
 
-  @Put(':residenceId')
+  @Put('/:residenceId')
   async update(
     @Req() req,
     @Param('residenceId') id: string,
@@ -87,28 +110,7 @@ export class ResidenceController {
     return await this.residenceService.update(id, updateResidenceDto);
   }
 
-  @Get('/overall-stats')
-  @Roles(UserRole.ADMIN)
-  async overallStats(): Promise<object> {
-    return this.residenceService.overAllStats();
-  }
-
-  @Get('/pending-approve')
-  @HttpCode(HttpStatus.OK)
-  @Roles(UserRole.ADMIN)
-  async getPendingKYC(): Promise<Residence[]> {
-    return this.residenceService.findPendingResidence();
-  }
-
-  @Roles(UserRole.ADMIN)
-  @Get('/approve/:residenceId')
-  @HttpCode(HttpStatus.OK)
-  async approveKYC(
-    @Req() req,
-    @Param('residenceId') residenceId: string,
-  ): Promise<object> {
-    return this.residenceService.approveResidence(residenceId);
-  }
+  
 
   // @Delete(':residenceId')
   // async delete(@Req() req, @Param('id') id: string): Promise<Residence> {
