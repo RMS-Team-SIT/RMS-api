@@ -16,6 +16,8 @@ export class NotificationService {
   async create(createNotificationDto: CreateNotificationDto) {
     const createdNotification = new this.notificationModel({
       ...createNotificationDto,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
 
     if (createNotificationDto.isSentEmail) {
