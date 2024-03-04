@@ -41,6 +41,8 @@ export class BillService {
     const createdBill = await new this.billModel({
       residence: residenceId,
       ...createBillDto,
+      created_at: new Date(),
+      updated_at: new Date(),
     }).save();
 
     // Add bill to residence

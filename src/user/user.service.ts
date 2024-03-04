@@ -25,7 +25,7 @@ export class UserService {
     private userModel: Model<User>,
     private readonly mailService: MailService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<User[]> {
     return this.userModel
@@ -126,6 +126,8 @@ export class UserService {
       isEmailVerified: isNewAdmin ? true : false,
       emailVerificationToken: isNewAdmin ? null : randomToken(),
       isApprovedKYC: isNewAdmin ? true : false,
+      created_at: new Date(),
+      updated_at: new Date(),
     };
 
     const createdUser = new this.userModel(user);
@@ -137,8 +139,8 @@ export class UserService {
 
       // send notification to user
       const userNotification = {
-        to: createdUser._id.toString(),
-        toEmail: createdUser.email,
+        tos: [createdUser._id.toString()],
+        toEmails: [createdUser.email],
         title: 'สมัครสมาชิกสำเร็จ',
         content: `สมัครสมาชิกสำเร็จ กรุณายืนยันอีเมลของท่าน`,
         isSentEmail: true,
@@ -413,24 +415,25 @@ export class UserService {
         { new: true },
       )
       .exec();
+      
     // send notification to admins
     const admins = await this.findAdmin();
-    admins.forEach(async (admin) => {
-      const adminNotification = {
-        to: admin._id.toString(),
-        toEmail: admin.email,
-        title: 'มีการสร้างบัญชีผู้ใช้ใหม่และรอการอนุมัติ',
-        content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
-        isSentEmail: true,
-        isRead: false,
-      };
-      const createdNotification =
-        await this.notificationService.create(adminNotification);
-      await this.addNotificationToUser(
-        admin._id.toString(),
-        createdNotification._id.toString(),
-      );
-    });
+    const adminNotification = {
+      tos: admins.map(admin => admin._id.toString()),
+      toEmails: admins.map(admin => admin.email),
+      title: 'มีการสร้างบัญชีผู้ใช้ใหม่และรอการอนุมัติ',
+      content: `ผู้ใช้ใหม่ที่ลงทะเบียนด้วยอีเมล: ${user.email} โปรดตรวจสอบและอนุมัติผู้ใช้รายนี้ `,
+      isSentEmail: true,
+      isRead: false,
+    };
+
+    const createdNotification = await this.notificationService.create(adminNotification);
+
+    await this.addNotificationToUsers(
+      admins.map(admin => admin._id.toString()),
+      createdNotification._id.toString(),
+    );
+
     return updatedUser;
   }
 
@@ -476,8 +479,8 @@ export class UserService {
       .exec();
 
     const userNotification = {
-      to: userId,
-      toEmail: user.email,
+      tos: [userId],
+      toEmails: [user.email],
       title: 'คุณได้รับการอนุมัติการใช้งาน',
       content: `กรุณาเข้าสู่ระบบเพื่อใช้งานบริการของเรา`,
       isSentEmail: true,
@@ -507,4 +510,21 @@ export class UserService {
       )
       .exec();
   }
+
+  async addNotificationToUsers(
+    userIds: string[],
+    notificationId: string,
+  ): Promise<any> {
+    console.log('addNotificationToUser', userIds, notificationId);
+
+    return await this.userModel
+      .updateMany(
+        { _id: { $in: userIds } },
+        {
+          $push: { notifications: notificationId },
+        },
+      )
+      .exec();
+  }
+
 }

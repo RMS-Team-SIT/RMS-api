@@ -9,12 +9,14 @@ export class FeesService {
   constructor(
     @InjectModel(Fee.name)
     private readonly feeModel: Model<Fee>,
-  ) {}
+  ) { }
 
   async create(residenceId: string, createFeeDto: CreateFeeDto): Promise<Fee> {
     const createdFee = new this.feeModel({
       residence: residenceId,
       ...createFeeDto,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
     return createdFee.save();
   }
@@ -27,6 +29,8 @@ export class FeesService {
       return new this.feeModel({
         residence: residenceId,
         ...createFeeDto,
+        created_at: new Date(),
+        updated_at: new Date(),
       });
     });
     return this.feeModel.insertMany(createdFees);

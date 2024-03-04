@@ -8,8 +8,8 @@ export type NotificationDocument = Notification & Document;
 export class Notification {
   _id: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  to: User;
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], required: true })
+  tos: User[];
 
   @Prop({ required: true })
   title: string;

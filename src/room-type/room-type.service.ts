@@ -9,7 +9,7 @@ export class RoomTypeService {
   constructor(
     @InjectModel(RoomType.name)
     private readonly roomTypeModel: Model<RoomType>,
-  ) {}
+  ) { }
 
   async create(
     residenceId: string,
@@ -18,6 +18,8 @@ export class RoomTypeService {
     const createdRoomType = new this.roomTypeModel({
       residence: residenceId,
       ...createRoomTypeDto,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
     return createdRoomType.save();
   }
@@ -30,6 +32,8 @@ export class RoomTypeService {
       return new this.roomTypeModel({
         residence: residenceId,
         ...createRoomTypeDto,
+        created_at: new Date(),
+        updated_at: new Date(),
       });
     });
     return this.roomTypeModel.insertMany(createdRoomTypes);

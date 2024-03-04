@@ -11,7 +11,7 @@ export class NotificationService {
     @InjectModel(Notification.name)
     private readonly notificationModel: Model<Notification>,
     private readonly mailService: MailService,
-  ) {}
+  ) { }
 
   async create(createNotificationDto: CreateNotificationDto) {
     const createdNotification = new this.notificationModel({
@@ -22,10 +22,12 @@ export class NotificationService {
 
     if (createNotificationDto.isSentEmail) {
       // Send email
-      const { toEmail, title, content } = createNotificationDto;
-      this.mailService.sendNotification({ to: toEmail, title, content });
-    }
+      const { toEmails, title, content } = createNotificationDto;
 
+      for (const toEmail of toEmails) {
+        this.mailService.sendNotification({ to: toEmail, title, content });
+      }
+    }
     return await createdNotification.save();
   }
 
@@ -42,7 +44,7 @@ export class NotificationService {
   }
 
   async findByTo(to: string): Promise<Notification[]> {
-    const notifications = await this.notificationModel.find({ to }).exec();
+    const notifications = await this.notificationModel.find({ tos: to }).exec();
     return notifications;
   }
 }

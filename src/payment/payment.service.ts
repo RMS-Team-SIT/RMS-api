@@ -43,6 +43,8 @@ export class PaymentService {
       ...createResidencePaymentDto,
       bank: createResidencePaymentDto.bankId,
       residence: residenceId,
+      created_at: new Date(),
+      updated_at: new Date(),
     }).save();
 
     await this.residenceService.addPaymentToResidence(

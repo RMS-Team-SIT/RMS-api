@@ -56,6 +56,8 @@ export class MeterRecordService {
       meterRecordItems: createMeterRecordDto.meterRecordItems,
       isLocked: false,
       isFirstInitRecord,
+      created_at: new Date(),
+      updated_at: new Date(),
     }).save();
 
     // Add the created meter record to the residence

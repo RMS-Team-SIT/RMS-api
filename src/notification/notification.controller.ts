@@ -19,8 +19,6 @@ export class NotificationController {
   @Get('my')
   async findByTo(@Req() req) {
     const currentUser = req.user.id;
-    console.log(currentUser);
-
     return await this.notificationService.findByTo(currentUser);
   }
 }

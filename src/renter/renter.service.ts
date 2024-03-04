@@ -52,6 +52,8 @@ export class RenterService {
     const createdRenter = await new this.renterModel({
       ...createRenterDto,
       residence: residenceId,
+      created_at: new Date(),
+      updated_at: new Date(),
     }).save();
 
     // Save renter to residence

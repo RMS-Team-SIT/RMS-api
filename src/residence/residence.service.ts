@@ -35,7 +35,7 @@ export class ResidenceService {
     private readonly notificationService: NotificationService,
     private readonly mailService: MailService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   async checkOwnerPermission(
     userId: string,
@@ -97,8 +97,8 @@ export class ResidenceService {
       .populate('owner')
       .exec();
     const userNotification = {
-      to: residence.owner._id.toString(),
-      toEmail: residence.owner.email,
+      tos: [residence.owner._id.toString()],
+      toEmails: [residence.owner.email],
       title: 'หอพักของคุณได้รับการอนุมัติแล้ว ',
       content: `หอพัก ${residence.name} ของคุณ ได้รับการอนุมัติแล้ว คุณสามารถเริ่มใช้งานระบบจัดการหอพักได้แล้ว`,
       isSentEmail: true,
@@ -122,6 +122,8 @@ export class ResidenceService {
       ...createResidenceDto,
       owner: userId,
       isApproved: false,
+      created_at: new Date(),
+      updated_at: new Date(),
     });
     return createdResidence.save();
   }
@@ -219,24 +221,23 @@ export class ResidenceService {
       )
       .exec();
 
-    /// send notification to admins
+    // send notification to admins
     const admins = await this.userService.findAdmin();
-    admins.forEach(async (admin) => {
-      const adminNotification = {
-        to: admin._id.toString(),
-        toEmail: admin.email,
-        title: 'มีการลงทะเบียนหอพักใหม่',
-        content: `มีการลงทะเบียนหอพักใหม่ชื่อ ${name} โปรดตรวจสอบและอนุมัติหอพักใหม่นี้`,
-        isSentEmail: true,
-        isRead: false,
-      };
-      const createdNotification =
-        await this.notificationService.create(adminNotification);
-      await this.userService.addNotificationToUser(
-        admin._id.toString(),
-        createdNotification._id.toString(),
-      );
-    });
+    const adminNotification = {
+      tos: admins.map(admin => admin._id.toString()),
+      toEmails: admins.map(admin => admin.email),
+      title: 'มีการลงทะเบียนหอพักใหม่',
+      content: `มีการลงทะเบียนหอพักใหม่ชื่อ ${name} โปรดตรวจสอบและอนุมัติหอพักใหม่นี้`,
+      isSentEmail: true,
+      isRead: false,
+    };
+
+    const createdNotification = await this.notificationService.create(adminNotification);
+
+    await this.userService.addNotificationToUsers(
+      admins.map(admin => admin._id.toString()),
+      createdNotification._id.toString(),
+    );
 
     return createdResidence;
   }

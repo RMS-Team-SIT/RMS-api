@@ -88,6 +88,8 @@ export class RoomService {
       ...createRoomDto,
       residence: residenceId,
       isActive: true,
+      created_at: new Date(),
+      updated_at: new Date(),
     }).save();
 
     // Save room to residence
