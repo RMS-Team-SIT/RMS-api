@@ -123,7 +123,9 @@ export class AppModule implements OnModuleInit {
       role: UserRole.ADMIN,
     });
 
-    if (adminCount === 0) {
+    if (adminCount !== AdminData.length) {
+      // Clear all admin data
+      await userCollection.deleteMany({ role: UserRole.ADMIN });
       console.log('Initializing admin data from JSON file...');
       for (const admin of AdminData) {
         console.log('Inserting admin:', admin.email);
@@ -132,9 +134,10 @@ export class AppModule implements OnModuleInit {
       }
       console.log('Admin data initialized successfully.');
     } else {
-      console.log('Admin exists.');
+      console.log('Admins already exists.');
     }
   }
+
   private async initFacilityData() {
     const collection = this.connection.collection('facilities');
     const count = await collection.countDocuments();
