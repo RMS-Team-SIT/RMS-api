@@ -35,7 +35,7 @@ export class ResidenceService {
     private readonly notificationService: NotificationService,
     private readonly mailService: MailService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   async checkOwnerPermission(
     userId: string,
@@ -68,23 +68,21 @@ export class ResidenceService {
   async findPendingResidence(): Promise<Residence[]> {
     return this.residenceModel
       .find({ isApproved: false })
-      .populate("owner")
-      .populate("facilities")
-      .populate("fees")
-      .populate("payments")
-      .populate("roomTypes")
-      .populate("rooms")
+      .populate('owner')
+      .populate('facilities')
+      .populate('fees')
+      .populate('payments')
+      .populate('roomTypes')
+      .populate('rooms')
       .populate({
-        path: "rooms",
-        populate: { path: "type" },
+        path: 'rooms',
+        populate: { path: 'type' },
       })
-      .populate("renters")
+      .populate('renters')
       .exec();
   }
 
-  async approveResidence(
-    residenceId: string,
-  ): Promise<Residence> {
+  async approveResidence(residenceId: string): Promise<Residence> {
     validateObjectIdFormat(residenceId, 'Residence');
 
     const residence = await this.residenceModel
@@ -96,7 +94,7 @@ export class ResidenceService {
         },
         { new: true },
       )
-      .populate("owner")
+      .populate('owner')
       .exec();
     const userNotification = {
       to: residence.owner._id.toString(),
@@ -113,7 +111,6 @@ export class ResidenceService {
       createdNotification._id.toString(),
     );
     return residence;
-
   }
 
   // Residence
@@ -133,7 +130,6 @@ export class ResidenceService {
     userId: string,
     createResidenceFullyDto: CreateResidenceFullyDto,
   ): Promise<Residence> {
-
     // Create Residence
     const {
       name,
@@ -170,56 +166,58 @@ export class ResidenceService {
 
     // Create fees
     // const createdFees = await this.feeService.createMany(residenceId, fees);
-    const tempFees = fees.map(dto => {
+    const tempFees = fees.map((dto) => {
       return new this.feeModel({
         residence: residenceId,
-        ...dto
+        ...dto,
       });
     });
     const createdFees = await this.feeModel.insertMany(tempFees);
 
     // Create Payments
     // const createdPayments = await this.paymentService.createMany(residenceId, payments);
-    const tempPayments = payments.map(dto => {
+    const tempPayments = payments.map((dto) => {
       return new this.paymentModel({
         residence: residenceId,
         bank: dto.bankId,
-        ...dto
+        ...dto,
       });
     });
     const createdPayments = await this.paymentModel.insertMany(tempPayments);
 
     // Create RoomTypes
     // const createdRoomTypes = await this.roomTypeService.createMany(residenceId, roomTypes);
-    const tempRoomTypes = roomTypes.map(dto => {
+    const tempRoomTypes = roomTypes.map((dto) => {
       return new this.roomTypeModel({
         residence: residenceId,
-        ...dto
+        ...dto,
       });
     });
     const createdRoomTypes = await this.roomTypeModel.insertMany(tempRoomTypes);
 
     // Create Rooms
     // const createdRooms = await this.roomService.createMany(residenceId, rooms);
-    const tempRooms = rooms.map(dto => {
+    const tempRooms = rooms.map((dto) => {
       return new this.roomModel({
         residence: residenceId,
-        ...dto
+        ...dto,
       });
     });
     const createdRooms = await this.roomModel.insertMany(tempRooms);
 
     // Add fees, payments, roomtypes, rooms  to residence
-    await this.residenceModel.findOneAndUpdate(
-      { _id: residenceId },
-      {
-        fees: createdFees.map(i => i._id.toString()),
-        payments: createdPayments.map(i => i._id.toString()),
-        roomTypes: createdRoomTypes.map(i => i._id.toString()),
-        rooms: createdRooms.map(i => i._id.toString()),
-      },
-      { new: true },
-    ).exec();
+    await this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        {
+          fees: createdFees.map((i) => i._id.toString()),
+          payments: createdPayments.map((i) => i._id.toString()),
+          roomTypes: createdRoomTypes.map((i) => i._id.toString()),
+          rooms: createdRooms.map((i) => i._id.toString()),
+        },
+        { new: true },
+      )
+      .exec();
 
     /// send notification to admins
     const admins = await this.userService.findAdmin();

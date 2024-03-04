@@ -5,13 +5,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Fee, FeeSchema } from './schemas/fee.schema';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([
-      { name: Fee.name, schema: FeeSchema }
-    ])
-  ],
+  imports: [MongooseModule.forFeature([{ name: Fee.name, schema: FeeSchema }])],
   providers: [FeesService],
   controllers: [FeesController],
-  exports: [FeesService]
+  exports: [FeesService],
 })
-export class FeesModule { }
+export class FeesModule {}

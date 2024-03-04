@@ -6,22 +6,22 @@ export type FeeDocument = Fee & Document;
 
 @Schema()
 export class Fee extends Document {
-    _id: string;
+  _id: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
-    residence: Residence;
+  @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
+  residence: Residence;
 
-    @Prop({ required: true })
-    feename: string;
+  @Prop({ required: true })
+  feename: string;
 
-    @Prop({ default: '' })
-    feeprice: string;
+  @Prop({ default: '' })
+  feeprice: string;
 
-    @Prop({ required: true, default: Date.now() })
-    created_at: Date;
+  @Prop({ required: true, default: Date.now() })
+  created_at: Date;
 
-    @Prop({ required: true, default: Date.now() })
-    updated_at: Date;
+  @Prop({ required: true, default: Date.now() })
+  updated_at: Date;
 }
 
 export const FeeSchema = SchemaFactory.createForClass(Fee);

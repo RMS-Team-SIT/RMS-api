@@ -22,7 +22,7 @@ export class PaymentService {
     private readonly paymentModel: Model<Payment>,
     private readonly residenceService: ResidenceService,
     private readonly bankService: BankService,
-  ) { }
+  ) {}
 
   async createPayment(
     residenceId: string,
@@ -45,8 +45,6 @@ export class PaymentService {
       residence: residenceId,
     }).save();
 
-
-
     await this.residenceService.addPaymentToResidence(
       residenceId,
       createdPayment._id,
@@ -59,13 +57,11 @@ export class PaymentService {
     residenceId: string,
     createResidencePaymentDto: CreateResidencePaymentDto[],
   ): Promise<Payment[]> {
-
-    const createdFees = createResidencePaymentDto.map(dto => {
+    const createdFees = createResidencePaymentDto.map((dto) => {
       return new this.paymentModel({
         residence: residenceId,
-        ...dto
+        ...dto,
       });
-
     });
     return this.paymentModel.insertMany(createdFees);
   }

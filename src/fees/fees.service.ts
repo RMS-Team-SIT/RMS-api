@@ -6,27 +6,29 @@ import { CreateFeeDto } from './dto/create-fee.dto';
 
 @Injectable()
 export class FeesService {
-    constructor(
-        @InjectModel(Fee.name)
-        private readonly feeModel: Model<Fee>,
-    ) { }
+  constructor(
+    @InjectModel(Fee.name)
+    private readonly feeModel: Model<Fee>,
+  ) {}
 
-    async create(residenceId: string, createFeeDto: CreateFeeDto): Promise<Fee> {
-        const createdFee = new this.feeModel({
-            residence: residenceId,
-            ...createFeeDto
-        });
-        return createdFee.save();
-    }
+  async create(residenceId: string, createFeeDto: CreateFeeDto): Promise<Fee> {
+    const createdFee = new this.feeModel({
+      residence: residenceId,
+      ...createFeeDto,
+    });
+    return createdFee.save();
+  }
 
-    async createMany(residenceId: string, createFeeDtos: CreateFeeDto[]): Promise<Fee[]> {
-        const createdFees = createFeeDtos.map(createFeeDto => {
-            return new this.feeModel({
-                residence: residenceId,
-                ...createFeeDto
-            });
-        });
-        return this.feeModel.insertMany(createdFees);
-    }
-
+  async createMany(
+    residenceId: string,
+    createFeeDtos: CreateFeeDto[],
+  ): Promise<Fee[]> {
+    const createdFees = createFeeDtos.map((createFeeDto) => {
+      return new this.feeModel({
+        residence: residenceId,
+        ...createFeeDto,
+      });
+    });
+    return this.feeModel.insertMany(createdFees);
+  }
 }

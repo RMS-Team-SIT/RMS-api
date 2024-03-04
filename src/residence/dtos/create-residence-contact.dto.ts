@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 
 export class CreateResidenceContactDto {
-
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -39,5 +38,4 @@ export class CreateResidenceContactDto {
   @IsString()
   @MaxLength(200)
   email: string;
-
 }

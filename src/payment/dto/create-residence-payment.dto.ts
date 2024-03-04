@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, Validate } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Validate,
+} from 'class-validator';
 import { PaymentType } from '../schemas/payment.schema';
 import { ObjectIdValidator } from 'src/validator/objectIdValidator';
 
 export class CreateResidencePaymentDto {
-
   @ApiProperty()
   @IsNotEmpty()
   @IsEnum(PaymentType)

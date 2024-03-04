@@ -20,7 +20,7 @@ export class BillService {
     private readonly roomService: RoomService,
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
-  ) { }
+  ) {}
 
   async createBill(residenceId: string, createBillDto: CreateBillDto) {
     const residence = await this.residenceService.findOne(residenceId);

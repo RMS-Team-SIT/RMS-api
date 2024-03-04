@@ -16,4 +16,4 @@ import { ResidenceModule } from 'src/residence/residence.module';
   providers: [PaymentService],
   exports: [PaymentService],
 })
-export class PaymentModule { }
+export class PaymentModule {}

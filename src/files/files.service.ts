@@ -14,7 +14,15 @@ export class FilesService {
     file: Express.Multer.File,
   ): Promise<{ fileName: string; filePath: string }> {
     const pdfDoc = await PDFDocument.load(file.buffer);
-    const pathToThaiFont = path.join(__dirname, '..', '..', 'assets', 'fonts', 'Sarabun', 'Sarabun-Regular.ttf')
+    const pathToThaiFont = path.join(
+      __dirname,
+      '..',
+      '..',
+      'assets',
+      'fonts',
+      'Sarabun',
+      'Sarabun-Regular.ttf',
+    );
 
     const fontBytes = fs.readFileSync(pathToThaiFont);
     pdfDoc.registerFontkit(fontkit);

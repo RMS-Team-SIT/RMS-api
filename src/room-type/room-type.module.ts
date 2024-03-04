@@ -17,4 +17,4 @@ import { RoomType, RoomTypeSchema } from './schemas/room-type.schema';
   providers: [RoomTypeService],
   exports: [RoomTypeService],
 })
-export class RoomTypeModule { }
+export class RoomTypeModule {}
