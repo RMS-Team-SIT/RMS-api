@@ -66,6 +66,9 @@ export class Residence extends Document {
   @Prop({ default: 0 })
   autoLatePaymentFine: boolean;
 
+  @Prop({ default: 0 })
+  depositPrice: number; 
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'RoomType' }], default: [] })
   roomTypes: RoomType[];
 

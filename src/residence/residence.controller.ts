@@ -26,7 +26,7 @@ import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
 @ApiBearerAuth()
 @Controller('residence')
 export class ResidenceController {
-  constructor(private readonly residenceService: ResidenceService) {}
+  constructor(private readonly residenceService: ResidenceService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -86,7 +86,13 @@ export class ResidenceController {
   }
 
   @Get('/:residenceId')
-  async findOne(@Param('residenceId') id: string): Promise<Residence> {
+  async findOne(@Req() req: any, @Param('residenceId') id: string): Promise<Residence> {
+    const userId = req.user.id;
+    const userRole = req.user.roles[0];
+    const residence = await this.residenceService.findOne(id);
+
+    await this.checkResidenceOwnership(userId, residence, userRole);
+
     return await this.residenceService.findOne(id);
   }
 
@@ -103,9 +109,10 @@ export class ResidenceController {
     @Body() updateResidenceDto: UpdateResidenceDto,
   ): Promise<Residence> {
     const userId = req.user.id;
+    const userRole = req.user.roles[0];
     const residence = await this.residenceService.findOne(id);
 
-    await this.checkResidenceOwnership(userId, residence);
+    await this.checkResidenceOwnership(userId, residence, userRole);
 
     if (residence.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException();
@@ -123,8 +130,16 @@ export class ResidenceController {
   //   return await this.residenceService.delete(id);
   // }
 
-  private async checkResidenceOwnership(userId: string, residence: Residence) {
-    if (!residence || residence.owner._id.toString() !== userId.toString()) {
+  private async checkResidenceOwnership(userId: string, residence: Residence, role?: UserRole) {
+    if (!residence) {
+      throw new NotFoundException({
+        message: 'Residence not found',
+      });
+    }
+    
+    if (role && role === UserRole.ADMIN) return;
+    
+    if (residence.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException({
         message: 'You are not the owner of this residence',
       });
