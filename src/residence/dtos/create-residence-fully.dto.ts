@@ -25,7 +25,7 @@ export class CreateResidenceFullyDto {
 
     @ApiProperty()
     @IsString()
-    @MaxLength(500)
+    @MaxLength(2500)
     description: string;
 
     @ApiProperty()
