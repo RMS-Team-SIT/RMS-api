@@ -99,6 +99,9 @@ export class Residence extends Document {
   @Prop({ default: false })
   isApproved: boolean;
 
+  @Prop({ default: false })
+  isRejected: boolean;
+
   @Prop({ required: true, default: Date.now() })
   created_at: Date;
 

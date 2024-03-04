@@ -39,6 +39,9 @@ export class User extends Document {
   isApprovedKYC: boolean;
 
   @Prop({ default: false })
+  isRejectedKYC: boolean;
+
+  @Prop({ default: false })
   isAcceptedPolicy: boolean;
 
   @Prop({ default: null })
