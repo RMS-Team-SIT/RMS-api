@@ -38,6 +38,7 @@
     "@nestjs/terminus": "^10.0.1",
     "@nestjs/throttler": "^5.0.1",
     "@pdf-lib/fontkit": "^1.1.1",
+    "@willsoto/nestjs-prometheus": "^6.0.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
@@ -49,6 +50,7 @@
     "nestjs-spelunker": "^1.3.0",
     "nodemailer": "^6.9.4",
     "pdf-lib": "^1.17.1",
+    "prom-client": "^15.1.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },

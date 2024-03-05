@@ -29,6 +29,7 @@ import { FacilityModule } from './facility/facility.module';
 import { FeesModule } from './fees/fees.module';
 import { RoomTypeController } from './room-type/room-type.controller';
 import { RoomTypeModule } from './room-type/room-type.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -65,6 +66,9 @@ console.log(`Current environment: ${ENV}`);
     PaymentModule,
     FacilityModule,
     FeesModule,
+    PrometheusModule.register({
+      path: '/metrics',
+    }),
   ],
   providers: [
     {
