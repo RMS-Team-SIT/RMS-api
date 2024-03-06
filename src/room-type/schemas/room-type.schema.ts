@@ -20,6 +20,9 @@ export class RoomType extends Document {
   @Prop({ default: '' })
   price: number;
 
+  @Prop({ default: [] })
+  images: string[];
+
   @Prop({ default: '' })
   description: string;
 

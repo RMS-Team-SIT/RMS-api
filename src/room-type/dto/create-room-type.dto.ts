@@ -37,4 +37,9 @@ export class CreateRoomTypeDto {
   @IsNotEmpty()
   @MaxLength(255)
   description: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString({ each: true })
+  images: string[];
 }
