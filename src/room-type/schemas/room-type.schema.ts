@@ -14,6 +14,9 @@ export class RoomType extends Document {
   @Prop({ required: true })
   name: string;
 
+  @Prop({ required: true })
+  category: string;
+
   @Prop({ default: '' })
   size: number;
 

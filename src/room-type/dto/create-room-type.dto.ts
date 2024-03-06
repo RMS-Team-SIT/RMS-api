@@ -23,6 +23,12 @@ export class CreateRoomTypeDto {
   name: string;
 
   @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  category: string;
+
+  @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
   size: number;
@@ -34,7 +40,7 @@ export class CreateRoomTypeDto {
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MaxLength(255)
   description: string;
 
