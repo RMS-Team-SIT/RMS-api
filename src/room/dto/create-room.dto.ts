@@ -46,28 +46,6 @@ export class CreateRoomDto {
   @Min(0)
   roomRentalPrice: number;
 
-  // @ApiProperty()
-  // @IsNotEmpty()
-  // @IsNumber()
-  // @Min(0)
-  // waterPriceRate: number;
-
-  // @ApiProperty()
-  // @IsNotEmpty()
-  // @IsNumber()
-  // @Min(0)
-  // electricPriceRate: number;
-
-  // @ApiProperty()
-  // @IsBoolean()
-  // @IsOptional()
-  // isUseDefaultWaterPriceRate: boolean;
-
-  // @ApiProperty()
-  // @IsBoolean()
-  // @IsOptional()
-  // isUseDefaultElectricPriceRate: boolean;
-
   @ApiProperty()
   @IsString()
   @IsOptional()

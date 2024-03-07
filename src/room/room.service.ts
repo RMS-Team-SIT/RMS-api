@@ -21,7 +21,7 @@ export class RoomService {
     private roomModel: Model<Room>,
     private readonly renterService: RenterService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   private async checkRoomNameExist(
     name: string,
@@ -57,7 +57,7 @@ export class RoomService {
     const residence = await this.residenceService.findOne(residenceId);
 
     // Check room name is exist
-    // await this.checkRoomNameExist(createRoomDto.name, residenceId);
+    await this.checkRoomNameExist(createRoomDto.name, residenceId);
 
     // check is renter exist, renter active, not in other room
     if (createRoomDto.currentRenter) {
@@ -242,6 +242,7 @@ export class RoomService {
     residenceId: string,
     roomId: string,
     updateRoomDto: UpdateRoomDto,
+    ignoreRental?: boolean,
   ): Promise<Room> {
     validateObjectIdFormat(residenceId, 'Residence');
     validateObjectIdFormat(roomId, 'Room');
@@ -253,51 +254,47 @@ export class RoomService {
     const residence = await this.residenceService.findOne(residenceId);
 
     // check room name is exist except this room
-    // await this.checkRoomNameExist(updateRoomDto.name, residenceId, roomId);
+    await this.checkRoomNameExist(updateRoomDto.name, residenceId, roomId);
 
-    // check if rantal update
-    if (updateRoomDto.currentRenter) {
-      // check is new renter exist
-      const renter = await this.renterService.findOneRenter(
-        updateRoomDto.currentRenter,
-        true,
-      );
+    if (!ignoreRental) {
+      // check if rantal update
+      if (updateRoomDto.currentRenter) {
+        // check is new renter exist
+        const renter = await this.renterService.findOneRenter(
+          updateRoomDto.currentRenter,
+          true,
+        );
 
-      // check: Is new renter not in other room
-      const renterRoom = await this.roomModel
-        .findOne({
-          currentRenter: updateRoomDto.currentRenter,
-          _id: { $ne: roomId },
-        })
-        .exec();
-      if (renterRoom) {
-        throw new BadRequestException('Renter is exist in other room');
+        // check: Is new renter not in other room
+        const renterRoom = await this.roomModel
+          .findOne({
+            currentRenter: updateRoomDto.currentRenter,
+            _id: { $ne: roomId },
+          })
+          .exec();
+        if (renterRoom) {
+          throw new BadRequestException('Renter is exist in other room');
+        }
+
+        // Remove room from old renter if exist
+        if (room.currentRenter) {
+          await this.renterService.removeRoomFromRenter(room.currentRenter);
+        }
+
+        // Update new renter: set room to this room
+        await this.renterService.addRoomToRenter(
+          updateRoomDto.currentRenter,
+          roomId,
+        );
+      } else {
+        // remove room from old renter if exist
+        if (room.currentRenter) {
+          await this.renterService.removeRoomFromRenter(room.currentRenter);
+        }
       }
-
-      // Remove room from old renter if exist
-      if (room.currentRenter) {
-        await this.renterService.removeRoomFromRenter(room.currentRenter);
-      }
-
-      // Update new renter: set room to this room
-      await this.renterService.addRoomToRenter(
-        updateRoomDto.currentRenter,
-        roomId,
-      );
     } else {
-      // remove room from old renter if exist
-      if (room.currentRenter) {
-        await this.renterService.removeRoomFromRenter(room.currentRenter);
-      }
+      delete updateRoomDto.currentRenter;
     }
-
-    // Set the default price rate if isUseDefaultPriceRate is true.
-    // if (updateRoomDto.isUseDefaultWaterPriceRate) {
-    //   updateRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
-    // }
-    // if (updateRoomDto.isUseDefaultElectricPriceRate) {
-    //   updateRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
-    // }
 
     // update room
     return await this.roomModel

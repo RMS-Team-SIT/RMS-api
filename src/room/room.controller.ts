@@ -76,6 +76,27 @@ export class RoomController {
     return await this.roomService.findOneRoom(residenceId, roomId);
   }
 
+  // Without renter only detail
+  @Put('/:roomId/detail')
+  async updateRoomDetailInResidence(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('roomId') roomId: string,
+    @Body() updateRoomDto: UpdateRoomDto,
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    await this.residenceService.checkOwnerPermission(userId, residenceId);
+
+    return await this.roomService.updateRoom(
+      residenceId,
+      roomId,
+      updateRoomDto,
+      true,
+    );
+  }
+
+  // With renter
   @Put('/:roomId')
   async updateRoomInResidence(
     @Req() req,
@@ -93,6 +114,8 @@ export class RoomController {
       updateRoomDto,
     );
   }
+
+  
 
   @Delete('/:roomId')
   async deleteRoomInResidence(
