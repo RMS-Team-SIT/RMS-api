@@ -47,4 +47,15 @@ export class NotificationService {
     const notifications = await this.notificationModel.find({ tos: to }).exec();
     return notifications;
   }
+
+  async readNotification(userId: string, id: string): Promise<Notification> {
+    const notification = await this.notificationModel
+      .findByIdAndUpdate(
+        id,
+        { $set: { isRead: true, updated_at: new Date() } },
+        { new: true },
+      )
+      .exec();
+    return notification;
+  }
 }
