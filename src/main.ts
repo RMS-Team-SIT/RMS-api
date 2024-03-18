@@ -8,6 +8,7 @@ import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { SpelunkerModule } from 'nestjs-spelunker';
+import { apiReference } from '@scalar/nestjs-api-reference';
 
 function configureSwagger(app: NestExpressApplication) {
   const options = new DocumentBuilder()
@@ -16,6 +17,15 @@ function configureSwagger(app: NestExpressApplication) {
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
+  app.use(
+    '/reference',
+    apiReference({
+      spec: {
+        content: document,
+      },
+      layout: 'classic'
+    }),
+  )
   SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);
 }
 
