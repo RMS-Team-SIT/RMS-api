@@ -154,7 +154,6 @@ export class ResidenceService {
     const residenceId = createdResidence._id.toString();
 
     // Create fees
-    // const createdFees = await this.feeService.createMany(residenceId, fees);
     const tempFees = fees.map((dto) => {
       return new this.feeModel({
         residence: residenceId,
@@ -164,7 +163,6 @@ export class ResidenceService {
     const createdFees = await this.feeModel.insertMany(tempFees);
 
     // Create Payments
-    // const createdPayments = await this.paymentService.createMany(residenceId, payments);
     const tempPayments = payments.map((dto) => {
       return new this.paymentModel({
         residence: residenceId,
@@ -175,7 +173,6 @@ export class ResidenceService {
     const createdPayments = await this.paymentModel.insertMany(tempPayments);
 
     // Create RoomTypes
-    // const createdRoomTypes = await this.roomTypeService.createMany(residenceId, roomTypes);
     const tempRoomTypes = roomTypes.map((dto) => {
       return new this.roomTypeModel({
         residence: residenceId,
@@ -185,7 +182,6 @@ export class ResidenceService {
     const createdRoomTypes = await this.roomTypeModel.insertMany(tempRoomTypes);
 
     // Create Rooms
-    // const createdRooms = await this.roomService.createMany(residenceId, rooms);
     const tempRooms = rooms.map((dto) => {
       return new this.roomModel({
         residence: residenceId,
@@ -442,6 +438,18 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $push: { roomTypes: [...roomTypeIds] } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async addFeesToResidence(residenceId: string, feeIds: string[]): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { fees: [...feeIds] } },
         { new: true },
       )
       .exec();
