@@ -19,7 +19,7 @@ export class MeterRecordService {
     @InjectModel(MeterRecord.name)
     private readonly meterRecordModel: Model<MeterRecord>,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   async createMeterRecord(
     residenceId: string,
@@ -116,12 +116,28 @@ export class MeterRecordService {
         _id: meterRecordId,
         residence: residenceId,
       })
+      // .populate({
+      //   path: 'meterRecordItems.room',
+      //   select: {
+      //     _id: 1,
+      //     name: 1,
+      //     status: 1,
+      //     fees: 1,
+      //   },
+      // })
       .populate({
-        path: 'meterRecordItems.room',
-        select: {
-          _id: 1,
-          name: 1,
-          status: 1,
+        path: 'meterRecordItems',
+        populate: {
+          path: 'room',
+          populate: {
+            path: 'fees',
+          },
+          // select: {
+          //   _id: 1,
+          //   name: 1,
+          //   status: 1,
+          //   fees: 1,
+          // },
         },
       })
       .exec();
