@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RoomTypeService } from './room-type.service';
 import { CreateRoomTypeDto } from './dto/create-room-type.dto';
 
-@Controller('room-type')
+@Controller('/residence/:residenceId/room-type')
 @ApiTags('Room Type')
 @ApiBearerAuth()
 export class RoomTypeController {
@@ -24,7 +24,7 @@ export class RoomTypeController {
         return this.roomTypeService.create(residenceId, createRoomTypeDto);
     }
 
-    @Post('/bulk')
+    @Post('bulk')
     async createManyRoomTypes(
         @Req() req: any,
         @Param('residenceId') residenceId: string,

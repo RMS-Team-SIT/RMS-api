@@ -15,6 +15,7 @@ function configureSwagger(app: NestExpressApplication) {
     .setTitle('RMS API')
     .setVersion('1.0')
     .addBearerAuth()
+    .setExternalDoc('Postman Collection', '/docs-json')
     .build();
   const document = SwaggerModule.createDocument(app, options);
   app.use(

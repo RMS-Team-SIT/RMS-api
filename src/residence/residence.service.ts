@@ -18,6 +18,7 @@ import { Room } from 'src/room/schemas/room.schema';
 import { NotificationService } from 'src/notification/notification.service';
 import { MailService } from 'src/mail/mail.service';
 import { UserService } from 'src/user/user.service';
+import { UpdateUtilityDto } from './dtos/update-utility.dto';
 
 @Injectable()
 export class ResidenceService {
@@ -340,6 +341,22 @@ export class ResidenceService {
       .exec();
   }
 
+  async updateUtility(id: string, dto: UpdateUtilityDto): Promise<Residence> {
+    validateObjectIdFormat(id, 'Residence');
+
+    return this.residenceModel
+      .findByIdAndUpdate(
+        id,
+        {
+          ...dto,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
+  }
+
+
   async addRenterToResidence(
     residenceId: string,
     renterId: string,
@@ -412,6 +429,19 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $pull: { rooms: roomId } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async addRoomTypesToResidence(
+    residenceId: string,
+    roomTypeIds: string[],
+  ) {
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $push: { roomTypes: [...roomTypeIds] } },
         { new: true },
       )
       .exec();

@@ -3,12 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { RoomType } from './schemas/room-type.schema';
 import { Model } from 'mongoose';
 import { CreateRoomTypeDto } from './dto/create-room-type.dto';
+import { ResidenceService } from 'src/residence/residence.service';
 
 @Injectable()
 export class RoomTypeService {
   constructor(
     @InjectModel(RoomType.name)
     private readonly roomTypeModel: Model<RoomType>,
+    private readonly residenceService: ResidenceService,
   ) { }
 
   async create(
@@ -28,6 +30,8 @@ export class RoomTypeService {
     residenceId: string,
     createRoomTypeDtos: CreateRoomTypeDto[],
   ): Promise<RoomType[]> {
+    console.log({ residenceId, createRoomTypeDtos });
+
     const createdRoomTypes = createRoomTypeDtos.map((createRoomTypeDto) => {
       return new this.roomTypeModel({
         residence: residenceId,
@@ -36,6 +40,12 @@ export class RoomTypeService {
         updated_at: new Date(),
       });
     });
+
+    await this.residenceService.addRoomTypesToResidence(
+      residenceId,
+      createdRoomTypes.map((roomType) => roomType._id),
+    );
+
     return this.roomTypeModel.insertMany(createdRoomTypes);
   }
 

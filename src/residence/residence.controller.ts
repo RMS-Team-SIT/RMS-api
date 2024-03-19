@@ -21,6 +21,7 @@ import { UserRole } from 'src/auth/enum/user-role.enum';
 import { ResponseResidenceOverallStatsDto } from './dtos/response-residence-overallstats.dto';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
+import { UpdateUtilityDto } from './dtos/update-utility.dto';
 
 @ApiTags('residence')
 @ApiBearerAuth()
@@ -39,6 +40,25 @@ export class ResidenceController {
       userId,
       createResidenceFullyDto,
     );
+  }
+
+  @Put('/:residenceId/utility')
+  @HttpCode(HttpStatus.OK)
+  async updateUtility(
+    @Req() req,
+    @Param('residenceId') id: string,
+    @Body() updateUtilDto: UpdateUtilityDto,
+  ): Promise<Residence> {
+    const userId = req.user.id;
+    const userRole = req.user.roles[0];
+    const residence = await this.residenceService.findOne(id);
+
+    await this.checkResidenceOwnership(userId, residence, userRole);
+
+    if (residence.owner._id.toString() !== userId.toString()) {
+      throw new ForbiddenException();
+    }
+    return await this.residenceService.updateUtility(id, updateUtilDto);
   }
 
   @Get('/overall-stats')
@@ -126,9 +146,9 @@ export class ResidenceController {
         message: 'Residence not found',
       });
     }
-    
+
     if (role && role === UserRole.ADMIN) return;
-    
+
     if (residence.owner._id.toString() !== userId.toString()) {
       throw new ForbiddenException({
         message: 'You are not the owner of this residence',
