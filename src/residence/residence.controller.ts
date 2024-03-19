@@ -28,24 +28,14 @@ import { CreateResidenceFullyDto } from './dtos/create-residence-fully.dto';
 export class ResidenceController {
   constructor(private readonly residenceService: ResidenceService) { }
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async create(
-    @Body() createResidenceDto: CreateResidenceDto,
-    @Req() req,
-  ): Promise<Residence> {
-    const userId = req.user.id;
-    return await this.residenceService.create(userId, createResidenceDto);
-  }
-
-  @Post('/fully')
+  @Post('')
   @HttpCode(HttpStatus.CREATED)
   async createFully(
     @Body() createResidenceFullyDto: CreateResidenceFullyDto,
     @Req() req,
   ): Promise<Residence> {
     const userId = req.user.id;
-    return await this.residenceService.createFully(
+    return await this.residenceService.create(
       userId,
       createResidenceFullyDto,
     );

@@ -116,20 +116,6 @@ export class ResidenceService {
   // Residence
   async create(
     userId: string,
-    createResidenceDto: CreateResidenceDto,
-  ): Promise<Residence> {
-    const createdResidence = new this.residenceModel({
-      ...createResidenceDto,
-      owner: userId,
-      isApproved: false,
-      created_at: new Date(),
-      updated_at: new Date(),
-    });
-    return createdResidence.save();
-  }
-
-  async createFully(
-    userId: string,
     createResidenceFullyDto: CreateResidenceFullyDto,
   ): Promise<Residence> {
     // Create Residence
