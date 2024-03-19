@@ -24,7 +24,7 @@ function configureSwagger(app: NestExpressApplication) {
       spec: {
         content: document,
       },
-      layout: 'classic'
+      layout: 'modern'
     }),
   )
   SwaggerModule.setup(process.env.OPENAPI_PATH, app, document);

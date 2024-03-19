@@ -5,6 +5,7 @@ import { Residence } from '../../residence/schemas/residence.schema';
 import { BillRoom } from 'src/bill/schemas/bill-room.schema';
 import { RoomType } from 'src/room-type/schemas/room-type.schema';
 import { Fee } from 'src/fees/schemas/fee.schema';
+import { RoomStatus } from '../enum/room-status.enum';
 
 export type RoomDocument = Room & Document;
 @Schema()
@@ -32,20 +33,11 @@ export class Room extends Document {
   @Prop({ required: true, default: 0 })
   roomRentalPrice: number;
 
-  // @Prop({ required: true, default: false })
-  // isUseDefaultWaterPriceRate: boolean;
-
-  // @Prop({ required: true, default: false })
-  // isUseDefaultElectricPriceRate: boolean;
-
-  // @Prop({ required: true, default: 0 })
-  // waterPriceRate: number;
-
-  // @Prop({ required: true, default: 0 })
-  // electricPriceRate: number;
-
   @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
   currentRenter: Renter;
+
+  @Prop({ default: RoomStatus.AVAILABLE })
+  status: RoomStatus;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: BillRoom.name }], default: [] })
   billRooms: BillRoom[];

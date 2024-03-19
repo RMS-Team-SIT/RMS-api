@@ -121,6 +121,7 @@ export class MeterRecordService {
         select: {
           _id: 1,
           name: 1,
+          status: 1,
         },
       })
       .exec();
