@@ -72,7 +72,20 @@ export class MeterRecordService {
   async getMeterRecordByResidence(residenceId: string): Promise<MeterRecord[]> {
     return this.meterRecordModel
       .find({ residence: residenceId })
-      .populate('meterRecordItems.room')
+      .populate({
+        path: 'meterRecordItems',
+        populate: {
+          path: 'room',
+          populate: {
+            path: 'fees',
+            select: {
+              _id: 1,
+              feename: 1,
+              feeprice: 1,
+            }
+          },
+        },
+      })
       .sort({ record_date: -1 })
       .exec();
   }
@@ -116,15 +129,6 @@ export class MeterRecordService {
         _id: meterRecordId,
         residence: residenceId,
       })
-      // .populate({
-      //   path: 'meterRecordItems.room',
-      //   select: {
-      //     _id: 1,
-      //     name: 1,
-      //     status: 1,
-      //     fees: 1,
-      //   },
-      // })
       .populate({
         path: 'meterRecordItems',
         populate: {
@@ -132,12 +136,12 @@ export class MeterRecordService {
           populate: {
             path: 'fees',
           },
-          // select: {
-          //   _id: 1,
-          //   name: 1,
-          //   status: 1,
-          //   fees: 1,
-          // },
+          select: {
+            _id: 1,
+            name: 1,
+            status: 1,
+            fees: 1,
+          },
         },
       })
       .exec();
