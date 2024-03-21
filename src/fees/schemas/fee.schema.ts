@@ -15,7 +15,7 @@ export class Fee extends Document {
   feename: string;
 
   @Prop({ default: '' })
-  feeprice: string;
+  feeprice: number;
 
   @Prop({ required: true, default: Date.now() })
   created_at: Date;

@@ -82,12 +82,17 @@ export class BillService {
       const electricTotalPrice =
         electricPriceRate * meterRecordItem.totalElectricMeterUsage;
 
-      const totalPrice = roomRentalPrice + waterTotalPrice + electricTotalPrice;
+      const fees = room.fees;
+      const totalFeesPrice = fees.reduce((acc, fee) => acc + fee.feeprice, 0);
+
+      const totalPrice = roomRentalPrice + waterTotalPrice + electricTotalPrice + totalFeesPrice;
 
       const billRoomData = {
         room: room._id,
         bill: createdBill._id,
         meterRecord: meterRecord._id,
+        fees,
+        totalFeesPrice,
         meterRecordItem: meterRecordItem._id,
         waterPriceRate,
         totalWaterMeterUsage: meterRecordItem.totalWaterMeterUsage,

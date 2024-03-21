@@ -5,6 +5,7 @@ import { Room } from 'src/room/schemas/room.schema';
 import { Bill } from './bill.schema';
 import { MeterRecordItem } from 'src/meter-record/schemas/meter-record-item.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
+import { Fee } from 'src/fees/schemas/fee.schema';
 
 export type BillRoomDocument = BillRoom & Document;
 @Schema()
@@ -55,6 +56,12 @@ export class BillRoom extends Document {
 
   @Prop({ required: true })
   totalElectricMeterUsage: number;
+
+  @Prop({ default: null })
+  fees: Fee[];
+
+  @Prop({ required: true })
+  totalFeesPrice: number;
 
   // RentalPrice
   @Prop({ required: true })
