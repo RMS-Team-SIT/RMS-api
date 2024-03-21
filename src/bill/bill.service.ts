@@ -20,7 +20,7 @@ export class BillService {
     private readonly roomService: RoomService,
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   async createBill(residenceId: string, createBillDto: CreateBillDto) {
     const residence = await this.residenceService.findOne(residenceId);
@@ -57,8 +57,11 @@ export class BillService {
       createdBill._id,
     );
 
-    // Create bill for every room in meterRecord
-    const meterRecordItems = meterRecord.meterRecordItems;
+    // Create bill from meterRecordItems
+    const meterRecordItems = meterRecord.meterRecordItems
+      .filter(meterRecordItem => createBillDto.meterRecordItems.includes(meterRecordItem._id.toString()));
+
+    console.log({ meterRecordItems });
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
@@ -124,12 +127,9 @@ export class BillService {
       .populate('billRooms')
       .populate('meterRecord')
       .populate({
-        path: 'meterRecord',
+        path: 'billRooms',
         populate: {
-          path: 'meterRecordItems',
-          populate: {
-            path: 'room',
-          },
+          path: 'room',
         },
       })
       .sort({

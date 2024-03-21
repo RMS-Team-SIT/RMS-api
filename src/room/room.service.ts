@@ -13,6 +13,7 @@ import { UpdateRoomDto } from './dto/update-room.dto';
 import { RenterService } from 'src/renter/renter.service';
 import { CreateManyRoomDto } from './dto/create-many-room.dto';
 import { Residence } from 'src/residence/schemas/residence.schema';
+import { RoomStatus } from './enum/room-status.enum';
 
 @Injectable()
 export class RoomService {
@@ -302,6 +303,7 @@ export class RoomService {
         roomId,
         {
           ...updateRoomDto,
+          status: updateRoomDto.currentRenter ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE,
           updated_at: Date.now(),
         },
         { new: true },
