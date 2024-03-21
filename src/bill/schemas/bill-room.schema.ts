@@ -5,7 +5,7 @@ import { Room } from 'src/room/schemas/room.schema';
 import { Bill } from './bill.schema';
 import { MeterRecordItem } from 'src/meter-record/schemas/meter-record-item.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
-import { Fee } from 'src/fees/schemas/fee.schema';
+import { Fee, FeeSchema } from 'src/fees/schemas/fee.schema';
 
 export type BillRoomDocument = BillRoom & Document;
 @Schema()
@@ -57,7 +57,7 @@ export class BillRoom extends Document {
   @Prop({ required: true })
   totalElectricMeterUsage: number;
 
-  @Prop({ default: null })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Fee' }], default: [] })
   fees: Fee[];
 
   @Prop({ required: true })
@@ -76,7 +76,7 @@ export class BillRoom extends Document {
 
   // Paider
   @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
-  paider: Renter;
+  renter: Renter;
 
   @Prop({ default: null })
   paidEvidenceImage: string;

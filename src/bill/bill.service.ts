@@ -137,6 +137,12 @@ export class BillService {
           path: 'room',
         },
       })
+      .populate({
+        path: 'billRooms',
+        populate: {
+          path: 'fees',
+        },
+      })
       .sort({
         created_at: -1, // Sort by record_date in meterRecord in descending order
       })

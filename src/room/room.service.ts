@@ -77,14 +77,6 @@ export class RoomService {
       }
     }
 
-    // Set the default price rate if isUseDefaultPriceRate is true.
-    // if (createRoomDto.isUseDefaultWaterPriceRate) {
-    //   createRoomDto.waterPriceRate = residence.defaultWaterPriceRate;
-    // }
-    // if (createRoomDto.isUseDefaultElectricPriceRate) {
-    //   createRoomDto.electricPriceRate = residence.defaultElectricPriceRate;
-    // }
-
     // Create room
     const createdRoom = await new this.roomModel({
       ...createRoomDto,
@@ -198,6 +190,16 @@ export class RoomService {
           path: 'meterRecord',
           select: {
             record_date: 1,
+          },
+        },
+      })
+      .populate({
+        path: 'billRooms',
+        populate: {
+          path: 'fees',
+          select: {
+            feename: 1,
+            feeprice: 1,
           },
         },
       })
