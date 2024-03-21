@@ -15,6 +15,7 @@ import { ResidenceService } from 'src/residence/residence.service';
 import { RoomService } from './room.service';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { CreateManyRoomDto } from './dto/create-many-room.dto';
+import { UpdateRoomRenterDto } from './dto/update-room-renter.dto';
 
 @Controller('/residence/:residenceId/room')
 @ApiTags('Room')
@@ -23,7 +24,7 @@ export class RoomController {
   constructor(
     private readonly roomService: RoomService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   @Post('')
   async createRoom(
@@ -76,7 +77,26 @@ export class RoomController {
     return await this.roomService.findOneRoom(residenceId, roomId);
   }
 
-  // Without renter only detail
+  // Update Renter
+  @Put('/:roomId/renter')
+  async updateRoomRenterInResidence(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('roomId') roomId: string,
+    @Body() updateRoomDto: UpdateRoomRenterDto,
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    await this.residenceService.checkOwnerPermission(userId, residenceId);
+
+    return await this.roomService.updateRoomRenter(
+      residenceId,
+      roomId,
+      updateRoomDto,
+    );
+  }
+
+  // Update detail
   @Put('/:roomId/detail')
   async updateRoomDetailInResidence(
     @Req() req,
@@ -115,7 +135,7 @@ export class RoomController {
     );
   }
 
-  
+
 
   @Delete('/:roomId')
   async deleteRoomInResidence(

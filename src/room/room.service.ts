@@ -14,6 +14,7 @@ import { RenterService } from 'src/renter/renter.service';
 import { CreateManyRoomDto } from './dto/create-many-room.dto';
 import { Residence } from 'src/residence/schemas/residence.schema';
 import { RoomStatus } from './enum/room-status.enum';
+import { UpdateRoomRenterDto } from './dto/update-room-renter.dto';
 
 @Injectable()
 export class RoomService {
@@ -309,6 +310,67 @@ export class RoomService {
         { new: true },
       )
       .exec();
+  }
+
+  async updateRoomRenter(residenceId: string, roomId: string, updateRoomRenterDto: UpdateRoomRenterDto): Promise<Room> {
+    validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(updateRoomRenterDto.renterId, 'Renter');
+
+    const room = await this.findOne(roomId);
+
+    // check residence is exist
+    await this.residenceService.findOne(residenceId);
+
+    // check if rantal update
+    if (updateRoomRenterDto.renterId) {
+      // check is new renter exist
+      const renter = await this.renterService.findOneRenter(
+        updateRoomRenterDto.renterId,
+        true,
+      );
+
+      // check: Is new renter not in other room
+      const renterRoom = await this.roomModel
+        .findOne({
+          currentRenter: updateRoomRenterDto.renterId,
+          _id: { $ne: roomId },
+        })
+        .exec();
+      if (renterRoom) {
+        throw new BadRequestException('Renter is exist in other room');
+      }
+
+      // Remove room from old renter if exist
+      if (room.currentRenter) {
+        await this.renterService.removeRoomFromRenter(room.currentRenter);
+      }
+
+      // Update new renter: set room to this room
+      await this.renterService.addRoomToRenter(
+        updateRoomRenterDto.renterId,
+        roomId,
+      );
+    } else {
+      // remove room from old renter if exist
+      if (room.currentRenter) {
+        await this.renterService.removeRoomFromRenter(room.currentRenter);
+      }
+    }
+
+    // update room
+    return await this.roomModel
+      .findByIdAndUpdate(
+        roomId,
+        {
+          currentRenter: updateRoomRenterDto.renterId ? updateRoomRenterDto.renterId : null,
+          status: updateRoomRenterDto.renterId ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
+
+
   }
 
   async deleteRoom(residenceId: string, roomId: string): Promise<Room> {
