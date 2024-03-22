@@ -22,6 +22,15 @@ export class BillService {
     private readonly residenceService: ResidenceService,
   ) { }
 
+  private generateBillNumber = (length = 8) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let billNumber = '';
+    for (let i = 0; i < length; i++) {
+      billNumber += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return billNumber;
+  }
+
   async createBill(residenceId: string, createBillDto: CreateBillDto) {
     const residence = await this.residenceService.findOne(residenceId);
 
@@ -57,7 +66,7 @@ export class BillService {
       createdBill._id,
     );
 
-    // Create bill from meterRecordItems
+    // Create billRoom from meterRecordItems
     const meterRecordItems = meterRecord.meterRecordItems
       .filter(meterRecordItem => createBillDto.meterRecordItems.includes(meterRecordItem._id.toString()));
 
@@ -88,6 +97,7 @@ export class BillService {
       const totalPrice = roomRentalPrice + waterTotalPrice + electricTotalPrice + totalFeesPrice;
 
       const billRoomData = {
+        billNo: this.generateBillNumber(10),
         room: room._id,
         bill: createdBill._id,
         meterRecord: meterRecord._id,
@@ -111,7 +121,6 @@ export class BillService {
       const createdBillRoom = await new this.billRoomModel({
         ...billRoomData,
       }).save();
-
       // Add BillRoom to room
       await this.roomService.addBillRoomToRoom(
         residenceId,

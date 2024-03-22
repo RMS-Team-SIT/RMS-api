@@ -6,11 +6,15 @@ import { Bill } from './bill.schema';
 import { MeterRecordItem } from 'src/meter-record/schemas/meter-record-item.schema';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { Fee, FeeSchema } from 'src/fees/schemas/fee.schema';
+import { BillRoomStatus } from '../enum/bill-room-status.enum';
 
 export type BillRoomDocument = BillRoom & Document;
 @Schema()
 export class BillRoom extends Document {
   _id: string;
+
+  @Prop({ required: true })
+  billNo: string;
 
   @Prop({ type: Types.ObjectId, ref: 'Room', required: true })
   room: Room;
@@ -83,6 +87,9 @@ export class BillRoom extends Document {
 
   @Prop({ default: false, required: true })
   isPaid: boolean;
+
+  @Prop({ required: true, default: BillRoomStatus.UNPAID })
+  status: BillRoomStatus;
 
   @Prop({ default: null })
   paidDate: Date;

@@ -112,7 +112,6 @@ export class RoomController {
       residenceId,
       roomId,
       updateRoomDto,
-      true,
     );
   }
 

@@ -45,9 +45,4 @@ export class CreateRoomDto {
   @IsNumber()
   @Min(0)
   roomRentalPrice: number;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  currentRenter: string;
 }
