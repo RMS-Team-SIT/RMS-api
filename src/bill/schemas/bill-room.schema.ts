@@ -85,9 +85,6 @@ export class BillRoom extends Document {
   @Prop({ default: null })
   paidEvidenceImage: string;
 
-  @Prop({ default: false, required: true })
-  isPaid: boolean;
-
   @Prop({ required: true, default: BillRoomStatus.UNPAID })
   status: BillRoomStatus;
 

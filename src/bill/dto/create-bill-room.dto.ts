@@ -1,3 +1,5 @@
+import { BillRoomStatus } from "../enum/bill-room-status.enum";
+
 export class CreateBillRoomDto {
   room: string;
   bill: string;
@@ -10,7 +12,7 @@ export class CreateBillRoomDto {
   totalPrice: number;
   paider: string;
   paidEvidenceImage: string;
-  isPaid: boolean;
+  status: BillRoomStatus;
   paidDate: Date;
   created_at: Date;
   updated_at: Date;
