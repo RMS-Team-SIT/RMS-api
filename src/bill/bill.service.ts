@@ -203,9 +203,16 @@ export class BillService {
     billRoomId: string,
     updateBillRoomDto: UpdateBillRoomDto,
   ): Promise<BillRoom> {
+
+    console.log({ billId, billRoomId, updateBillRoomDto });
+    let x = await this.billRoomModel.findOne({
+      _id: billRoomId,
+    }).exec();
+    console.log({ x });
+
+
     return await this.billRoomModel.findOneAndUpdate({
       _id: billRoomId,
-      bill: billId,
     }, {
       ...updateBillRoomDto,
       updated_at: new Date(),
