@@ -4,6 +4,7 @@ import { BillService } from './bill.service';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
 
 @ApiTags('Bill')
 @Controller('/residence/:residenceId/bill')
@@ -41,5 +42,19 @@ export class BillController {
     @Body() updateBillDto: UpdateBillDto,
   ) {
     return this.billService.updateBill(residenceId, billId, updateBillDto);
+  }
+
+  @Put('/:billId/bill-room/:billRoomId')
+  async updateBillRoom(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+    @Param('billRoomId') billRoomId: string,
+    @Body() updateBillRoomDto: UpdateBillRoomDto,
+  ) {
+    return this.billService.updateBillRoom(
+      billId,
+      billRoomId,
+      updateBillRoomDto,
+    );
   }
 }

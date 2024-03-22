@@ -9,6 +9,7 @@ import { MeterRecordService } from 'src/meter-record/meter-record.service';
 import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
+import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
 
 @Injectable()
 export class BillService {
@@ -196,4 +197,23 @@ export class BillService {
   ) {
     return null;
   }
+
+  async updateBillRoom(
+    billId: string,
+    billRoomId: string,
+    updateBillRoomDto: UpdateBillRoomDto,
+  ) {
+    //  Find billRoom
+    return this.billRoomModel.findOneAndUpdate({
+      _id: billRoomId,
+      bill: {
+        _id: billId,
+      }
+    }, {
+      ...updateBillRoomDto,
+      updated_at: new Date(),
+    }, { new: true })
+  }
+
+
 }
