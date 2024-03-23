@@ -33,7 +33,7 @@ export class MeterRecordItem extends Document {
   // isLocked means that the record-item is not allowed to be updated.
   // Case 1: When the bill is generated, the record-item is locked.
   // Case 2: When create a new record-item, all the previous record is locked.
-  @Prop({ default: true })
+  @Prop({ default: false })
   isLocked: boolean;
 
   // isBillGenerated means that the bill is generated from this record-item.

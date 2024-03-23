@@ -32,7 +32,7 @@ export class BillController {
     @Param('residenceId') residenceId: string,
     @Param('billId') billId: string,
   ) {
-    return this.billService.getBillById(residenceId, billId);
+    return this.billService.findById(residenceId, billId);
   }
 
   @Put('/:billId/')

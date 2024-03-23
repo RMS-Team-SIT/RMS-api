@@ -32,6 +32,10 @@ export class BillService {
     return billNumber;
   }
 
+  async findOne(billId: string): Promise<Bill> {
+    return this.billModel.findById(billId).exec();
+  }
+
   async createBill(residenceId: string, createBillDto: CreateBillDto) {
     const residence = await this.residenceService.findOne(residenceId);
 
@@ -42,36 +46,44 @@ export class BillService {
         residenceId,
       );
 
-    // Lock meterRecord
-    await this.meterRecordService.lockMeterRecord(meterRecord._id);
-    // Set isBillGenerated to true
-    await this.meterRecordService.setBillGenerated(meterRecord._id);
+    // If isBillGenerated is true it means that the bill is already generated
+    const shouldCreateBill = !meterRecord.isBillGenerated;
+    let billId = null;
 
-    // Create bill
-    const createdBill = await new this.billModel({
-      residence: residenceId,
-      ...createBillDto,
-      created_at: new Date(),
-      updated_at: new Date(),
-    }).save();
+    if (shouldCreateBill) {
+      // Lock meterRecord
+      await this.meterRecordService.lockMeterRecord(meterRecord._id);
+      // Set isBillGenerated to true
+      await this.meterRecordService.setBillGenerated(meterRecord._id);
 
-    // Add bill to residence
-    await this.residenceService.addBillToResidence(
-      residenceId,
-      createdBill._id,
-    );
+      // Create bill
+      const createdBill = await new this.billModel({
+        residence: residenceId,
+        ...createBillDto,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }).save();
 
-    // Add bill to meterRecord
-    await this.meterRecordService.addBillToMeterRecord(
-      meterRecord._id,
-      createdBill._id,
-    );
+      // Add bill to residence
+      await this.residenceService.addBillToResidence(
+        residenceId,
+        createdBill._id,
+      );
+
+      // Add bill to meterRecord
+      await this.meterRecordService.addBillToMeterRecord(
+        meterRecord._id,
+        createdBill._id,
+      );
+
+      billId = createdBill._id;
+    } else {
+      billId = meterRecord.bill._id;
+    }
 
     // Create billRoom from meterRecordItems
     const meterRecordItems = meterRecord.meterRecordItems
       .filter(meterRecordItem => createBillDto.meterRecordItems.includes(meterRecordItem._id.toString()));
-
-    console.log({ meterRecordItems });
 
     // CreateBillRooms
     meterRecordItems.forEach(async (meterRecordItem) => {
@@ -79,6 +91,10 @@ export class BillService {
         residenceId,
         meterRecordItem.room._id,
       );
+
+      // set isBillGenerated, isLocked meterRecordItem 
+      await this.meterRecordService.setMeterRecordItemBillGenerated(meterRecord._id, meterRecordItem._id);
+      // await this.meterRecordService.lockMeterRecordItem(meterRecordItem._id);
 
       // Get water, electric and rentalPrice
       const waterPriceRate = residence.defaultWaterPriceRate;
@@ -100,7 +116,7 @@ export class BillService {
       const billRoomData = {
         billNo: this.generateBillNumber(10),
         room: room._id,
-        bill: createdBill._id,
+        bill: billId,
         meterRecord: meterRecord._id,
         fees,
         feesCache: fees,
@@ -131,10 +147,10 @@ export class BillService {
       );
 
       // Add BillRoom to Bill
-      await this.addBillRoomToBill(createdBill._id, createdBillRoom._id);
+      await this.addBillRoomToBill(billId, createdBillRoom._id);
     });
 
-    return createdBill;
+    return this.findById(residenceId, billId);
   }
 
   async getBillByResidence(residenceId: string): Promise<Bill[]> {
@@ -160,7 +176,7 @@ export class BillService {
       .exec();
   }
 
-  async getBillById(residenceId: string, billId: string): Promise<Bill> {
+  async findById(residenceId: string, billId: string): Promise<Bill> {
     return this.billModel
       .findOne({
         _id: billId,

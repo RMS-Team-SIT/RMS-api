@@ -270,4 +270,25 @@ export class MeterRecordService {
 
     return updatedMeterRecord;
   }
+
+  async setMeterRecordItemBillGenerated(
+    meterRecordId: string,
+    meterRecordItemId: string,
+  ): Promise<MeterRecord> {
+    // Check meter record item exists
+    const meterRecordItem = await this.meterRecordModel.findOneAndUpdate(
+      {
+        _id: meterRecordId,
+        'meterRecordItems._id': meterRecordItemId,
+      },
+      {
+        $set: {
+          'meterRecordItems.$.isBillGenerated': true,
+        },
+      },
+      { new: true }).exec();
+
+    return meterRecordItem;
+  }
+
 }
