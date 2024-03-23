@@ -314,6 +314,8 @@ export class ResidenceService {
       .findById(residenceId)
       .select({
         name: 1,
+        _id:1,
+        images: 1,
       })
       .exec();
     if (!residence) {
