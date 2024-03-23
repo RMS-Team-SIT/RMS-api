@@ -51,7 +51,7 @@ export class AuthGuard implements CanActivate {
         if (!renter) {
           throw new UnauthorizedException();
         }
-        request['user'] = { id, roles: role, renter };
+        request['user'] = { id, roles: UserRole.RENTER, renter };
       } else {
         const user = await this.userService.findOne(id);
         if (!user) {
