@@ -24,12 +24,13 @@ export class BillService {
   ) { }
 
   private generateBillNumber = (length = 8) => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let billNumber = '';
-    for (let i = 0; i < length; i++) {
-      billNumber += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return billNumber;
+    return + new Date();
+    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    // let billNumber = '';
+    // for (let i = 0; i < length; i++) {
+    //   billNumber += characters.charAt(Math.floor(Math.random() * characters.length));
+    // }
+    // return billNumber;
   }
 
   async findOne(billId: string): Promise<Bill> {
@@ -157,7 +158,12 @@ export class BillService {
     return this.billModel
       .find({ residence: residenceId })
       .populate('billRooms')
-      .populate('meterRecord')
+      .populate({
+        path: 'meterRecord',
+        select: {
+          meterRecordItems: 0
+        }
+      })
       .populate({
         path: 'billRooms',
         populate: {
