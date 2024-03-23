@@ -58,7 +58,10 @@ export class Residence extends Document {
   defaultElectricPriceRate: number;
 
   @Prop({ default: 1 })
-  paymentDueDate: number;
+  billDueDate: number;
+
+  @Prop({ default: null })
+  taxId: string;
 
   @Prop({ default: 0 })
   latePaymentFine: number;
