@@ -64,6 +64,9 @@ export class BillRoom extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Fee' }], default: [] })
   fees: Fee[];
 
+  @Prop({ type: [FeeSchema], default: [] })
+  feesCache: Fee[];
+
   @Prop({ required: true })
   totalFeesPrice: number;
 

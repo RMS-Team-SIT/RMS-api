@@ -103,6 +103,7 @@ export class BillService {
         bill: createdBill._id,
         meterRecord: meterRecord._id,
         fees,
+        feesCache: fees,
         totalFeesPrice,
         meterRecordItem: meterRecordItem._id,
         waterPriceRate,

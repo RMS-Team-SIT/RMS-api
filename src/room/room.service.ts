@@ -339,4 +339,11 @@ export class RoomService {
       )
       .exec();
   }
+
+  async removeFeeFromAllRoomInResidence(residenceId: string, feeId: string) {
+    return this.roomModel.updateMany(
+      { residence: residenceId },
+      { $pull: { fees: feeId } },
+    ).exec();
+  }
 }

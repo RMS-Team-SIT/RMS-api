@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { FeesService } from './fees.service';
 import { UpdateFeeDto } from './dto/update-fee.dto';
@@ -37,5 +37,12 @@ export class FeesController {
         @Body() updateFeeDto: UpdateFeeDto
     ) {
         return await this.feesService.update(residenceId, feeId, updateFeeDto);
+    }
+
+    @Delete('/:feeId')
+    async remove(
+        @Param('residenceId') residenceId: string,
+        @Param('feeId') feeId: string) {
+        return await this.feesService.remove(residenceId, feeId);
     }
 }

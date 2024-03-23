@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { CreateFeeDto } from './dto/create-fee.dto';
 import { UpdateFeeDto } from './dto/update-fee.dto';
 import { ResidenceService } from 'src/residence/residence.service';
+import { RoomService } from 'src/room/room.service';
 
 @Injectable()
 export class FeesService {
@@ -12,6 +13,7 @@ export class FeesService {
     @InjectModel(Fee.name)
     private readonly feeModel: Model<Fee>,
     private readonly residenceService: ResidenceService,
+    private readonly roomService: RoomService,
   ) { }
 
   async create(residenceId: string, createFeeDto: CreateFeeDto): Promise<Fee> {
@@ -69,5 +71,17 @@ export class FeesService {
       },
       { new: true },
     );
+  }
+
+  async remove(residenceId: string, feeId: string): Promise<Fee> {
+    
+    const fee = await this.feeModel.findOneAndDelete({
+      residence: residenceId,
+      _id: feeId
+    });
+    
+    await this.residenceService.removeFeeFromResidence(residenceId, feeId);
+    await this.roomService.removeFeeFromAllRoomInResidence(residenceId, feeId);
+    return fee;
   }
 }

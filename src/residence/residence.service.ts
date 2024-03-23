@@ -314,7 +314,7 @@ export class ResidenceService {
       .findById(residenceId)
       .select({
         name: 1,
-        _id:1,
+        _id: 1,
         images: 1,
       })
       .exec();
@@ -452,6 +452,19 @@ export class ResidenceService {
       .findOneAndUpdate(
         { _id: residenceId },
         { $push: { fees: [...feeIds] } },
+        { new: true },
+      )
+      .exec();
+  }
+
+  async removeFeeFromResidence(residenceId: string, feeId: string): Promise<Residence> {
+    validateObjectIdFormat(residenceId, 'Residence');
+    validateObjectIdFormat(feeId, 'Fee');
+
+    return this.residenceModel
+      .findOneAndUpdate(
+        { _id: residenceId },
+        { $pull: { fees: feeId } },
         { new: true },
       )
       .exec();
