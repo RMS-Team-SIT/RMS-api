@@ -11,7 +11,7 @@ import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
 // @ApiBearerAuth()
 @Public() // <- For testing remove this
 export class BillController {
-  constructor(private readonly billService: BillService) {}
+  constructor(private readonly billService: BillService) { }
 
   @Post('')
   async createBill(
@@ -42,6 +42,16 @@ export class BillController {
     @Body() updateBillDto: UpdateBillDto,
   ) {
     return this.billService.updateBill(residenceId, billId, updateBillDto);
+  }
+
+
+  @Get('/:billId/bill-room/:billRoomId')
+  async getBillRoomById(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+    @Param('billRoomId') billRoomId: string,
+  ) {
+    return this.billService.findBillRoomById(billId, billRoomId);
   }
 
   @Put('/:billId/bill-room/:billRoomId')

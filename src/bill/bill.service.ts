@@ -10,6 +10,7 @@ import { MeterRecord } from 'src/meter-record/schemas/meter-record.schema';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
+import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 
 @Injectable()
 export class BillService {
@@ -202,6 +203,17 @@ export class BillService {
       .sort({
         'meterRecord.record_date': -1, // Sort by record_date in meterRecord in descending order
       })
+      .exec();
+  }
+
+  async findBillRoomById(billId: string, billRoomId: string): Promise<BillRoom> {
+    validateObjectIdFormat(billRoomId);
+    return this.billRoomModel
+      .findOne({
+        _id: billRoomId,
+      })
+      .populate('bill', { billRooms: 0 })
+      .populate('room')
       .exec();
   }
 

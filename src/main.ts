@@ -7,7 +7,6 @@ import helmet from 'helmet';
 import { urlencoded, json } from 'express';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
-import { SpelunkerModule } from 'nestjs-spelunker';
 import { apiReference } from '@scalar/nestjs-api-reference';
 
 function configureSwagger(app: NestExpressApplication) {
@@ -69,7 +68,7 @@ async function bootstrap() {
     console.log(`Environment : ${process.env.TEST_ENV}`);
     console.log(`Application is running on port : ${port}`);
     console.log(`Swagger is running on : /${process.env.OPENAPI_PATH}`);
-    console.log(`Swagger Ref is running on : /${process.env.OPENAPI_PATH}`);
+    console.log(`Swagger Ref is running on : /${process.env.SCALAR_PATH}`);
 
   } catch (error) {
     console.error('Error during application startup:', error);
