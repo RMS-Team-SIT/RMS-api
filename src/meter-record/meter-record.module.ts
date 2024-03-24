@@ -11,7 +11,7 @@ import { ResidenceModule } from 'src/residence/residence.module';
   imports: [
     MongooseModule.forFeature([
       { name: 'MeterRecord', schema: MeterRecordSchema },
-      // { name: 'MeterRecordItem', schema: MeterRecordItemSchema }
+      { name: 'MeterRecordItem', schema: MeterRecordItemSchema }
     ]),
     ResidenceModule,
   ],
