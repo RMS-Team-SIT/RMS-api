@@ -173,6 +173,17 @@ export class RoomService {
       .populate({
         path: 'billRooms',
         populate: {
+          path: 'renter',
+          select: {
+            _id: 1,
+            firstname: 1,
+            lastname: 1,
+          },
+        },
+      })
+      .populate({
+        path: 'billRooms',
+        populate: {
           path: 'fees',
           select: {
             feename: 1,
@@ -192,6 +203,7 @@ export class RoomService {
         },
       })
       .populate('currentRenter')
+      .populate('renterHistory')
       .exec();
 
     if (!room) {
@@ -287,11 +299,6 @@ export class RoomService {
         updateRoomRenterDto.renterId,
         roomId,
       );
-    } else {
-      // remove room from old renter if exist
-      if (room.currentRenter) {
-        await this.renterService.removeRoomFromRenter(room.currentRenter);
-      }
     }
 
     // update room

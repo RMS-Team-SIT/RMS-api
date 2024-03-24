@@ -118,6 +118,7 @@ export class BillService {
       const billRoomData = {
         billNo: this.generateBillNumber(10),
         room: room._id,
+        renter: room.currentRenter,
         bill: billId,
         meterRecord: meterRecord._id,
         fees,
@@ -175,6 +176,17 @@ export class BillService {
         path: 'billRooms',
         populate: {
           path: 'fees',
+        },
+      })
+      .populate({
+        path: 'billRooms',
+        populate: {
+          path: 'renter',
+          select: {
+            _id: 1,
+            firstname: 1,
+            lastname: 1,
+          }
         },
       })
       .sort({
