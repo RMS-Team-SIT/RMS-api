@@ -261,7 +261,7 @@ export class RoomService {
     // check if rantal update
     if (updateRoomRenterDto.renterId) {
       // check is new renter exist
-      const renter = await this.renterService.findOneRenter(
+      await this.renterService.findOneRenter(
         updateRoomRenterDto.renterId,
         true,
       );
@@ -300,6 +300,7 @@ export class RoomService {
         roomId,
         {
           currentRenter: updateRoomRenterDto.renterId ? updateRoomRenterDto.renterId : null,
+          renterHistory: updateRoomRenterDto.renterId ? [...room.renterHistory, room.currentRenter] : room.renterHistory,
           status: updateRoomRenterDto.renterId ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE,
           updated_at: Date.now(),
         },

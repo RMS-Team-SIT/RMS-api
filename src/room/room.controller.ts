@@ -79,7 +79,7 @@ export class RoomController {
 
   // Update Renter
   @Put('/:roomId/renter')
-  async updateRoomRenterInResidence(
+  async updateRoomRenter(
     @Req() req,
     @Param('residenceId') residenceId: string,
     @Param('roomId') roomId: string,

@@ -14,6 +14,7 @@ export class CreateBillRoomDto {
   paidEvidenceImage: string;
   status: BillRoomStatus;
   paidDate: Date;
+  discount: number;
   created_at: Date;
   updated_at: Date;
 }

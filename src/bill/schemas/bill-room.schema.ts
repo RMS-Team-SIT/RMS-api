@@ -61,6 +61,10 @@ export class BillRoom extends Document {
   @Prop({ required: true })
   totalElectricMeterUsage: number;
 
+  @Prop({ required: true })
+  electricTotalPrice: number;
+  
+  // Fee 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Fee' }], default: [] })
   fees: Fee[];
 
@@ -74,8 +78,9 @@ export class BillRoom extends Document {
   @Prop({ required: true })
   roomRentalPrice: number;
 
-  @Prop({ required: true })
-  electricTotalPrice: number;
+  // Discount
+  @Prop({ required: true, default: 0})
+  discount: number;
 
   // total
   @Prop({ required: true })

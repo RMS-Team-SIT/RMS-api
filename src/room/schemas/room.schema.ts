@@ -36,6 +36,9 @@ export class Room extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Renter', default: null })
   currentRenter: Renter;
 
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Renter' }], default: [] })
+  renterHistory: Renter[];
+
   @Prop({ default: RoomStatus.AVAILABLE })
   status: RoomStatus;
 
