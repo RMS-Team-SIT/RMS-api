@@ -300,15 +300,39 @@ export class RoomService {
         roomId,
         {
           currentRenter: updateRoomRenterDto.renterId ? updateRoomRenterDto.renterId : null,
-          renterHistory: updateRoomRenterDto.renterId ? [...room.renterHistory, room.currentRenter] : room.renterHistory,
+          renterHistory: updateRoomRenterDto.renterId ? [...room.renterHistory, updateRoomRenterDto.renterId] : room.renterHistory,
           status: updateRoomRenterDto.renterId ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE,
           updated_at: Date.now(),
         },
         { new: true },
       )
       .exec();
+  }
 
+  async deleteRoomRenter(residenceId: string, roomId: string): Promise<Room> {
+    validateObjectIdFormat(roomId, 'Room');
+    validateObjectIdFormat(residenceId, 'Residence');
+    const room = await this.findOne(roomId);
 
+    // check residence is exist
+    await this.residenceService.findOne(residenceId);
+
+    if (room.currentRenter) {
+      await this.renterService.removeRoomFromRenter(room.currentRenter);
+    }
+
+    // update room
+    return await this.roomModel
+      .findByIdAndUpdate(
+        roomId,
+        {
+          currentRenter: null,
+          status: RoomStatus.AVAILABLE,
+          updated_at: Date.now(),
+        },
+        { new: true },
+      )
+      .exec();
   }
 
   async deleteRoom(residenceId: string, roomId: string): Promise<Room> {

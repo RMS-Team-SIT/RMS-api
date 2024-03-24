@@ -79,7 +79,7 @@ export class RoomController {
 
   // Update Renter
   @Put('/:roomId/renter')
-  async updateRoomRenter(
+  async addRoomRenter(
     @Req() req,
     @Param('residenceId') residenceId: string,
     @Param('roomId') roomId: string,
@@ -94,6 +94,19 @@ export class RoomController {
       roomId,
       updateRoomDto,
     );
+  }
+
+  @Delete('/:roomId/renter')
+  async deleteRoomRenter(
+    @Req() req,
+    @Param('residenceId') residenceId: string,
+    @Param('roomId') roomId: string,
+  ): Promise<Room> {
+    const userId = req.user.id;
+
+    await this.residenceService.checkOwnerPermission(userId, residenceId);
+    
+    return await this.roomService.deleteRoomRenter(residenceId, roomId);
   }
 
   // Update detail
@@ -116,25 +129,23 @@ export class RoomController {
   }
 
   // With renter
-  @Put('/:roomId')
-  async updateRoomInResidence(
-    @Req() req,
-    @Param('residenceId') residenceId: string,
-    @Param('roomId') roomId: string,
-    @Body() updateRoomDto: UpdateRoomDto,
-  ): Promise<Room> {
-    const userId = req.user.id;
+  // @Put('/:roomId')
+  // async updateRoomInResidence(
+  //   @Req() req,
+  //   @Param('residenceId') residenceId: string,
+  //   @Param('roomId') roomId: string,
+  //   @Body() updateRoomDto: UpdateRoomDto,
+  // ): Promise<Room> {
+  //   const userId = req.user.id;
 
-    await this.residenceService.checkOwnerPermission(userId, residenceId);
+  //   await this.residenceService.checkOwnerPermission(userId, residenceId);
 
-    return await this.roomService.updateRoom(
-      residenceId,
-      roomId,
-      updateRoomDto,
-    );
-  }
-
-
+  //   return await this.roomService.updateRoom(
+  //     residenceId,
+  //     roomId,
+  //     updateRoomDto,
+  //   );
+  // }
 
   @Delete('/:roomId')
   async deleteRoomInResidence(

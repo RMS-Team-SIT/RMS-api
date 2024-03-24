@@ -1,6 +1,8 @@
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { UserRole } from '../../auth/enum/user-role.enum';
 import { Document, Types } from 'mongoose';
+import { Residence } from 'src/residence/schemas/residence.schema';
+import { Room } from 'src/room/schemas/room.schema';
 
 export type UserDocument = User & Document;
 
@@ -56,6 +58,24 @@ export class User extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Notification' }], default: [] })
   notifications: Notification[];
 
+  // For only renter
+  // @Prop({ type: Types.ObjectId, ref: 'Residence', required: true })
+  // residence: Residence;
+
+  // @Prop({ type: Types.ObjectId, ref: 'Room', default: null })
+  // room: Room;
+
+  // @Prop({ default: null })
+  // copyOfIdCard: string;
+
+  // @Prop({ default: null })
+  // renterContract: string;
+
+  // @Prop({ default: true })
+  // isActive: boolean;
+  // End of renter
+
+  // Time
   @Prop({ required: true, default: Date.now() })
   created_at: Date;
 
