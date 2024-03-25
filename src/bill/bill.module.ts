@@ -7,6 +7,7 @@ import { Bill, BillSchema } from './schemas/bill.schema';
 import { ResidenceModule } from 'src/residence/residence.module';
 import { RoomModule } from 'src/room/room.module';
 import { MeterRecordModule } from 'src/meter-record/meter-record.module';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MeterRecordModule } from 'src/meter-record/meter-record.module';
     ResidenceModule,
     RoomModule,
     MeterRecordModule,
+    NotificationModule,
   ],
   providers: [BillService],
   controllers: [BillController],

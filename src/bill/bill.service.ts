@@ -11,6 +11,8 @@ import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
+import { BillRoomStatus } from './enum/bill-room-status.enum';
+import { NotificationService } from 'src/notification/notification.service';
 
 @Injectable()
 export class BillService {
@@ -22,16 +24,11 @@ export class BillService {
     private readonly roomService: RoomService,
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
+    private readonly notificationService: NotificationService,
   ) { }
 
   private generateBillNumber = (length = 8) => {
     return + new Date();
-    // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    // let billNumber = '';
-    // for (let i = 0; i < length; i++) {
-    //   billNumber += characters.charAt(Math.floor(Math.random() * characters.length));
-    // }
-    // return billNumber;
   }
 
   async findOne(billId: string): Promise<Bill> {
@@ -250,14 +247,6 @@ export class BillService {
     billRoomId: string,
     updateBillRoomDto: UpdateBillRoomDto,
   ): Promise<BillRoom> {
-
-    console.log({ billId, billRoomId, updateBillRoomDto });
-    let x = await this.billRoomModel.findOne({
-      _id: billRoomId,
-    }).exec();
-    console.log({ x });
-
-
     return await this.billRoomModel.findOneAndUpdate({
       _id: billRoomId,
     }, {
