@@ -307,7 +307,6 @@ export class RoomService {
         roomId,
         {
           currentRenter: updateRoomRenterDto.renterId ? updateRoomRenterDto.renterId : null,
-          renterHistory: updateRoomRenterDto.renterId ? [...room.renterHistory, updateRoomRenterDto.renterId] : room.renterHistory,
           status: updateRoomRenterDto.renterId ? RoomStatus.OCCUPIED : RoomStatus.AVAILABLE,
           updated_at: Date.now(),
         },
@@ -333,6 +332,7 @@ export class RoomService {
       .findByIdAndUpdate(
         roomId,
         {
+          renterHistory: [...room.renterHistory, room.currentRenter],
           currentRenter: null,
           status: RoomStatus.AVAILABLE,
           updated_at: Date.now(),
