@@ -72,9 +72,9 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async findMe(@Req() req): Promise<User> {
     const role = req.user.roles;
-    
+
     if (role === UserRole.RENTER) {
-      return { ...req.user.renter, role: [UserRole.RENTER] };
+      return { ...req.user.renter, role: [UserRole.RENTER], renter: req.user.renter};
     } else {
       const userId = req.user.id;
       const user = await this.userService.findOne(userId);
