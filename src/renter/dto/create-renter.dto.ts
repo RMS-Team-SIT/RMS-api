@@ -27,12 +27,6 @@ export class CreateRenterDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty()
-  @MaxLength(200)
-  username: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty()
   password: string;
 
   @IsEmail()

@@ -46,11 +46,13 @@ export class RenterService {
     // check residence is exist
     await this.residenceService.findOne(residenceId);
 
+
     // check renter username is exist
-    await this.checkRenterUsernameExist(createRenterDto.username, residenceId);
+    await this.checkRenterUsernameExist(createRenterDto.email, residenceId);
 
     const createdRenter = await new this.renterModel({
       ...createRenterDto,
+      username: createRenterDto.email,
       residence: residenceId,
       created_at: new Date(),
       updated_at: new Date(),
@@ -153,7 +155,7 @@ export class RenterService {
 
     // check renter username is exist in this residence except this renter
     this.checkRenterUsernameExist(
-      updateRenterDto.username,
+      updateRenterDto.email,
       residenceId,
       renterId,
     );
@@ -164,6 +166,7 @@ export class RenterService {
         renterId,
         {
           ...updateRenterDto,
+          username: updateRenterDto.email,
           updated_at: Date.now(),
         },
         { new: true },
