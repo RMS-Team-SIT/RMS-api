@@ -223,6 +223,7 @@ export class BillService {
       })
       .populate('bill', { billRooms: 0 })
       .populate('room')
+      .populate('renter', { _id: 1, firstname: 1, lastname: 1 })
       .exec();
   }
 

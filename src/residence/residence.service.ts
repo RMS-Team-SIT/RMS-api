@@ -260,6 +260,8 @@ export class ResidenceService {
         path: 'owner',
         select: {
           _id: 1,
+          firstname: 1,
+          lastname: 1,
         },
       })
       .populate('renters')
