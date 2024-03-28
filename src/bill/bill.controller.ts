@@ -5,6 +5,8 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
+import { UpdateBillRoomPaidEvidenceDto } from './dto/update-bill-room-paid-evidence.dto';
+import { UpdateBillRoomStatusDto } from './dto/update-bill-room-status.dto';
 
 @ApiTags('Bill')
 @Controller('/residence/:residenceId/bill')
@@ -67,4 +69,33 @@ export class BillController {
       updateBillRoomDto,
     );
   }
+
+  @Put('/:billId/bill-room/:billRoomId/status')
+  async updateBillRoomStatus(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+    @Param('billRoomId') billRoomId: string,
+    @Body() updateBillRoomDto: UpdateBillRoomStatusDto,
+  ) {
+    return this.billService.updateBillRoomStatus(
+      billId,
+      billRoomId,
+      updateBillRoomDto,
+    );
+  }
+
+  @Put('/:billId/bill-room/:billRoomId/paid-evidence')
+  async updateBillRoomPaidEvidence(
+    @Param('residenceId') residenceId: string,
+    @Param('billId') billId: string,
+    @Param('billRoomId') billRoomId: string,
+    @Body() updateBillRoomDto: UpdateBillRoomPaidEvidenceDto,
+  ) {
+    return this.billService.updateBillRoomPaidEvidence(
+      billId,
+      billRoomId,
+      updateBillRoomDto,
+    );
+  }
+
 }

@@ -13,6 +13,9 @@ import { UpdateBillRoomDto } from './dto/update-bill-room.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { BillRoomStatus } from './enum/bill-room-status.enum';
 import { NotificationService } from 'src/notification/notification.service';
+import { UpdateBillRoomStatusDto } from './dto/update-bill-room-status.dto';
+import { UpdateBillRoomPaidEvidenceDto } from './dto/update-bill-room-paid-evidence.dto';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class BillService {
@@ -25,6 +28,7 @@ export class BillService {
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
     private readonly notificationService: NotificationService,
+    private readonly userService: UserService,
   ) { }
 
   private generateBillNumber = (length = 8) => {
@@ -256,5 +260,55 @@ export class BillService {
     }, { new: true }).exec();
   }
 
+  async updateBillRoomStatus(
+    billId: string,
+    billRoomId: string,
+    updateBillRoomDto: UpdateBillRoomStatusDto,
+  ): Promise<BillRoom> {
+    return await this.billRoomModel.findOneAndUpdate({
+      _id: billRoomId,
+    }, {
+      status: updateBillRoomDto.status,
+      updated_at: new Date(),
+    }, { new: true }).exec();
+  }
 
+  async updateBillRoomPaidEvidence(
+    billId: string,
+    billRoomId: string,
+    updateBillRoomDto: UpdateBillRoomPaidEvidenceDto,
+  ): Promise<BillRoom> {
+
+    let status = BillRoomStatus.UNPAID;
+    if (updateBillRoomDto.paidEvidenceImage) {
+      // Notify to owner
+      const billRoom = await this.findBillRoomById(billId, billRoomId);
+      console.log(billRoom);
+      const residence = await this.residenceService.findOne(billRoom.bill.residence.toString());
+      const owner = residence.owner;
+      // send notification to admins
+      const notification = {
+        tos: [owner._id.toString()],
+        toEmails: [owner.email],
+        title: 'มีการอัพโหลดหลักฐานการชำระเงินใหม่',
+        content: `มีการอัพโหลดหลักฐานการชำระเงินใหม่จากห้อง: ${billRoom.room.name}\nสำหรับบิลเลขที่ ${billRoom.billNo}\nกรุณาตรวจสอบหลักฐานการชำระเงิน`,
+        isSentEmail: true,
+        isRead: false,
+      };
+
+      const createdNotification = await this.notificationService.create(notification);
+
+      await this.userService.addNotificationToUser(owner._id, createdNotification._id);
+
+      status = BillRoomStatus.UPLOADED;
+    }
+
+    return await this.billRoomModel.findOneAndUpdate({
+      _id: billRoomId,
+    }, {
+      status,
+      paidEvidenceImage: updateBillRoomDto.paidEvidenceImage,
+      updated_at: new Date(),
+    }, { new: true }).exec();
+  }
 }
