@@ -134,7 +134,8 @@ export class ResidenceService {
       payments,
       roomTypes,
       rooms,
-      paymentNotes
+      paymentNotes,
+      taxId,
     } = createResidenceFullyDto;
 
     const residenceModel = new this.residenceModel({
@@ -150,6 +151,7 @@ export class ResidenceService {
       residenceBusinessLicense,
       isApproved: false,
       paymentNotes,
+      taxId,
     });
     const createdResidence = await residenceModel.save();
 
