@@ -44,7 +44,7 @@ export class CreateResidenceFullyDto {
   residenceBusinessLicense: string;
 
   @ApiProperty()
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   paymentNotes: string;
 
