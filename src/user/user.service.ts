@@ -17,6 +17,7 @@ import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { NotificationService } from 'src/notification/notification.service';
 import { UploadIdCardDto } from './dto/upload-idcard.dto';
 import { ResponseUserOverallStatsDto } from './dto/response-user-overallstats.dto';
+import { RMSConfigService } from 'src/rms-config/rms-config.service';
 
 @Injectable()
 export class UserService {
@@ -25,6 +26,7 @@ export class UserService {
     private userModel: Model<User>,
     private readonly mailService: MailService,
     private readonly notificationService: NotificationService,
+    private readonly rmsConfigService: RMSConfigService,
   ) { }
 
   async findAll(): Promise<User[]> {
@@ -415,7 +417,7 @@ export class UserService {
         { new: true },
       )
       .exec();
-      
+
     // send notification to admins
     const admins = await this.findAdmin();
     const adminNotification = {
