@@ -52,6 +52,7 @@
     "fontkit": "^2.0.2",
     "helmet": "^7.0.0",
     "js-yaml": "^4.1.0",
+    "mjml": "^4.15.3",
     "mongoose": "^7.4.3",
     "nodemailer": "^6.9.4",
     "pdf-lib": "^1.17.1",
