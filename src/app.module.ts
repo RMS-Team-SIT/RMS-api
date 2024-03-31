@@ -30,6 +30,7 @@ import { FeesModule } from './fees/fees.module';
 import { RoomTypeController } from './room-type/room-type.controller';
 import { RoomTypeModule } from './room-type/room-type.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
+import { RMSConfigModule } from './rms-config/rms-config.module';
 
 const ENV = process.env.NODE_ENV || 'development';
 console.log(`Current environment: ${ENV}`);
@@ -47,6 +48,7 @@ console.log(`Current environment: ${ENV}`);
         limit: parseInt(process.env.RATE_LIMIT_REQUEST_PER_TTL || '100'),
       },
     ]),
+    RMSConfigModule,
     ResidenceModule,
     BankModule,
     AuthModule,
