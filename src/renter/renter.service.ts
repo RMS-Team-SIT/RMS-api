@@ -130,6 +130,12 @@ export class RenterService {
           name: 1,
         },
       })
+      .populate({
+        path: 'billRooms',
+      })
+      .populate({
+        path: 'notifications',
+      })
       .select({
         password: 0,
         __v: 0,

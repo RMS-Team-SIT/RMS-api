@@ -166,9 +166,9 @@ export class BillService {
         tos: [],
         toRenters: [room.currentRenter._id],
         toEmails: [room.currentRenter.email],
-        title: 'มีบิลใหม่',
-        content: `มีบิลใหม่สำหรับห้อง: ${room.name}\n,บิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
-        isSentEmail: false,
+        title: 'มีบิลใหม่สำหรับห้องของคุณ',
+        content: `มีบิลใหม่สำหรับห้อง: ${room.name} \nบิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
+        isSentEmail: true,
         isRead: false,
       };
 
