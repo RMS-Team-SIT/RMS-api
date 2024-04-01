@@ -31,7 +31,9 @@ import { ResponseUserOverallStatsDto } from './dto/response-user-overallstats.dt
 @ApiBearerAuth()
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(
+    private readonly userService: UserService,
+  ) { }
 
   @Post('/create-admin')
   @Public()
@@ -70,11 +72,12 @@ export class UserController {
 
   @Get('/me')
   @HttpCode(HttpStatus.OK)
-  async findMe(@Req() req): Promise<User> {
+  async findMe(@Req() req): Promise<any> {
     const role = req.user.roles;
 
     if (role === UserRole.RENTER) {
-      return { ...req.user.renter, role: [UserRole.RENTER], renter: req.user.renter};
+      const renter = JSON.parse(JSON.stringify(req.user.renter));
+      return { role: [UserRole.RENTER], ...renter };
     } else {
       const userId = req.user.id;
       const user = await this.userService.findOne(userId);

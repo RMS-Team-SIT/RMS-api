@@ -6,6 +6,7 @@ import { User, UserSchema } from './schemas/user.schemas';
 import { MailModule } from 'src/mail/mail.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { RMSConfigModule } from 'src/rms-config/rms-config.module';
+import { RenterModule } from 'src/renter/renter.module';
 
 @Module({
   imports: [

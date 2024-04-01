@@ -20,7 +20,7 @@ export class AuthGuard implements CanActivate {
     private reflector: Reflector,
     private readonly userService: UserService,
     private readonly renterService: RenterService,
-  ) {}
+  ) { }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -51,7 +51,8 @@ export class AuthGuard implements CanActivate {
         if (!renter) {
           throw new UnauthorizedException();
         }
-        request['user'] = { id, roles: UserRole.RENTER, renter };
+        request['user'] = { id, roles: UserRole.RENTER, renter};
+
       } else {
         const user = await this.userService.findOne(id);
         if (!user) {

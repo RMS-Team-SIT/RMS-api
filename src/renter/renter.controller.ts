@@ -22,7 +22,7 @@ export class RenterController {
   constructor(
     private readonly renterService: RenterService,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   @Post('')
   async createRenter(

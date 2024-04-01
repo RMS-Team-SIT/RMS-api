@@ -117,11 +117,22 @@ export class RenterService {
     const renter = await this.renterModel
       .findOne(filter)
       .populate({
+        path: 'residence',
+        select: {
+          _id: 1,
+          name: 1,
+        },
+      })
+      .populate({
         path: 'room',
         select: {
           _id: 1,
           name: 1,
         },
+      })
+      .select({
+        password: 0,
+        __v: 0,
       })
       .exec();
 
