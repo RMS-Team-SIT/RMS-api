@@ -55,7 +55,6 @@ export class AuthService {
         sub: renter._id.toString(),
         id: renter._id.toString(),
         role: UserRole.RENTER,
-        renter,
       };
 
       return {
