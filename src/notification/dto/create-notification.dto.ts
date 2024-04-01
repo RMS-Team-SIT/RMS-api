@@ -5,7 +5,12 @@ export class CreateNotificationDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  tos: string[];
+  tos?: string[];
+  
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  toRenters?: string[];
 
   @ApiProperty()
   @IsOptional()

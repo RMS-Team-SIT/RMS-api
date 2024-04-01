@@ -10,11 +10,11 @@ export type NotificationDocument = Notification & Document;
 export class Notification {
   _id: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], required: true })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], required: false, default: [] })
   tos: User[];
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Renter' }], required: false, default: [] })
-  tosRenter: Renter[];
+  toRenters: Renter[];
 
   @Prop({ required: true })
   title: string;
