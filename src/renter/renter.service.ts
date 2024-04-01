@@ -257,4 +257,18 @@ export class RenterService {
       )
       .exec();
   }
+
+  async addNotificationToRenter(
+    renterId: string | Renter,
+    notificationId: string,
+  ): Promise<Renter> {
+    if (!renterId) return null;
+    return this.renterModel
+      .findByIdAndUpdate(
+        renterId,
+        { $push: { notifications: notificationId } },
+        { new: true },
+      )
+      .exec();
+  }
 }

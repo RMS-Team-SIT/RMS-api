@@ -157,9 +157,24 @@ export class BillService {
 
       // Add BillRoom to Renter
       await this.renterService.addBillRoomToRenter(
-        room.currentRenter,
+        room.currentRenter._id,
         createdBillRoom._id,
       );
+
+      // TODO: Add Notification to renter
+      const notification = {
+        tos: [],
+        toRenters: [room.currentRenter._id],
+        toEmails: [room.currentRenter.email],
+        title: 'มีบิลใหม่',
+        content: `มีบิลใหม่สำหรับห้อง: ${room.name}\n,บิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
+        isSentEmail: true,
+        isRead: false,
+      };
+
+      const createdNotification = await this.notificationService.create(notification);
+
+      await this.renterService.addNotificationToRenter(room.currentRenter._id, createdNotification._id);
     });
 
     return this.findById(residenceId, billId);
