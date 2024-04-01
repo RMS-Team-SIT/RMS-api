@@ -2,6 +2,7 @@ import { Document, Types } from 'mongoose';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 import { Residence } from '../../residence/schemas/residence.schema';
 import { Room } from '../../room/schemas/room.schema';
+import { BillRoom } from 'src/bill/schemas/bill-room.schema';
 
 export type RenterDocument = Renter & Document;
 
@@ -41,6 +42,12 @@ export class Renter extends Document {
 
   @Prop({ default: null })
   renterContract: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'BillRoom' }], default: [] })
+  billRooms: BillRoom[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Notification' }], default: [] })
+  notifications: Notification[];
 
   @Prop({ default: true })
   isActive: boolean;

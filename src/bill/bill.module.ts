@@ -9,6 +9,7 @@ import { RoomModule } from 'src/room/room.module';
 import { MeterRecordModule } from 'src/meter-record/meter-record.module';
 import { NotificationModule } from 'src/notification/notification.module';
 import { UserModule } from 'src/user/user.module';
+import { RenterModule } from 'src/renter/renter.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { UserModule } from 'src/user/user.module';
     MeterRecordModule,
     NotificationModule,
     UserModule,
+    RenterModule,
   ],
   providers: [BillService],
   controllers: [BillController],

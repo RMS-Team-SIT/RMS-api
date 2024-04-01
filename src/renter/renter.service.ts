@@ -17,7 +17,7 @@ export class RenterService {
     @InjectModel(Renter.name)
     private readonly renterModel: Model<Renter>,
     private readonly residenceService: ResidenceService,
-  ) {}
+  ) { }
 
   private async checkRenterUsernameExist(
     username: string,
@@ -241,6 +241,20 @@ export class RenterService {
   async removeRoomFromRenter(renterId: string | Renter): Promise<Renter> {
     return this.renterModel
       .findByIdAndUpdate(renterId, { room: null }, { new: true })
+      .exec();
+  }
+
+  async addBillRoomToRenter(
+    renterId: string | Renter,
+    billRoomId: string,
+  ): Promise<Renter> {
+    if (!renterId) return null;
+    return this.renterModel
+      .findByIdAndUpdate(
+        renterId,
+        { $push: { billRooms: billRoomId } },
+        { new: true },
+      )
       .exec();
   }
 }

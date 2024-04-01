@@ -16,6 +16,7 @@ import { RoomService } from './room.service';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { CreateManyRoomDto } from './dto/create-many-room.dto';
 import { UpdateRoomRenterDto } from './dto/update-room-renter.dto';
+import { UserRole } from 'src/auth/enum/user-role.enum';
 
 @Controller('/residence/:residenceId/room')
 @ApiTags('Room')
@@ -72,7 +73,10 @@ export class RoomController {
   ): Promise<Room> {
     const userId = req.user.id;
 
-    await this.residenceService.checkOwnerPermission(userId, residenceId);
+    // TODO: Check if user is renter or owner 
+    if (!req.user.roles.includes(UserRole.RENTER)) {
+      await this.residenceService.checkOwnerPermission(userId, residenceId);
+    }
 
     return await this.roomService.findOneRoom(residenceId, roomId);
   }
@@ -105,7 +109,7 @@ export class RoomController {
     const userId = req.user.id;
 
     await this.residenceService.checkOwnerPermission(userId, residenceId);
-    
+
     return await this.roomService.deleteRoomRenter(residenceId, roomId);
   }
 

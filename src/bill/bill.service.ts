@@ -16,6 +16,7 @@ import { NotificationService } from 'src/notification/notification.service';
 import { UpdateBillRoomStatusDto } from './dto/update-bill-room-status.dto';
 import { UpdateBillRoomPaidEvidenceDto } from './dto/update-bill-room-paid-evidence.dto';
 import { UserService } from 'src/user/user.service';
+import { RenterService } from 'src/renter/renter.service';
 
 @Injectable()
 export class BillService {
@@ -28,6 +29,7 @@ export class BillService {
     private readonly meterRecordService: MeterRecordService,
     private readonly residenceService: ResidenceService,
     private readonly notificationService: NotificationService,
+    private readonly renterService: RenterService,
     private readonly userService: UserService,
   ) { }
 
@@ -152,6 +154,12 @@ export class BillService {
 
       // Add BillRoom to Bill
       await this.addBillRoomToBill(billId, createdBillRoom._id);
+
+      // Add BillRoom to Renter
+      await this.renterService.addBillRoomToRenter(
+        room.currentRenter,
+        createdBillRoom._id,
+      );
     });
 
     return this.findById(residenceId, billId);
