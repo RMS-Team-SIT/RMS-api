@@ -210,6 +210,7 @@ export class RoomService {
             account_name: 1,
             account_number: 1,
             bank: 1,
+            isActive: 1,
           },
           populate: {
             path: 'bank',
