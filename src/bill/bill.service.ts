@@ -309,7 +309,7 @@ export class BillService {
       console.log(billRoom);
       const residence = await this.residenceService.findOne(billRoom.bill.residence.toString());
       const owner = residence.owner;
-      // send notification to admins
+      // send notification to owner
       const notification = {
         tos: [owner._id.toString()],
         toEmails: [owner.email],
@@ -318,6 +318,8 @@ export class BillService {
         isSentEmail: true,
         isRead: false,
       };
+      console.log('update bill service ', notification);
+      
 
       const createdNotification = await this.notificationService.create(notification);
 

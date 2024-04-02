@@ -17,7 +17,8 @@
     "notifications": [],
     "created_at": "2024-02-29T13:20:39.302Z",
     "updated_at": "2024-02-29T13:20:39.302Z",
-    "objId": "65e08502d0bb6ef5ee4428ed"
+    "objId": "65e08502d0bb6ef5ee4428ed",
+    "isSendEmailForNotification": true
   },
   {
     "firstname": "Admin",
@@ -37,6 +38,7 @@
     "notifications": [],
     "created_at": "2024-02-29T13:20:39.302Z",
     "updated_at": "2024-02-29T13:20:39.302Z",
-    "objId": "65e490c0468bf8407554a60c"
+    "objId": "65e490c0468bf8407554a60c",
+    "isSendEmailForNotification": true
   }
 ]

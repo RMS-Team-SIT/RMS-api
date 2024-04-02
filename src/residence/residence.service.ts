@@ -266,6 +266,8 @@ export class ResidenceService {
           _id: 1,
           firstname: 1,
           lastname: 1,
+          email: 1,
+          phone: 1,
         },
       })
       .populate('renters')
