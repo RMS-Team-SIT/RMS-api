@@ -200,9 +200,33 @@ export class RoomService {
           address: 1,
           defaultElectricPriceRate: 1,
           defaultWaterPriceRate: 1,
+          payments: 1,
+          paymentNotes: 1,
+        },
+        populate: {
+          path: 'payments',
+          select: {
+            _id: 1,
+            account_name: 1,
+            account_number: 1,
+            bank: 1,
+          },
+          populate: {
+            path: 'bank',
+            select: {
+              _id: 1,
+              thai_name: 1,
+              bank: 1,
+            },
+          }
         },
       })
-      .populate('currentRenter')
+      .populate({
+        path: 'currentRenter',
+        select: {
+          password: 0,
+        }
+      })
       .populate('renterHistory')
       .exec();
 
