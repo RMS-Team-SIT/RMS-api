@@ -55,6 +55,9 @@ export class User extends Document {
   @Prop({ required: true, default: [UserRole.USER] })
   role: UserRole[];
 
+  @Prop({ default: true })
+  isSendEmailForNotification: boolean;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Notification' }], default: [] })
   notifications: Notification[];
 

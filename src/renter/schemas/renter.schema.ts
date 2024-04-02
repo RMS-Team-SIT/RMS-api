@@ -46,6 +46,9 @@ export class Renter extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'BillRoom' }], default: [] })
   billRooms: BillRoom[];
 
+  @Prop({ default: true })
+  isSendEmailForNotification: boolean;
+
   @Prop({ type: [{ type: Types.ObjectId, ref: 'Notification' }], default: [] })
   notifications: Notification[];
 

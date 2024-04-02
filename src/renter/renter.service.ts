@@ -54,6 +54,7 @@ export class RenterService {
       ...createRenterDto,
       username: createRenterDto.email,
       residence: residenceId,
+      isSendEmailForNotification: true,
       created_at: new Date(),
       updated_at: new Date(),
     }).save();
@@ -184,6 +185,8 @@ export class RenterService {
         {
           ...updateRenterDto,
           username: updateRenterDto.email,
+          // If password is empty, keep the old password
+          password: updateRenterDto.password ? updateRenterDto.password : renter.password,
           updated_at: Date.now(),
         },
         { new: true },
