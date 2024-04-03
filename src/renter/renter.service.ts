@@ -10,6 +10,7 @@ import { CreateRenterDto } from './dto/create-renter.dto';
 import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateRenterDto } from './dto/update-renter.dto';
+import { hashPassword, isPasswordMatch } from 'src/utils/password.utils';
 
 @Injectable()
 export class RenterService {
@@ -53,6 +54,7 @@ export class RenterService {
     const createdRenter = await new this.renterModel({
       ...createRenterDto,
       username: createRenterDto.email,
+      password: hashPassword(createRenterDto.password),
       residence: residenceId,
       isSendEmailForNotification: true,
       created_at: new Date(),
@@ -79,12 +81,20 @@ export class RenterService {
       .findOne({
         residence: residenceId,
         username,
-        password,
       })
       .exec();
 
     if (!renter) {
       throw new NotFoundException('Renter not found');
+    }
+
+    if (!renter.isActive) {
+      throw new BadRequestException('Renter is inactive');
+    }
+    const hashedPassword = await hashPassword(password);
+
+    if (await isPasswordMatch(renter.password, hashedPassword)) {
+      throw new BadRequestException('Password is incorrect');
     }
 
     return renter;
@@ -186,7 +196,7 @@ export class RenterService {
           ...updateRenterDto,
           username: updateRenterDto.email,
           // If password is empty, keep the old password
-          password: updateRenterDto.password ? updateRenterDto.password : renter.password,
+          password: updateRenterDto.password ? hashPassword(updateRenterDto.password) : renter.password,
           updated_at: Date.now(),
         },
         { new: true },
