@@ -54,7 +54,7 @@ export class RenterService {
     const createdRenter = await new this.renterModel({
       ...createRenterDto,
       username: createRenterDto.email,
-      password: hashPassword(createRenterDto.password),
+      password: await hashPassword(createRenterDto.password),
       residence: residenceId,
       isSendEmailForNotification: true,
       created_at: new Date(),

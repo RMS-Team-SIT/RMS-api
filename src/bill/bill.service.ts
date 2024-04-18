@@ -145,6 +145,7 @@ export class BillService {
       const createdBillRoom = await new this.billRoomModel({
         ...billRoomData,
       }).save();
+
       // Add BillRoom to room
       await this.roomService.addBillRoomToRoom(
         residenceId,
@@ -161,22 +162,25 @@ export class BillService {
         createdBillRoom._id,
       );
 
-      // TODO: Add Notification to renter
+      // Create Notification schema for renter
       const notification = {
         tos: [],
         toRenters: [room.currentRenter._id],
         toEmails: [room.currentRenter.email],
         title: 'มีบิลใหม่สำหรับห้องของคุณ',
         content: `มีบิลใหม่สำหรับห้อง: ${room.name} \nบิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
-        isSentEmail: true,
+        isSentEmail: room.currentRenter.isSendEmailForNotification,
         isRead: false,
       };
 
+      // Add/Sent Notification to renter
       const createdNotification = await this.notificationService.create(notification);
-
+      
+      // Add notification to renter 
       await this.renterService.addNotificationToRenter(room.currentRenter._id, createdNotification._id);
     });
 
+    // Return bill
     return this.findById(residenceId, billId);
   }
 
@@ -319,7 +323,7 @@ export class BillService {
         isRead: false,
       };
       console.log('update bill service ', notification);
-      
+
 
       const createdNotification = await this.notificationService.create(notification);
 
