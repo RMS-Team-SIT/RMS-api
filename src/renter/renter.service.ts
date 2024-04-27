@@ -11,6 +11,7 @@ import { validateObjectIdFormat } from 'src/utils/mongo.utils';
 import { ResidenceService } from 'src/residence/residence.service';
 import { UpdateRenterDto } from './dto/update-renter.dto';
 import { hashPassword, isPasswordMatch } from 'src/utils/password.utils';
+import path from 'path';
 
 @Injectable()
 export class RenterService {
@@ -143,6 +144,12 @@ export class RenterService {
       })
       .populate({
         path: 'billRooms',
+        populate: {
+          path: 'meterRecord',
+          select: {
+            record_date: 1,
+          }
+        }
       })
       .populate({
         path: 'notifications',
