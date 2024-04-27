@@ -312,6 +312,13 @@ export class ResidenceService {
           select: { __v: 0, bill: 0 },
         },
       })
+      .populate({
+        path: 'bills',
+        populate: {
+          path: 'meterRecord',
+          select: { record_date: 1 },
+        },
+      })
       .sort({ 'meterRecord.record_date': -1 })
       .exec();
 

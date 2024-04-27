@@ -156,28 +156,30 @@ export class BillService {
       // Add BillRoom to Bill
       await this.addBillRoomToBill(billId, createdBillRoom._id);
 
-      // Add BillRoom to Renter
-      await this.renterService.addBillRoomToRenter(
-        room.currentRenter._id,
-        createdBillRoom._id,
-      );
+      if (room.currentRenter) {
+        // Add BillRoom to Renter if exist
+        await this.renterService.addBillRoomToRenter(
+          room.currentRenter._id,
+          createdBillRoom._id,
+        );
 
-      // Create Notification schema for renter
-      const notification = {
-        tos: [],
-        toRenters: [room.currentRenter._id],
-        toEmails: [room.currentRenter.email],
-        title: 'มีบิลใหม่สำหรับห้องของคุณ',
-        content: `มีบิลใหม่สำหรับห้อง: ${room.name} \nบิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
-        isSentEmail: room.currentRenter.isSendEmailForNotification,
-        isRead: false,
-      };
+        // Create Notification schema for renter
+        const notification = {
+          tos: [],
+          toRenters: [room.currentRenter._id],
+          toEmails: [room.currentRenter.email],
+          title: 'มีบิลใหม่สำหรับห้องของคุณ',
+          content: `มีบิลใหม่สำหรับห้อง: ${room.name} \nบิลเลขที่ ${createdBillRoom.billNo}\nกรุณาตรวจสอบบิลของคุณ`,
+          isSentEmail: room.currentRenter.isSendEmailForNotification,
+          isRead: false,
+        };
 
-      // Add/Sent Notification to renter
-      const createdNotification = await this.notificationService.create(notification);
-      
-      // Add notification to renter 
-      await this.renterService.addNotificationToRenter(room.currentRenter._id, createdNotification._id);
+        // Add/Sent Notification to renter
+        const createdNotification = await this.notificationService.create(notification);
+
+        // Add notification to renter 
+        await this.renterService.addNotificationToRenter(room.currentRenter._id, createdNotification._id);
+      }
     });
 
     // Return bill
