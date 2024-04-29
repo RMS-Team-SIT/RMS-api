@@ -203,7 +203,7 @@ export class RenterService {
           ...updateRenterDto,
           username: updateRenterDto.email,
           // If password is empty, keep the old password
-          password: updateRenterDto.password ? hashPassword(updateRenterDto.password) : renter.password,
+          password: updateRenterDto.password ? await hashPassword(updateRenterDto.password) : renter.password,
           updated_at: Date.now(),
         },
         { new: true },
